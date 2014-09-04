@@ -10,15 +10,15 @@ struct ethernet {
 };
 
 struct arp {
-    uint16_t htype;
-    uint16_t ptype;
-    unsigned char hlen;
-    unsigned char plen;
+    uint16_t hw_type;
+    uint16_t proto_type;
+    unsigned char hw_len;
+    unsigned char proto_len;
     uint16_t oper;
-    unsigned char sender_ha[6];
-    unsigned char sender_pa[4];
-    unsigned char target_ha[6];
-    unsigned char target_pa[4];
+    unsigned char eth_source_addr[6];
+    unsigned char proto_source_addr[4];
+    unsigned char eth_target_addr[6];
+    unsigned char proto_target_addr[4];
 };
 
 void pcap_fatal(const char *failed_in, const char *errbuf) {
@@ -48,8 +48,10 @@ void caught_packet(u_char *user_args, const struct pcap_pkthdr *cap_header, cons
 				break;
 		}
 
-		printf("%d.%d.%d.%d;", arp_hdr->sender_pa[0],arp_hdr->sender_pa[1], arp_hdr->sender_pa[2], arp_hdr->sender_pa[3]);
-		printf("%d.%d.%d.%d\n", arp_hdr->target_pa[0], arp_hdr->target_pa[1], arp_hdr->target_pa[2], arp_hdr->target_pa[3]);
+		printf("%d.%d.%d.%d;", arp_hdr->proto_source_addr[0],arp_hdr->proto_source_addr[1], 
+			arp_hdr->proto_source_addr[2], arp_hdr->proto_source_addr[3]);
+		printf("%d.%d.%d.%d\n", arp_hdr->proto_target_addr[0], arp_hdr->proto_target_addr[1], 
+			arp_hdr->proto_target_addr[2], arp_hdr->proto_target_addr[3]);
 	}
 }
 
