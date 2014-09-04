@@ -34,6 +34,19 @@ void caught_packet(u_char *user_args, const struct pcap_pkthdr *cap_header, cons
 
         if(ntohs(eth_hdr->eth_type) == ETH_P_ARP) {
 		arp_hdr = (struct arp *)(packet + sizeof(struct ethernet));
+		
+		// El ntohs es para cambiar de Network Byte Order a Host Byte Order
+		switch(ntohs(arp_hdr->oper)) {
+			case 0x0001:
+				printf("Request;");
+				break;
+			case 0x0002:
+				printf("Response;");
+				break;
+			default:
+				printf(";");
+				break;
+		}
 
 		printf("%d.%d.%d.%d;", arp_hdr->sender_pa[0],arp_hdr->sender_pa[1], arp_hdr->sender_pa[2], arp_hdr->sender_pa[3]);
 		printf("%d.%d.%d.%d\n", arp_hdr->target_pa[0], arp_hdr->target_pa[1], arp_hdr->target_pa[2], arp_hdr->target_pa[3]);
