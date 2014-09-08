@@ -2,6 +2,7 @@
 #include <linux/if_ether.h>
 #include <pcap.h>
 #include <stdlib.h>
+#include <time.h>
 
 struct ethernet {
     unsigned char dest[6];
@@ -30,10 +31,20 @@ void caught_packet(u_char *user_args, const struct pcap_pkthdr *cap_header, cons
 	struct ethernet *eth_hdr = NULL;
     	struct arp *arp_hdr = NULL;
 
+	time_t rawtime;
+	struct tm * timeinfo;
+	char buffer [18];
+
 	eth_hdr = (struct ethernet *)packet;
 
         if(ntohs(eth_hdr->eth_type) == ETH_P_ARP) {
 		arp_hdr = (struct arp *)(packet + sizeof(struct ethernet));
+
+		time(&rawtime);
+		timeinfo = localtime (&rawtime);
+		strftime(buffer,18,"%Y%m%d%H%M%S",timeinfo);
+		printf("%s;",buffer);
+		
 		
 		// El ntohs es para cambiar de Network Byte Order a Host Byte Order
 		switch(ntohs(arp_hdr->oper)) {
