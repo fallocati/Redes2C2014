@@ -6,9 +6,11 @@ int main(int argc, char* argv[]){
 	ofstream output_file;
 	ifstream input_file;
 	unsigned long long requests_count = 0;
-	int result = 0,entropy_src = 0, entropy_dst = 0;
+	int result = 0;
 	ip ip_src,ip_dst;
-	unordered_map<string,std::pair<src_counter,dst_counter> > ip_appareances;
+	entropy entropy_src = 0, entropy_dst = 0;
+	probability ip_probability;
+	unordered_map<string,arp_counters_t> ip_appareances;
 
 
 	if(argc != 3){
@@ -21,18 +23,27 @@ int main(int argc, char* argv[]){
 		while(input_file.good()){
 			input_file.ignore(numeric_limits<streamsize>::max(),';'); //timestamp
 			input_file.ignore(numeric_limits<streamsize>::max(),';'); //type
-			input_file.getline(ip_src,16,';');
-			input_file.getline(ip_dst,16,'\n');
+			getline(input_file,ip_src,';');
+			getline(input_file,ip_dst,'\n');
 
-			++get<0>(ip_appareances[ip_src]);
-			++get<1>(ip_appareances[ip_dst]);
+			++ip_appareances[ip_src].src_counter;
+			++ip_appareances[ip_dst].dst_counter;
+
+			if(ip_src == ip_dst){
+				++ip_appareances[ip_src].src_eq_dst_counter;
+				++ip_appareances[ip_dst].src_eq_dst_counter;
+			}
 			
 			++requests_count;
 		}
 
-		cout << "IP: #SRC #DST" << endl;
 		for(auto it = ip_appareances.cbegin();it != ip_appareances.cend();++it){
-			cout << it->first << ": " << it->second.first << ' ' << it->second.second << endl;
+			ip_probability = (float)it->second.src_counter/requests_count;
+			
+			output_file << it->first << ' ';
+			output_file << ip_probability << ' ';
+			output_file << (float)it->second.dst_counter/requests_count << ' ';
+			output_file << it->second.src_eq_dst_counter << endl;
 		}
 
 		output_file.close();

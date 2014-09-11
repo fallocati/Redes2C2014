@@ -27,7 +27,7 @@ void pcap_fatal(const char *failed_in, const char *errbuf) {
 	exit(1);
 }
 
-void caught_packet(u_char *user_args, const struct pcap_pkthdr *cap_header, const u_char* packet) {
+void caught_packet(u_char *output_file, const struct pcap_pkthdr *cap_header, const u_char* packet) {
 	struct ethernet *eth_hdr = NULL;
     	struct arp *arp_hdr = NULL;
 
@@ -43,38 +43,72 @@ void caught_packet(u_char *user_args, const struct pcap_pkthdr *cap_header, cons
 		time(&rawtime);
 		timeinfo = localtime (&rawtime);
 		strftime(buffer,18,"%Y%m%d%H%M%S",timeinfo);
-		printf("%s;",buffer);
-		
-		
-		// El ntohs es para cambiar de Network Byte Order a Host Byte Order
-		switch(ntohs(arp_hdr->oper)) {
-			case 0x0001:
-				printf("Request;");
-				break;
-			case 0x0002:
-				printf("Response;");
-				break;
-			default:
-				printf(";");
-				break;
-		}
 
-		printf("%d.%d.%d.%d;", arp_hdr->proto_source_addr[0],arp_hdr->proto_source_addr[1], 
-			arp_hdr->proto_source_addr[2], arp_hdr->proto_source_addr[3]);
-		printf("%d.%d.%d.%d\n", arp_hdr->proto_target_addr[0], arp_hdr->proto_target_addr[1], 
-			arp_hdr->proto_target_addr[2], arp_hdr->proto_target_addr[3]);
+		if(output_file == NULL){
+			printf("%s;",buffer);
+
+			// El ntohs es para cambiar de Network Byte Order a Host Byte Order
+			switch(ntohs(arp_hdr->oper)) {
+				case 0x0001:
+					printf("Request;");
+					break;
+				case 0x0002:
+					printf("Response;");
+					break;
+				default:
+					printf(";");
+					break;
+			}
+
+			printf("%d.%d.%d.%d;", arp_hdr->proto_source_addr[0],arp_hdr->proto_source_addr[1], 
+				arp_hdr->proto_source_addr[2], arp_hdr->proto_source_addr[3]);
+			printf("%d.%d.%d.%d\n", arp_hdr->proto_target_addr[0], arp_hdr->proto_target_addr[1], 
+				arp_hdr->proto_target_addr[2], arp_hdr->proto_target_addr[3]);
+
+		} else {
+			FILE *fp = NULL;
+
+			fp = fopen((char*)output_file,"a+");
+			if(fp == NULL){
+				printf("Error opening file %s!",(char*)output_file);
+				exit(2);
+			} 
+
+			fprintf(fp,"%s;",buffer);
+
+			// El ntohs es para cambiar de Network Byte Order a Host Byte Order
+			switch(ntohs(arp_hdr->oper)) {
+				case 0x0001:
+					fprintf(fp,"Request;");
+					break;
+				case 0x0002:
+					fprintf(fp,"Response;");
+					break;
+				default:
+					fprintf(fp,";");
+					break;
+			}
+
+			fprintf(fp,"%d.%d.%d.%d;", arp_hdr->proto_source_addr[0],arp_hdr->proto_source_addr[1], 
+				arp_hdr->proto_source_addr[2], arp_hdr->proto_source_addr[3]);
+			fprintf(fp,"%d.%d.%d.%d\n", arp_hdr->proto_target_addr[0], arp_hdr->proto_target_addr[1], 
+				arp_hdr->proto_target_addr[2], arp_hdr->proto_target_addr[3]);
+			
+			fclose(fp);
+		}
 	}
 }
 
 int main(int argc, char** args) {
+	int result = 0;
 	char errbuf[PCAP_ERRBUF_SIZE];
 	pcap_t *pcap_handle;
 	
 	struct bpf_program filter;
 	char filter_string[] = "arp";
 
-	if (argc < 2) {
-		printf("Usage: %s [interface]\n", args[0]);
+	if (argc < 2 || argc > 3) {
+		printf("Usage: %s [interface]\nOptional use: %s [interface] [output_file_name]\n", args[0],args[0]);
 		exit(1);
 	}
 
@@ -93,9 +127,12 @@ int main(int argc, char** args) {
 		pcap_fatal("pcap_setfilter", errbuf);
 	}
 
-	pcap_loop(pcap_handle, -1, caught_packet, NULL);
-
+	if(argc == 3)
+		pcap_loop(pcap_handle, -1, caught_packet,(u_char*)args[2]);
+	else
+		pcap_loop(pcap_handle, -1, caught_packet,NULL);
+		
 	pcap_close(pcap_handle);
+
+	return result;
 }
-
-
