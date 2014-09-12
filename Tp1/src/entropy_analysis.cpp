@@ -31,20 +31,31 @@ int main(int argc, char* argv[]){
 
 			if(ip_src == ip_dst){
 				++ip_appareances[ip_src].src_eq_dst_counter;
-				++ip_appareances[ip_dst].src_eq_dst_counter;
 			}
 			
 			++requests_count;
 		}
 
+		output_file << "IP Psrc Pdst src_eq_dst" << endl;
 		for(auto it = ip_appareances.cbegin();it != ip_appareances.cend();++it){
-			ip_probability = (float)it->second.src_counter/requests_count;
-			
 			output_file << it->first << ' ';
+
+			ip_probability = (probability)it->second.src_counter/requests_count;
+			//cout << entropy_src << " " << ip_probability << "*" << log(ip_probability)/log(2) << endl;
 			output_file << ip_probability << ' ';
-			output_file << (float)it->second.dst_counter/requests_count << ' ';
+			if(isnormal(ip_probability))
+				entropy_src -= ip_probability*log2(ip_probability);
+
+			ip_probability = (probability)it->second.dst_counter/requests_count;
+			output_file << ip_probability << ' ';
+			if(isnormal(ip_probability))
+				entropy_dst -= ip_probability*log2(ip_probability);
+
 			output_file << it->second.src_eq_dst_counter << endl;
 		}
+
+		cout << "Entropia de la Fuente SRC: " << entropy_src << endl;
+		cout << "Entropia de la fuente DST: " << entropy_dst << endl;
 
 		output_file.close();
 		input_file.close();

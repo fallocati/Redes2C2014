@@ -3,40 +3,38 @@
 #include <pcap.h>
 #include <stdlib.h>
 #include <time.h>
-
-struct ethernet {
-    unsigned char dest[6];
-    unsigned char source[6];
-    uint16_t eth_type;
-};
-
-struct arp {
-    uint16_t hw_type;
-    uint16_t proto_type;
-    unsigned char hw_len;
-    unsigned char proto_len;
-    uint16_t oper;
-    unsigned char eth_source_addr[6];
-    unsigned char proto_source_addr[4];
-    unsigned char eth_target_addr[6];
-    unsigned char proto_target_addr[4];
-};
+#include <signal.h>
+#include <tool.h>
 
 void pcap_fatal(const char *failed_in, const char *errbuf) {
 	printf("Fatal Error in %s: %s\n", failed_in, errbuf);
 	exit(1);
 }
 
+void close_file_on_interrupt(int signal){
+	int result;
+	result = fcloseall();
+	if(result == 0)
+		result = 3;
+	else
+		result = 4;
+	exit(result);
+}
+
 void caught_packet(u_char *output_file, const struct pcap_pkthdr *cap_header, const u_char* packet) {
+	//Variables
 	struct ethernet *eth_hdr = NULL;
     	struct arp *arp_hdr = NULL;
-
 	time_t rawtime;
 	struct tm * timeinfo;
 	char buffer [18];
-
 	eth_hdr = (struct ethernet *)packet;
 
+	//Signals
+	signal(SIGINT,close_file_on_interrupt);	
+	signal(SIGTERM,close_file_on_interrupt);	
+
+	//Body
         if(ntohs(eth_hdr->eth_type) == ETH_P_ARP) {
 		arp_hdr = (struct arp *)(packet + sizeof(struct ethernet));
 
@@ -66,9 +64,8 @@ void caught_packet(u_char *output_file, const struct pcap_pkthdr *cap_header, co
 				arp_hdr->proto_target_addr[2], arp_hdr->proto_target_addr[3]);
 
 		} else {
-			FILE *fp = NULL;
+			FILE *fp = (FILE*)output_file;
 
-			fp = fopen((char*)output_file,"a+");
 			if(fp == NULL){
 				printf("Error opening file %s!",(char*)output_file);
 				exit(2);
@@ -94,7 +91,7 @@ void caught_packet(u_char *output_file, const struct pcap_pkthdr *cap_header, co
 			fprintf(fp,"%d.%d.%d.%d\n", arp_hdr->proto_target_addr[0], arp_hdr->proto_target_addr[1], 
 				arp_hdr->proto_target_addr[2], arp_hdr->proto_target_addr[3]);
 			
-			fclose(fp);
+			fflush(fp);
 		}
 	}
 }
@@ -103,9 +100,9 @@ int main(int argc, char** args) {
 	int result = 0;
 	char errbuf[PCAP_ERRBUF_SIZE];
 	pcap_t *pcap_handle;
-	
 	struct bpf_program filter;
 	char filter_string[] = "arp";
+	FILE *fp = NULL;
 
 	if (argc < 2 || argc > 3) {
 		printf("Usage: %s [interface]\nOptional use: %s [interface] [output_file_name]\n", args[0],args[0]);
@@ -127,8 +124,11 @@ int main(int argc, char** args) {
 		pcap_fatal("pcap_setfilter", errbuf);
 	}
 
-	if(argc == 3)
-		pcap_loop(pcap_handle, -1, caught_packet,(u_char*)args[2]);
+	if(argc == 3){
+		fp = fopen(args[2],"a+");
+		pcap_loop(pcap_handle, -1, caught_packet,(u_char*)fp);
+		fclose(fp);
+	}
 	else
 		pcap_loop(pcap_handle, -1, caught_packet,NULL);
 		
