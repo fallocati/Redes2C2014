@@ -1,0 +1,35 @@
+SDIR = src
+IDIR = include
+ODIR = obj
+
+CXX = g++
+CPPFLAGS = -std=c++11 -Wall -I$(IDIR)/
+
+TOOL_SOURCES = tool.cpp
+ENTROPYANALYSIS_SOURCES = entropy_analysis.cpp
+
+TOOL_OBJECTS = $(patsubst %,$(ODIR)/%,$(TOOL_SOURCES:.cpp=.o))
+ENTROPYANALYSIS_OBJECTS = $(patsubst %,$(ODIR)/%,$(ENTROPYANALYSIS_SOURCES:.cpp=.o))
+
+TOOL_LIBS = -lpcap
+ENTROPYANALYSIS_LIBS =
+
+TOOL_EXECUTABLE = tool
+ENTROPYANALYSIS_EXECUTABLE = entropy
+
+.PHONY: all clean
+
+all: $(TOOL_EXECUTABLE) $(ENTROPYANALYSIS_EXECUTABLE)
+
+$(TOOL_EXECUTABLE): $(TOOL_OBJECTS)
+	$(CXX) $^ $(TOOL_LIBS) -o $@
+
+$(ENTROPYANALYSIS_EXECUTABLE): $(ENTROPYANALYSIS_OBJECTS)
+	$(CXX) $^ $(ENTROPYANALYSIS_LIBS) -o $@
+
+$(ODIR)/%.o: $(SDIR)/%.cpp $(IDIR)/%.hpp
+	@mkdir -p $(@D)
+	$(CXX) -c $(CPPFLAGS) $< -o $@
+
+clean:
+	rm -r -f $(ODIR) $(SDIR)/*~ $(IDIR)/*~ *~ $(TOOL_EXECUTABLE) $(ENTROPYANALYSIS_EXECUTABLE)

@@ -1,18 +1,24 @@
 #ifndef TOOL_H
 #define TOOL_H
 
-#include <arpa/inet.h>
+#include <cstdint>
 #include <linux/if_ether.h>
+#include <netinet/in.h>
 #include <pcap.h>
-#include <stdlib.h>
-#include <time.h>
-#include <signal.h>
+
+#include <csignal>
+#include <cstdlib>
+
+#include <ctime>
+
+#include <iostream>
+#include <fstream>
 
 struct ethernet {
     unsigned char dest[6];
     unsigned char source[6];
     uint16_t eth_type;
-};
+} __attribute__((__packed__));
 
 struct arp {
     uint16_t hw_type;
@@ -24,11 +30,10 @@ struct arp {
     unsigned char proto_source_addr[4];
     unsigned char eth_target_addr[6];
     unsigned char proto_target_addr[4];
-};
+} __attribute__((__packed__));
 
-
-void pcap_fatal(const char *failed_in, const char *errbuf);
-void caught_packet(u_char *output_file, const struct pcap_pkthdr *cap_header, const u_char* packet);
-void close_file_on_interrupt(int signal);
+void pcap_fatal(const char* failed_in, const char* errbuf);
+void caught_packet(u_char* buf, const pcap_pkthdr* cap_header, const u_char* packet);
+void interruption(int signal);
 
 #endif//TOOL_H

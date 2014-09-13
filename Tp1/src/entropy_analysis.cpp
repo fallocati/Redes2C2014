@@ -2,65 +2,66 @@
 
 using namespace std;
 
-int main(int argc, char* argv[]){
-	ofstream output_file;
-	ifstream input_file;
-	unsigned long long requests_count = 0;
-	int result = 0;
-	ip ip_src,ip_dst;
-	entropy entropy_src = 0, entropy_dst = 0;
-	probability ip_probability;
-	unordered_map<string,arp_counters_t> ip_appareances;
-
-
-	if(argc != 3){
-		std::cout << "Se requieren 2 parametros: archivo_entrada archivo_salida" << std::endl;
-		result = 1;
-	} else {
-		input_file.open(argv[1],ios::in);
-		output_file.open(argv[2],ios::out);
-		
-		while(input_file.good()){
-			input_file.ignore(numeric_limits<streamsize>::max(),';'); //timestamp
-			input_file.ignore(numeric_limits<streamsize>::max(),';'); //type
-			getline(input_file,ip_src,';');
-			getline(input_file,ip_dst,'\n');
-
-			++ip_appareances[ip_src].src_counter;
-			++ip_appareances[ip_dst].dst_counter;
-
-			if(ip_src == ip_dst){
-				++ip_appareances[ip_src].src_eq_dst_counter;
-			}
-			
-			++requests_count;
-		}
-
-		output_file << "IP Psrc Pdst src_eq_dst" << endl;
-		for(auto it = ip_appareances.cbegin();it != ip_appareances.cend();++it){
-			output_file << it->first << ' ';
-
-			ip_probability = (probability)it->second.src_counter/requests_count;
-			//cout << entropy_src << " " << ip_probability << "*" << log(ip_probability)/log(2) << endl;
-			output_file << ip_probability << ' ';
-			if(isnormal(ip_probability))
-				entropy_src -= ip_probability*log2(ip_probability);
-
-			ip_probability = (probability)it->second.dst_counter/requests_count;
-			output_file << ip_probability << ' ';
-			if(isnormal(ip_probability))
-				entropy_dst -= ip_probability*log2(ip_probability);
-
-			output_file << it->second.src_eq_dst_counter << endl;
-		}
-
-		cout << "Entropia de la Fuente SRC: " << entropy_src << endl;
-		cout << "Entropia de la fuente DST: " << entropy_dst << endl;
-
-		output_file.close();
-		input_file.close();
-
+int main(int argc, char** args) {	
+	if(argc < 3) {
+		cout << "Usages: " << endl;
+		cout << args[0] << " [input_file_name] [output_file_name]" << endl;
+		exit(1);
 	}
 	
-	return result;
+	uint64_t requests_count = 0;	
+	unordered_map<string, arp_counters> counters;
+
+	ifstream input_file(args[1], ios::in);	
+
+	while(input_file.good() && input_file.peek() != EOF) {		
+		input_file.ignore(numeric_limits<streamsize>::max(), ';'); //timestamp
+
+		string type;
+		getline(input_file, type, ';');		
+
+		string ip_src, ip_dst;
+		getline(input_file, ip_src, ';');
+		getline(input_file, ip_dst, '\n');
+
+		if (type != "Request")
+			continue;	
+
+		++counters[ip_src].src_counter;
+		++counters[ip_dst].dst_counter;
+
+		if(ip_src == ip_dst) {
+			++counters[ip_src].src_eq_dst_counter;
+		}
+		
+		++requests_count;
+	}
+
+	input_file.close();
+
+	ofstream output_file(args[2], ios::out);
+	output_file << "IP;Psrc;Pdst;src_eq_dst" << endl;
+
+	entropy entropy_src = 0, entropy_dst = 0;
+
+	for(auto const& ip : counters) {
+		probability src = (probability)ip.second.src_counter / requests_count;
+		probability dst = (probability)ip.second.dst_counter / requests_count;
+
+		output_file << ip.first << ";" << src << ";" << dst << ";"
+		<< ip.second.src_eq_dst_counter << endl;	
+
+		if(isnormal(src))		
+			entropy_src -= src * log2(src);
+
+		if(isnormal(dst))
+			entropy_dst -= dst * log2(dst);
+	}
+
+	output_file.close();
+
+	cout << "Entropia de la Fuente SRC: " << entropy_src << endl;
+	cout << "Entropia de la fuente DST: " << entropy_dst << endl;		
+	
+	return 0;
 }
