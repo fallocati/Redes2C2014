@@ -17,3 +17,5 @@ else
     }' < $1 > quantity_per_hour.csv
     sed -i 1d quantity_per_hour.csv
 fi
+
+gnuplot quantity_per_hour.plt
