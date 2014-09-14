@@ -14,7 +14,7 @@ else
             print $4","$3;
         else
             print $3","$4;
-    }' < $1 | uniq -i > pre_graph.csv
+    }' < $1 | sort | uniq -i > pre_graph.csv
 fi
 
 exit 0
