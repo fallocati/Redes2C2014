@@ -1,0 +1,50 @@
+%----------------------------------------------------------------------
+%Bibliografia
+
+%Ejemplo de una cita, para despues leer las referencias/bibliografia
+%\latexiie\ system~\cite{lamport}. Some of its features include a very
+
+%----------------------------------------------------------------------
+% The bibliography. This bibliography was generated using the following
+% two lines:
+%\bibliographystyle{IEEEbib}
+%\bibliography{ieeecls}
+% where, the contents of the ieeecls.bib file was:
+%
+%@book{lamport,
+%        AUTHOR = "Leslie Lamport",
+%         TITLE = "A Document Preparation System: {\LaTeX} User's Guide
+%                  and Reference Manual",
+%       EDITION = "Second",
+%     PUBLISHER = "Addison-Wesley",
+%       ADDRESS = "Reading, MA",
+%          YEAR = 1994,
+%          NOTE = "Be sure to get the updated version for \LaTeX2e!"
+%}
+%
+%@book{goossens,
+%        AUTHOR = "Michel Goossens and Frank Mittelbach and
+%                  Alexander Samarin",
+%         TITLE = "The {\LaTeX} Companion",
+%     PUBLISHER = "Addison-Wesley",
+%       ADDRESS = "Reading, MA",
+%          YEAR = 1994,
+%}
+%
+% The ieeecls.bbl file was manually included here to make the distribution
+% of this paper easier. You need not do it for your own papers.
+
+%----------------------------------------------------------------------
+%http://texblog.org/2007/08/09/how-to-use-a-bibtex-file/
+@technote{rfc826,
+	author = {David C. Plummer},
+    title = {An Ethernet Address Resolution Protocol
+                            -- or --
+              Converting Network Protocol Addresses
+                   to 48.bit Ethernet Address
+                       for Transmission on
+                        Ethernet Hardware},
+	publisher = {IETF},
+	year = {1982},
+    howpublished = {\url{http://tools.ietf.org/html/rfc826}},
+}

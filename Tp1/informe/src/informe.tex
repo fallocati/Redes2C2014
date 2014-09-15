@@ -16,8 +16,10 @@
 	narroweqnarray,
 	inline,
 	twoside,
-    	%invited,
+    %invited,
 	]{ieee}
+
+\title{Redes TP1}
 
 \newcommand{\latexiie}{\LaTeX2{\Large$_\varepsilon$}}
 \renewcommand{\abstractname}{Sinopsis}
@@ -25,18 +27,6 @@
 %\usepackage{ieeetsp}	% if you want the "trans. sig. pro." style
 %\usepackage{ieeetc}	% if you want the "trans. comp." style
 %\usepackage{ieeeimtc}	% if you want the IMTC conference style
-
-%Paquete para incluir links (ya sea para mandar un mail o para p\'aginas web)
-\usepackage{hyperref}
-
-%este paquete permite incluir acentos.  Notar que espera un formato ANSI-blah de archivo.
-%Si en lugar de eso se tiene un utf8 (usual en los linux), entonces usar \usepackage[utf8]{inputenc}
-\usepackage[utf8]{inputenc}
-
-%paquete para manejar figures
-%\usepackage[final,frame]{ieeefig}
-\usepackage{graphicx} % http://ctan.org/pkg/graphicx
-%\usepackage{color}
 
 % Use the `endfloat' package to move figures and tables to the end
 % of the paper. Useful for `submission' mode.
@@ -57,32 +47,15 @@
 % for any plug-in code... insert it here. For example, the CDC style...
 %\usepackage{ieeecdc}
 
+\usepackage{pdfpages}
+
 \begin{document}
 
-%----------------------------------------------------------------------
-% Title Information, Abstract and Keywords
-%----------------------------------------------------------------------
-\title[Trabajo Pr\'actico 1: Wiretapping]{%
-       Trabajo Pr\'actico 1: Wiretapping}
+\includepdf{Caratula_Redes_TP1.pdf}
 
-% format author this way for journal articles.
-% MAKE SURE THERE ARE NO SPACES BEFORE A \member OR \authorinfo
-% COMMAND (this also means `don't break the line before these
-% commands).
-\author[ALLOCATI, VEGA, SCHMIT AND KANTOR]{%
-    Federico Allocati,
-    \and{} Leandro Vega,
-    \and{} Mat\'ias Schimt
-    \and{} y Sacha S. Kantor
-}
-
-\journal{Teor\'ia de las Comunicaciones}
-\titletext{, Departamento de Computaci\'on, FCEyN - UBA, SEPTIEMBRE\ 2014}
 %\firstpage{1}
 
 %\confplacedate{Ciudad Aut\'onoma de Buenos Aires, Argentina, 29 de Septiembre de 2014}
-
-\maketitle
 
 \begin{abstract}
 	\input{sinopsis}
@@ -114,41 +87,4 @@
 \section{Conclusiones}
 	\input{conclusiones}
 
-%----------------------------------------------------------------------
-%Bibliografia
-
-%Ejemplo de una cita, para despues leer las referencias/bibliografia
-%\latexiie\ system~\cite{lamport}. Some of its features include a very
-
-%----------------------------------------------------------------------
-% The bibliography. This bibliography was generated using the following
-% two lines:
-%\bibliographystyle{IEEEbib}
-%\bibliography{ieeecls}
-% where, the contents of the ieeecls.bib file was:
-%
-%@book{lamport,
-%        AUTHOR = "Leslie Lamport",
-%         TITLE = "A Document Preparation System: {\LaTeX} User's Guide
-%                  and Reference Manual",
-%       EDITION = "Second",
-%     PUBLISHER = "Addison-Wesley",
-%       ADDRESS = "Reading, MA",
-%          YEAR = 1994,
-%          NOTE = "Be sure to get the updated version for \LaTeX2e!"
-%}
-%
-%@book{goossens,
-%        AUTHOR = "Michel Goossens and Frank Mittelbach and
-%                  Alexander Samarin",
-%         TITLE = "The {\LaTeX} Companion",
-%     PUBLISHER = "Addison-Wesley",
-%       ADDRESS = "Reading, MA",
-%          YEAR = 1994,
-%}
-%
-% The ieeecls.bbl file was manually included here to make the distribution
-% of this paper easier. You need not do it for your own papers.
-
-%----------------------------------------------------------------------
 \end{document}

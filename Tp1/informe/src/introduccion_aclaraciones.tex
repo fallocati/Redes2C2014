@@ -1,1 +1,47 @@
-\PARstartCal Introducci\'on
+\PARstartCal No se debe perder de vista el objetivo did\'actico de
+	este trabajo en ning\'un momento. El trabajo enunciado nos asigna
+    2 tareas a realizar. Por un lado se debe "programar" una herramienta
+    que nos permita, de alguna manera, capturar estas comunicaciones
+   	\textit{ARP} en distintas redes de manera tal de que despu\'es sean
+    analizables para poder llegar a distintas conclusiones.
+    
+\par Este protocolo, como todo protocolo, tiene sus reglas e instrumentaciones
+	que todos los integrantes que lo utilicen conocen y cumplen. En particular,
+    de estos est\'andares, nos interesa resaltar que sus \textit{paquetes},
+    o comunicaciones, tienen una estructura~\cite{rfc826} que es de donde 
+    se extraer\'a la informaci\'on a analizar. El enunciando nos pide analizar 2
+    datos principalmente que se identifican claramente como campos de los
+    paquetes ARP:
+
+\begin{itemize}
+	\item La \textit{IP}\footnote{Este concepto escapa al alcance de este trabajo.
+    Baste decir que es un protocolo superior en el modelo de capas utilizado por las
+    redes inform\'aticas.} que env\'ia el paquete a la red.
+    
+    \item La \textit{IP} a la cual est\'an destinados los paquetes.
+\end{itemize}
+
+\bigskip
+
+\par Si bien observamos 2 campos de los paquetes ARP, se observar\'an estos dos
+	campos como dos fuentes de informaci\'on distintas e independientes (seguramente
+    luego analizaremos los resultados de cada fuente cuyos datos fueron tomados
+    de la misma red, viendo si se puede extraer alguna caracter\'istica \'util).
+    En estos mismos casos, tambi\'en se hace un filtro de los paquetes que se toman
+    en cuenta como parte de las fuentes de informaci\'on. El protocolo nos da 2 tipos
+    de paquetes ARP: \textit{who-has} y \textit{is-at}, pero dada la naturaleza del
+    trabajo, no se har\'a nada especial para poder \textit{sniffear} los paquetes
+    del tipo \textit{is-at}\footnote{Estos paquetes son respuestas a paquetes
+    \textit{who-as}, y son emitidos por la computadora que tiene la IP destino
+    del paquete \textit{who-as}, por ende, son emitidas \'unicamente a la computadora
+    que emiti\'o el \textit{who-as}, es decir, no son \textit{broadcasteados}
+    a toda la red local. De nuestra experiencia, esto no es enteramente as\'i y
+    algunos paquetes \textit{is-at} son capturados. Asumimos que se debe a que
+    en alg\'un momento los \textit{switchs} no tienen guardada la relaci\'on
+    entre sus puertos y la direcci\'on destino del paquete \textit{is-at}, haciendo
+    un \textit{broadcast} de \'este. Estos casos son \'infimos y fueron descartados
+    en nuestros an\'analisis.} ya que estos no son \textit{brodcasteados} para
+    toda la red local (esto se debe al comportamiento de los \textit{switches} que
+    memorizan/guardan la \textit{ubicaci\'on}, o direcci\'on MAC, de cada terminal
+    y el puerto donde se encuentran conectados, enviando estos paquetes respuesta
+    de ARP \'unicamente al puerto donde deben llegar).

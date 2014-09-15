@@ -58,7 +58,6 @@
 
 \ProcessOptions
 \RequirePackage[final]{graphics}
-\RequirePackage{graphicx,ifthen}
 
 \newcommand{\figw@rning}[1]{\typeout{Warning: #1\space on page \thepage}}
 %======================================================================
@@ -202,4 +201,3 @@
 \def\figdefa[#1]#2{\sc@leoverridefalse\d@fig{#2}{#1}}
 \def\scalefig{\@ifnextchar [{\@scalefiga}{\@scalefiga[0.5in]}}
 \def\@scalefiga[#1]#2#3{\xdef\sc@lefig{#3}\sc@leoverridetrue\d@fig{#2}{#1}}
-

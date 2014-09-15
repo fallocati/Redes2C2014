@@ -1,5 +1,45 @@
 \subsection{Descripci\'on del Escenario}
-	\par Descripcion
+	\par En este primer escenario se trabaj\'o sobre 4 distintas \textit{VLANs}
+    de una misma terminal de trabajo en una red laboral.
+    
+    \par Estas cuatro diferentes VLANs nos dan 4 distintos dominios de colisi\'on,
+    y cada VLAN tienen claramente un uso distinto (motivo por el cual los
+    administradores de redes decidieron utilizarlos) y lo interesante aqu\'i
+    es observar como distintos dominios tienen un vol\'umen completamente distinto
+    de paquetes ARP seg\'un los dispositivos que pertenecen a la misma LAN.
+    
+    \par Se presenta a continuaci\'on una breve descripic\'on de cada una de las
+    VLANS que fueron sniffeadas:
+    
+    \begin{description}
+    	\item[\textbf{Datacenter}] Esta VLAN se compone de todas las computadoras que se
+        	encuentran en el datacenter de la red laboral. Se entiende por
+            datacenter como el edificio f\'isico donde se encuentran los servidores
+            y todo el area de procesamiento central de distintos servicios de la
+            red inform\'atica que se da a toda la red laboral. Es decir, en esta
+            VLAN se encuentran todas las terminales ubicadas f\'isicamente en un
+            edificio particular, donde la mayor\'ia de los usuarios hacen un uso
+            avanzado de sus terminales.
+            
+		\item[\textbf{Servidores}] Aqu\'i estamos observando la VLAN donde se conectan todos
+        	los servidores (enti\'endase por servidor como una terminal que ofrece
+            uno o varios servicios particulares al resto de la red) de la red. La
+            conectividad entre estos claramente estar\'a estrechamente relacionada
+            con la interacci\'on que haya entre los servicios que provee cada
+            \textit{server}.
+            
+		\item[\textbf{Tel\'efonos}] Esta es la VLAN a la cual se conectan todos los
+        	dispositivos telef\'onicos de la red laboral. Tambi\'en aqu\'i hay
+            ciertas computadoras que trabajan con \textit{telefon\'ia IP}.
+            
+		\item[\textbf{Nombre Pendiente}] Aqu\'i tenemos una VLAN en la que esperamos encontrar
+        	mucho tr\'afico, ya que es una vieja red que se utilizaba para todas
+            las terminales de la red laboral antes de que se empezase a segmentar
+            la red con diferentes VLANs y subredes (tarea que a\'un se encuentra
+            en curso).
+            
+    \end{description} 
+    \bigskip
 
 \subsection{An\'alisis de datos obtenidos}
 	\par Analisis

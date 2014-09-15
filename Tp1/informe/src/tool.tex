@@ -1,1 +1,31 @@
-\PARstartCal Comentarios sobre lo programado
+\PARstartCal El desarrollo de la herramienta que se encarga de capturar
+	los paquetes ARP de la red (o m\'as comunmente dicho: \textit{sniffear})
+    no, claramente, el objetivo central de este trabajo. De hecho, las
+    herramientas para realizar dicha tarea quedaron a elecci\'on de todos
+    los grupos de la cursada.
+    
+\par Nosotros, por comodidad o experiencia en el lenguaje \textit{C/C++},
+	decidimos utilizar \'este para realizar esta tarea.
+    
+\par Se entrega con este informe (en su versi\'on digital) el c\'odigo
+	fuente utilizado con su correspondiente Makefile para poder compilarlo,
+    llegada la necesidad de probar el mismo.
+    
+\par Como librer\'ias externas al c\'odigo, se utiliz\'o la \textit{libpcap},
+	quiz\'as la librer\'ia m\'as utilizada por diversos softwares open source
+    que se encuentran hoy d\'ia para interactuar con los dispositivos de red
+    de las computadoras y observar el tr\'afico de paquetes que atraviesan/procesan
+    los mismos.
+    
+\par Durante el desarrollo de esta herramienta, observamos que se iba a necesitar
+	el \textit{timestamp} de cada dato observado para luego poder realizar un
+    an\'alisis de las diferentes redes \textit{sniffeadas} en cuanto a la variable
+    temporal. Por lo tanto, dicho dato fue tambi\'en guardado en la salida de
+    nuestra aplicaci\'on.
+    
+\par Tambi\'en se program\'o una m\'ini-aplicaci\'on en el mismo lenguaje con
+	el objetivo de poder procesar los datos capturados por la aplicaci\'on ya
+    descripta y calcular (en otro archivo) las probabilidades de cada s\'imbolo
+    de nuestras fuentes de informaci\'on (en este caso, las direcciones IP ser\'ian
+    los s\'imbolos de nuestras dos fuentes) y con estos datos tambi\'en calcular
+    la entrop\'ia de ambas fuentes.
