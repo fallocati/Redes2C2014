@@ -16,7 +16,7 @@
 	narroweqnarray,
 	inline,
 	twoside,
-    %invited,
+	%invited,
 	]{ieee}
 
 \title{Redes TP1}
@@ -47,11 +47,33 @@
 % for any plug-in code... insert it here. For example, the CDC style...
 %\usepackage{ieeecdc}
 
+%http://en.wikibooks.org/wiki/LaTeX/Importing_Graphics
 \usepackage{pdfpages}
+\usepackage{graphicx}
+
+%http://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions#Wide_figures_in_two_column_documents
+\usepackage{dblfloatfix}
+\usepackage{fixltx2e}
+
+%http://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions#Keeping_floats_in_their_place
+\usepackage{float}
+\usepackage{placeins}
+
+%http://tex.stackexchange.com/questions/25414/how-to-create-magnified-subfigures-and-corresponding-boxes-for-portions-of-a-lar
+\input{zoomboxarray}
+
+%Bibliografia
+\usepackage[backend=biber,style=numeric-comp]{biblatex}
+\bibliography{ieeecls.bib}
 
 \begin{document}
 
 \includepdf{Caratula_Redes_TP1.pdf}
+%\begin{figure*}
+%	\centering
+%	\includegraphics[width=\linewidth]{Caratula_Redes_TP1.pdf}
+%\end{figure*}
+%\FloatBarrier
 
 %\firstpage{1}
 
@@ -87,4 +109,5 @@
 \section{Conclusiones}
 	\input{conclusiones}
 
+\printbibliography
 \end{document}
