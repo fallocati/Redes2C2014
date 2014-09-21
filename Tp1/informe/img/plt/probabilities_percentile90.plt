@@ -8,7 +8,7 @@ set key left top
 
 #------------------------------
 set terminal png size 800,600 #(.png)
-set output input.".accum.png"
+set output output."_accum.png"
 
 #set terminal pdf #(.pdf)
 #set output ".pdf"
@@ -19,7 +19,8 @@ set output input.".accum.png"
 #set termina postscript enhanced colour #(.eps)
 #set output ".eps"
 
-set title "Percentil 90"
+#set title "Percentil 90"
+set notitle
 set xlabel "Cantidad de IPs con mayor probabilidad "
 set ylabel "Probabilidad"
 

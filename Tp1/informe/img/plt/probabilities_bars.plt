@@ -8,7 +8,7 @@ set nokey
 
 #------------------------------
 set terminal png size 800,600 #(.png)
-set output input.".probabilities.png"
+set output output."_probabilities.png"
 
 #set terminal pdf #(.pdf)
 #set output ".pdf"
@@ -19,7 +19,8 @@ set output input.".probabilities.png"
 #set termina postscript enhanced colour #(.eps)
 #set output ".eps"
 
-set title "Probabilidad por IP\n(Ordenadas de mayor a menor segun probabilidad)"
+#set title "Probabilidad por IP\n(Ordenadas de mayor a menor segun probabilidad)"
+set notitle
 set xlabel "Cantidad de IPs con mayor probabilidad "
 set ylabel "Probabilidad"
 

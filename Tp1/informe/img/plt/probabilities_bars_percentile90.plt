@@ -9,7 +9,7 @@ set key outside horizontal bottom
 
 #------------------------------
 set terminal png size 800,600 #(.png)
-set output input.".bars_percentile90.png"
+set output output."_bars_percentile90.png"
 
 #set terminal pdf #(.pdf)
 #set output ".pdf"
@@ -20,7 +20,8 @@ set output input.".bars_percentile90.png"
 #set termina postscript enhanced colour #(.eps)
 #set output ".eps"
 
-set title "Probabilidad por IP\n(Ordenadas de mayor a menor segun probabilidad)"
+#set title "Probabilidad por IP\n(Ordenadas de mayor a menor segun probabilidad)"
+set notitle
 set xlabel "Cantidad de IPs con mayor probabilidad "
 set ylabel "Probabilidad"
 set y2label "Probabilidad acumulada"
