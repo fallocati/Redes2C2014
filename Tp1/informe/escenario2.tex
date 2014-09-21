@@ -1,15 +1,15 @@
 \subsection{Descripci\'on del Escenario}
 	\par Al igual que el escenario anterior, esta es una red laboral, pero con características muy diferentes. La red pertenece a una oficina de desarrollo de software y hardware con 14 personas. También hay un servidor de archivos, uno con maquinas virtuales y uno con bases de datos, 1 bridge wireless (independiente del router) y varios dispositivos de hardware conectados a la misma. La red es 10.10.0.0/24, teniendo el gateway la IP 10.10.0.1. 
-	 \par Se capturaron paquetes arp durante 5 horas, mediante una interfaz de red Ethernet.
+     \par Se capturaron paquetes arp durante 5 horas, mediante una interfaz de red Ethernet.
      
 \subsection{An\'alisis de datos obtenidos}
 	\par Comenzamos realizando un grafo dirigido, en el cual los nodos son las direcciones IP, y los ejes representan pedidos arp ("who-has") de una IP fuente a una IP destino.
-	\begin{figure}[H]
+	\begin{figure*}[!ht]
 		\centering
-		\includegraphics[width=0.5\textwidth]{img/graph/escenario_2/grafico_de_la_red.eps}
+		\includegraphics[width=\textwidth]{img/graph/escenario_2/grafico_de_la_red.eps}
 		\caption{Grafo de la red del Escenario 2}
 		\label{fig:grafo_escenario2}
-	\end{figure}
+	\end{figure*}
     
     A simple vista, este grafo no nos aporta demasiada información, pero el hecho de que sea una única gran componente conexa se corresponde con la configuración de la red. Inspeccionando las etiquetas de los nodos, observamos que efectivamente, todas las direcciones se encuentran en el rango 10.10.0.1-10.10.0.254, con excepción de dos casos particulares: la IP 0.0.0.0 y la IP 169.254.255.255. Más adelante nos concentraremos en estas dos direcciones. 
     \par Lo primero que nos interesó ver fue cuales fueron las IPs más pedidas, y cuales fueron las que más pedidos realizaron. Para esto, realizamos histogramas que reflejan visualmente esto:

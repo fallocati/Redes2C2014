@@ -78,7 +78,7 @@ int main(int argc, char** args) {
 
     for(unsigned int i=0; i<probability_maps.size();++i){
         *probability_maps[i].output << "Pos;IP;Probabilidad;Probabilidad Acumulada" << endl;
-        unsigned long long pos = 0;
+        unsigned long long pos = 1;
         probability prob_accum = 0;
         for(auto const& ip_by_probability : *probability_maps[i].ips_by_probability){
             prob_accum += ip_by_probability.first;
@@ -93,7 +93,7 @@ int main(int argc, char** args) {
 
     ofstream output_file_eq(string(args[2])+"_eq", ios::out);
     output_file_eq << "Pos;IP;Paquetes Src=Dst" << endl;
-    unsigned long long pos = 0;
+    unsigned long long pos = 1;
     for(auto const& ip_by_eq : ips_by_eq){
         output_file_eq << pos << ';' << ip_by_eq.second << ';';
         output_file_eq << ip_by_eq.first << endl;

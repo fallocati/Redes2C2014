@@ -67,7 +67,7 @@ set style fill solid border
 set datafile separator ";"
 
 plot \
-    input using 1:3 with boxes lc rgb "red" fs solid 0.7 noborder axes x1y1 title "Probabilidad de IP",\
+    input using 1:3:xticlabels(2) with boxes lc rgb "red" fs solid 0.7 noborder axes x1y1 title "Probabilidad de IP",\
     input using 1:($4 <= 0.9 ? $4 : 1/0) with boxes lc rgb "blue" fs transparent pattern 5 noborder axes x1y2 title "Percentil 90",\
     input using 1:4 with lines lc rgb "blue" lw 2 axes x1y2 title "Probabilidad Acumulada",\
 

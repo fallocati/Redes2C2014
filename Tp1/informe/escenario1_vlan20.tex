@@ -197,4 +197,23 @@ estas dos terminales deben estar proveyendo alg\'un tipo de servicio, o utilizan
 una el servicio de la otra, constantemente, ya que sus probabilidades son
 notoriamente mayores que la del resto de las IPs.
 
+
 \subsubsection*{\underline{VLAN \nameref{itm:vlan20}: Conclusiones}}\label{subsubsec:vlan20_conclusiones}
+\par Lo m\'as interesante que se puede ver en esta red es que las probabilidades
+de los direcciones IP, tanto de la fuente de origen como destino, no son
+necesariamente sim\'etricas. Aprendimos esta diferencia con este caso, que a
+a diferencia del caso anterior, nos mostr\'o que se puede tener un percentil 90
+muy concentrado e muy pocas IPs y en la misma linea, la fuente opuesta ser
+completamente lo contrario.
+
+\par En la misma l\'inea, observa como no siempre habr\'a una direcci\'on
+m\'as requerida por los dem\'as por el simple hecho de actuar de \textit{gateway}
+para comunicarse con otras redes\footnote{Al menos, asumimos que en la mayor\'ia
+de estas redes hay una direcci\'on que realiza esta tarea, cuyo comportamiento
+parecer\'ia ser identificable facilmente, ya que deber\'ia ser requerido por
+las dem\'as terminales con bastante frecuendia. Cosa que este entorno demostr\'o
+que no siempre es as\'i.} no ser\'a la IP con mayor probabilidad. La comunicaci\'on
+entre terminales de la misma red no se da a nivel de \textit{routeo}, por lo
+cual puede haber muchos paquetes ARP entre otras terminales que, por ejemplo,
+compartan servicios (http,ftp,nfs,etc) dentro de la LAN, generando mucho
+tr\'afico sin necesidad de salir de la red local.

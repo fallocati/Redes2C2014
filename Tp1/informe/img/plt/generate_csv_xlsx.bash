@@ -14,31 +14,31 @@ else
 
     #echo "Pos,Source,Target,Weight" > ${2/%.*/_1.csv}
     #echo "Pos,Source,Target,Weight" > ${2/%.*/_10to50.csv}
-    echo "Pos,Source,Target,Weight" > ${2/%.*/_${5}toEnd.csv}
+    echo "Pos,Source,Target,Weight" > ${2/%.csv/_${5}toEnd.csv}
 
     #awk -F',' '{if($4+0>0 && $4+0 <=10) print $0}' $2 >>${2/%.*/_1to10.csv}
     #awk -F',' '{if($4+0>10 && $4+0 <= 50) print $0}' $2 >>${2/%.*/_10to50.csv}
-    awk -F',' '{if($4+0>='$5') print $0}' $2 >>${2/%.*/_${5}toEnd.csv}
+    awk -F',' '{if($4+0>='$5') print $0}' $2 >>${2/%.csv/_${5}toEnd.csv}
 
-    echo "IP,color" > ${2/%.*/_important_nodes.csv}
-    head -$(($3+1)) ${1/%.*/.out_src} | tail -$3 | awk -F';' '{print $2",src"}' >> ${2/%.*/_important_nodes.csv}
-    head -$(($4+1)) ${1/%.*/.out_dst}\
+    echo "IP,color" > ${2/%.csv/_important_nodes.csv}
+    head -$(($3+1)) ${1/%.csv/.out_src} | tail -$3 | awk -F';' '{print $2",src"}' >> ${2/%.csv/_important_nodes.csv}
+    head -$(($4+1)) ${1/%.csv/.out_dst}\
         | tail -$4\
         | cut -d';' -f2\
         | while read ip; do
-            if [ $(grep -c $ip ${2/%.*/_important_nodes.csv}) -eq 0 ]
+            if [ $(grep -c $ip ${2/%.csv/_important_nodes.csv}) -eq 0 ]
             then
-                echo "${ip},dst" >> ${2/%.*/_important_nodes.csv}
+                echo "${ip},dst" >> ${2/%.csv/_important_nodes.csv}
             else
-                sed -i "s/${ip},src/${ip},src+dst/g" ${2/%.*/_important_nodes.csv}
+                sed -i "s/${ip},src/${ip},src+dst/g" ${2/%.csv/_important_nodes.csv}
             fi
         done
 
 
-    ssconvert -M ${2/%.*/.xlsx} $2 ${2/%.*/_important_nodes.csv}
+    ssconvert -M ${2/%.csv/.xlsx} $2 ${2/%.csv/_important_nodes.csv}
     #ssconvert ${2/%.*/_1to10.csv} ${2/%.*/_1to10.xlsx}
     #ssconvert ${2/%.*/_10to50.csv} ${2/%.*/_10to50.xlsx}
-    ssconvert -M ${2/%.*/_${5}toEnd.xlsx} ${2/%.*/_${5}toEnd.csv} ${2/%.*/_important_nodes.csv}
+    ssconvert -M ${2/%.csv/_${5}toEnd.xlsx} ${2/%.csv/_${5}toEnd.csv} ${2/%.csv/_important_nodes.csv}
 
 fi
 exit 0
