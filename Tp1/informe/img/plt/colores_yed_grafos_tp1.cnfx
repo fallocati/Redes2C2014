@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<styles>
+  <style name="Color" scope="node" selectionOnly="false">
+    <mapping>
+      <source origin="notApplicable"/>
+      <target name="template" type="nodeTemplate">
+        <hints/>
+      </target>
+      <conversion type="constant">
+        <constant>
+          <graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:y="http://www.yworks.com/xml/graphml" xmlns:yed="http://www.yworks.com/xml/yed/3" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd">
+  <!--Created by yEd 3.13-->
+  <key for="port" id="d0" yfiles.type="portgraphics"/>
+  <key for="port" id="d1" yfiles.type="portgeometry"/>
+  <key for="port" id="d2" yfiles.type="portuserdata"/>
+  <key for="node" id="d3" yfiles.type="nodegraphics"/>
+  <key for="graphml" id="d4" yfiles.type="resources"/>
+  <key for="edge" id="d5" yfiles.type="edgegraphics"/>
+  <graph edgedefault="directed" id="G">
+    <node id="n0">
+      <data key="d3">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="30.0" x="-15.0" y="-15.0"/>
+          <y:Fill color="#FFCC00" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="custom" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0">
+            <y:LabelModel>
+              <y:SmartNodeLabelModel distance="4.0"/>
+            </y:LabelModel>
+            <y:ModelParameter>
+              <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
+            </y:ModelParameter>
+          </y:NodeLabel>
+          <y:Shape type="ellipse"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+  </graph>
+  <data key="d4">
+    <y:Resources/>
+  </data>
+</graphml>
+        </constant>
+      </conversion>
+    </mapping>
+    <mapping>
+      <source name="color" origin="customProperty" type="string"/>
+      <target name="fillColor" type="color">
+        <hints/>
+      </target>
+      <conversion type="discrete">
+        <discrete>
+          <value>src</value>
+          <result>#0000ff</result>
+        </discrete>
+        <discrete>
+          <value>src+dst</value>
+          <result>#0000ff</result>
+        </discrete>
+        <discrete>
+          <value>dst</value>
+          <result>#ff0000</result>
+        </discrete>
+      </conversion>
+    </mapping>
+    <mapping>
+      <source name="color" origin="customProperty" type="string"/>
+      <target name="fillColor2" type="color">
+        <hints/>
+      </target>
+      <conversion type="discrete">
+        <discrete>
+          <value>src+dst</value>
+          <result>#ff0000</result>
+        </discrete>
+      </conversion>
+    </mapping>
+    <mapping>
+      <source name="color" origin="customProperty" type="string"/>
+      <target name="labelFontSize" type="int">
+        <hints>
+          <hint type="int">0</hint>
+        </hints>
+      </target>
+      <conversion type="discrete">
+        <discrete>
+          <value>src+dst</value>
+          <result>64</result>
+        </discrete>
+        <discrete>
+          <value>src</value>
+          <result>48</result>
+        </discrete>
+        <discrete>
+          <value>dst</value>
+          <result>48</result>
+        </discrete>
+      </conversion>
+    </mapping>
+    <mapping>
+      <source name="color" origin="customProperty" type="string"/>
+      <target name="labelTextColor" type="color">
+        <hints>
+          <hint type="int">0</hint>
+        </hints>
+      </target>
+      <conversion type="discrete">
+        <discrete>
+          <value>src+dst</value>
+          <result>#ffffff</result>
+        </discrete>
+        <discrete>
+          <value>dst</value>
+          <result>#000000</result>
+        </discrete>
+        <discrete>
+          <value>src</value>
+          <result>#ffffff</result>
+        </discrete>
+      </conversion>
+    </mapping>
+    <mapping>
+      <source name="IP" origin="customProperty" type="string"/>
+      <target name="labelText" type="string">
+        <hints>
+          <hint type="boolean">true</hint>
+          <hint type="int">0</hint>
+        </hints>
+      </target>
+      <conversion type="asIs"/>
+    </mapping>
+  </style>
+  <style name="ancho" scope="edge" selectionOnly="false">
+    <mapping>
+      <source origin="notApplicable"/>
+      <target name="template" type="edgeTemplate">
+        <hints/>
+      </target>
+      <conversion type="constant">
+        <constant>
+          <graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:y="http://www.yworks.com/xml/graphml" xmlns:yed="http://www.yworks.com/xml/yed/3" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd">
+  <!--Created by yEd 3.13-->
+  <key for="port" id="d0" yfiles.type="portgraphics"/>
+  <key for="port" id="d1" yfiles.type="portgeometry"/>
+  <key for="port" id="d2" yfiles.type="portuserdata"/>
+  <key for="node" id="d3" yfiles.type="nodegraphics"/>
+  <key for="graphml" id="d4" yfiles.type="resources"/>
+  <key for="edge" id="d5" yfiles.type="edgegraphics"/>
+  <graph edgedefault="directed" id="G">
+    <node id="n0">
+      <data key="d3">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="30.0" x="-15.0" y="-15.0"/>
+          <y:Fill color="#CCCCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0"/>
+          <y:Shape type="rectangle"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <node id="n1">
+      <data key="d3">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="30.0" x="-15.0" y="-15.0"/>
+          <y:Fill color="#CCCCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0"/>
+          <y:Shape type="rectangle"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <edge id="e0" source="n0" target="n1">
+      <data key="d5">
+        <y:SplineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
+            <y:Point x="25.0" y="40.0"/>
+            <y:Point x="25.0" y="10.0"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:SplineEdge>
+      </data>
+    </edge>
+  </graph>
+  <data key="d4">
+    <y:Resources/>
+  </data>
+</graphml>
+        </constant>
+      </conversion>
+    </mapping>
+    <mapping>
+      <source name="Weight" origin="customProperty" type="double"/>
+      <target name="lineLineType" type="lineType">
+        <hints/>
+      </target>
+      <conversion type="range">
+        <range>
+          <min>1.0</min>
+          <max>100.0</max>
+          <result>
+            <lineType type="dotted" width="1.0"/>
+          </result>
+        </range>
+        <range>
+          <min>101.0</min>
+          <max>1000.0</max>
+          <result>
+            <lineType type="dashed" width="1.0"/>
+          </result>
+        </range>
+        <range>
+          <min>1001.0</min>
+          <max>2000.0</max>
+          <result>
+            <lineType type="line" width="1.0"/>
+          </result>
+        </range>
+        <range>
+          <min>2001.0</min>
+          <max>3000.0</max>
+          <result>
+            <lineType type="line" width="2.0"/>
+          </result>
+        </range>
+        <range>
+          <min>3001.0</min>
+          <max>20000.0</max>
+          <result>
+            <lineType type="line" width="4.0"/>
+          </result>
+        </range>
+      </conversion>
+    </mapping>
+  </style>
+</styles>
