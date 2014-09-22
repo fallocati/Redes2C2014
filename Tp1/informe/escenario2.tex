@@ -4,16 +4,16 @@
      
 \subsection{An\'alisis de datos obtenidos}
 	\par Comenzamos realizando un grafo dirigido, en el cual los nodos son las direcciones IP, y los ejes representan pedidos arp ("who-has") de una IP fuente a una IP destino.
-	\begin{figure*}[!ht]
+	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=\textwidth]{img/graph/escenario_2/grafico_de_la_red.eps}
+		\includegraphics[width=0.5\textwidth]{img/graph/escenario_2/grafico_de_la_red.eps}
 		\caption{Grafo de la red del Escenario 2}
 		\label{fig:grafo_escenario2}
-	\end{figure*}
+	\end{figure}
     
     A simple vista, este grafo no nos aporta demasiada información, pero el hecho de que sea una única gran componente conexa se corresponde con la configuración de la red. Inspeccionando las etiquetas de los nodos, observamos que efectivamente, todas las direcciones se encuentran en el rango 10.10.0.1-10.10.0.254, con excepción de dos casos particulares: la IP 0.0.0.0 y la IP 169.254.255.255. Más adelante nos concentraremos en estas dos direcciones. 
     \par Lo primero que nos interesó ver fue cuales fueron las IPs más pedidas, y cuales fueron las que más pedidos realizaron. Para esto, realizamos histogramas que reflejan visualmente esto:
-    \begin{figure}[H]
+\begin{figure}[!h]]
 		\centering
 		\includegraphics[width=0.5\textwidth]{img/graph/escenario_2/histogramSrc.eps}
 		\caption{Escenario 2 - Histograma Origen}
@@ -21,7 +21,7 @@
 	\end{figure}       
     En este histograma podemos observar que hay una IP que predomina ampliamente sobre las demás, la 10.10.0.1, casualmente la del gateway. El resto se encuentra bastante distribuido. Hay 25 IPs que realizaron menos de 100 pedidos, 15 que realizaron entre 100 y 500, 5 que realizaron entre 500 y 1000 y el caso excepcional de la 10.10.0.1 que realizo 2678. Rapidamente nos dimos cuenta de no ibamos a obtener demasiada información sobre la red mirando quien origina los pedidos, porque lo importante es cuales son más solicitadas.
        
-    \begin{figure}[H]
+    \begin{figure}[!h]
 		\centering
 		\includegraphics[width=0.5\textwidth]{img/graph/escenario_2/histogramDst.eps}
 		\caption{Escenario 2 - Histograma Destino}
@@ -31,7 +31,7 @@
     \par En este otro histograma se ve una mayor distribución de los pedidos. Hay algunas IP que casí no cuentan con pedidos, mientras que hay muchas que cuentan con más de 100. Concretamente hay 20 IPs que fueron pedidas menos de 100 veces, 19 entre 100 y 500 veces y 7 pedidas entre 500 y 845 veces.
     Decidimos tomar las 5 IPs que fueron pedidas mayor cantidad de veces, para ver si nos aportaban alguna información valiosa:
         
-    \begin{table}[H]
+    \begin{table}[!ht]
 		\caption{Escenario 2 - IPs más pedidas}
 		\centering
 		\begin{tabular}{c c}
@@ -46,31 +46,31 @@
   	\end{table}
     
     En base a esto, buscamos en el grafo las vecindades de los nodos correspondientes a estas IPs:
-    \begin{figure}[H]
+    \begin{figure}[!ht]
 		\centering
 		\includegraphics[width=0.5\textwidth]{img/graph/escenario_2/vecindad122.eps}
 		\caption{Escenario 2 - Vecindad 10.10.0.122}
 		\label{fig:escenario2_vecindad122}
 	\end{figure}
-    \begin{figure}[H]
+    \begin{figure}[!ht]
 		\centering
 		\includegraphics[width=0.5\textwidth]{img/graph/escenario_2/vecindad1.eps}
 		\caption{Escenario 2 - Vecindad 10.10.0.1}
 		\label{fig:escenario2_vecindad1}
 	\end{figure}
-    \begin{figure}[H]
+    \begin{figure}[!ht]
 		\centering
-		\includegraphics[width=0.35\textwidth]{img/graph/escenario_2/vecindad110.eps}
+		\includegraphics[width=0.25\textwidth]{img/graph/escenario_2/vecindad110.eps}
 		\caption{Escenario 2 - Vecindad 10.10.0.110}
 		\label{fig:escenario2_vecindad110}
 	\end{figure}
-    \begin{figure}[H]
+    \begin{figure}[!ht]
 		\centering
 		\includegraphics[width=0.5\textwidth]{img/graph/escenario_2/vecindad128.eps}
 		\caption{Escenario 2 - Vecindad 10.10.0.128}
 		\label{fig:escenario2_vecindad128}
 	\end{figure}
-    \begin{figure}[H]
+    \begin{figure}[!ht]
 		\centering
 		\includegraphics[width=0.5\textwidth]{img/graph/escenario_2/vecindad119.eps}
 		\caption{Escenario 2 - Vecindad 10.10.0.119}
