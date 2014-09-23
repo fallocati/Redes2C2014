@@ -79,8 +79,39 @@
     Acá notamos que 3 de las IPs tienen vecindades pobladas, lo que significa que seguramente sean nodos importantes en la red, mientras que en las otras dos se encuentran casí vacías.
     \par En el caso de la IP 10.10.0.110 vemos que esta no envió ningun pedido, por lo que es probable que no exista un host con esa IP, y que el equipo con IP 10.10.0.145 tuvierá configurado algún servicio que le pegue a la misma, y al no obtener respuesta, siguiera intentando continuamente, llenando de pedidos la red. Para corroborar una parte de esto, realizamos un ping hacia la IP 10.10.0.110 y vimos que efectivamente no existía.
     \par La IP 10.10.0.128 sabemos que existe en la red, ya que se ve que envía pedidos a otras IP, por lo que inspeccionamos con mayor detalle los pedidos dirigidas a esta. Nos llamo la atención que de los 714, 579 provenian del gateway. Aún más, los 579 se originaron en un rango 16 minutos, en los que la IP 10.10.0.128 no emitió ningún pedido. La conclusión que sacamos de esto es que probablemente esa dirección estuviera asignada a un teléfono celular, y que el dueño del mismo salió durante esos 15 minutos, por lo que el gateway comenzó a reintentar los pedidos al ver que no obtenía respuesta para esa IP.
+    \par Nos resta inspeccionar las IPs 10.10.0.119 y 10.10.0.122 (la 10.10.0.1 ya sabemos que es el gateway, por lo que tiene sentido que tenga muchos pedidos, y en el grafo de su vecindad se puede apreciar la variedad de equipos qe la solicitan). 
+    \par Por lo que aprendimos de los casos anteriores, nuestro primer intento para ver si realmente son nodos importantes, o son solo anomalías, va a ser graficar la cantidad de pedidos a estas IPs en franjas de media hora. De esta manera, si vemos una gran concentración de pedidos en poco tiempo, sabremos que nos encontramos con un caso similar al anterior, caso contrario, tenemos un potencial nodo importante.
+    \begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\textwidth]{img/graph/escenario_2/requestsCadaMediaHora119y122.eps}
+		\caption{Escenario 2 - Pedidos cada media hora}
+		\label{fig:escenario2_requestsCadaMediaHora119y122}
+	\end{figure}
+    \par Para el caso de la IP 10.10.0.119 vemos que hay una distribución pareja de los pedidos a lo largo del tiempo, por lo que podemos concluir en que es un nodo importante. 
+    \par Por otro lado, en la IP 10.10.0.122 vemos que hay dos picos de pedidos en determinados horarios, y en el resto del tiempo de captura una cantidad muy baja (menos de 30 en cada franja), por lo que nos encontramos en una situación muy parecida a la de la IP 10.10.0.128. Preguntando quien tenía una máquina con esta IP, nos encontramos con que era una notebook, por lo que tiene sentido que el equipo se haya ido de la red (por ejemplo si el dueño se fue de la oficina y se la llevó con el).
+    \par Por lo tanto, hasta el momento encontramos una única IP, aparte del gateway, que parece ser importante. Como esto no nos conforma, decidimos encarar de otra manera la búsqueda: En lugar de buscar por cantidad de pedidos que se le hiceron (cosa que ya vimos que no es demasiado util), vamos a buscar los nodos que más IPs distintas pidieron por ella, es decir, los nodos del grafo que tengan mayor grado de entrada.    
+    \begin{table}[H]
+		\caption{Escenario 2 - IPs con mayor grado de entrada}
+		\centering
+		\begin{tabular}{c c}
+          IP & Cantidad de IPs distintas que la solicitaron \\
+          \hline 
+          10.10.0.1 & 32 \\ 
+          10.10.0.113 & 21 \\
+          10.10.0.119 & 21 \\
+          10.10.0.80 & 19 \\
+          10.10.0.137 & 19 \\   
+  		\end{tabular}
+  	\end{table}
+    \par En este análisis si aparece como ganadora indiscutida la IP del gateway. Para corroborar que no nos encontramos con el mismo problema de los equipos que se van de la red y pasan a ser floodeados de pedidos de muchas IPs, graficamos la distribución de pedidos a cada una de ellas:
+    \begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\textwidth]{img/graph/escenario_2/distribucionHoraria4IPsMasPedidas.eps}
+		\caption{Escenario 2 - Pedidos cada media hora}
+		\label{fig:escenario2_distribucionHoraria4IPsMasPedidas}
+	\end{figure}
+    \par Efectivamente, en todas las IP se ve en mayor o menor medida una distribución pareja de los pedidos a lo largo del día. En base a este analisis entonces también podemos concluir que estas IP son significativas en la red.
         
-	\subsubsection{Entrop\'ia}
-		\par Entrop\'ia
+	\par Entrop\'ia
 
 \subsection{Conclusiones Preliminares}
