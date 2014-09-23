@@ -4,8 +4,9 @@ set grid
 #set key bottom right
 #set key below
 #set key horizontal
+set key outside bottom horizontal
 
-set output "arp_per_hour_src.png"
+set output output.".png"
 set terminal png size 800,600 #(.png)
 
 #set terminal pdf #(.pdf)
@@ -33,7 +34,7 @@ set ylabel "Cantidad de Paquetes ARP"
 #set xtics 1
 #set ytics 1
 
-set xtics rotate out
+#set xtics rotate out
 
 set xtics font ",08"
 #set ytics font ",08"
@@ -56,10 +57,23 @@ set xtics font ",08"
 #plot for [COL=2:3] 'result.prob' using COL:xticlabels(1) title columnheader
 
 #Time graph
-set xdata time
-set timefmt "%Y%m%d%H"
-set xtics format "%d/%m %H:%M"
+#set style data histogram
+#set style histogram clustered
+#set style fill solid border
+#set boxwidth 0.5
+
+#set xdata time
+#set timefmt "%Y%m%d%H"
+#set timefmt "%H"
+#set xtics format "%H:%M"
+
+#days = "Dom Lun Mar Mie Jue Vie Sab"
+
 set datafile separator ";"
-plot 'quantity_per_hour.csv' using 1:2:xticlabels(1) notitle with lines
+#plot input using 1:2:xticlabels(1) notitle with lines
+#plot for [i=1:words(input)] word(input,i) using 1:2:xticlabels(1) with lines title word(days,i)
+#plot for [i=1:words(input)] word(input,i) using 1:2:xticlabels(1) with lines title word(days,i)
+#plot for [COL=2:8] input using COL:xticlabels(1) title columnheader
+plot for [COL=2:8] input using COL:xticlabels(1) with lines lw 2 title columnheader
 
 set out
