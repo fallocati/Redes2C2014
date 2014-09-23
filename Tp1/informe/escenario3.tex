@@ -7,16 +7,16 @@
 
 
 \subsection{An\'alisis de datos obtenidos}
-	\par La captura fue de 45 minutos y se enviaron 947 paquetes, el grafo dirigido de conexiones que se obtuvo fue el siguiente:
+\par La captura fue de 45 minutos y se enviaron 947 paquetes, el grafo dirigido de conexiones que se obtuvo se puede observar en la figura \ref{fig:grafo_escenario3}.
 
  %[-Grafo-]
  
-\begin{figure}[H]
+\begin{figure*}[!htb]
 		\centering
-		\includegraphics[width=0.5\textwidth]{img/graph/escenario_3/starbucks2.eps}
+		\includegraphics[width=\textwidth]{img/graph/escenario_3/starbucks2.eps}
 		\caption{Grafo de la red del Escenario 3}
 		\label{fig:grafo_escenario3}
-	\end{figure}
+	\end{figure*}
 
 		\par Como el grafo es de gran tamaño vamos a considerar subgrafos donde se encuentran nodos interesantes para el análisis.
 
@@ -26,17 +26,17 @@
 
 %[-Zoom a IP 10.254.91.1-]
 
-\begin{figure}[H]
+\begin{figure}[!htb]
 		\centering
 		\includegraphics[width=0.5\textwidth]{img/graph/escenario_3/10254.eps}
 		\caption{Ampliación en la cercan\'ia a 10.254.91.1}
 		\label{fig:gateway_escenario3}
 \end{figure}
-	\par Tras investigar un poco al respecto, encontramos que la segunda IP mencionada es una dirección reservada  a la que los dispositivos envian paquetes ARP al no encontrar el servidor DHCP ya sea por recien conectarse o perder la ruta hacia el , el dispositivo se asigna una direccion para acceder y comunicarse a la red que usará hasta que se le asigne una IP mediante DHCP. \footnote{http://www.ietf.org/rfc/rfc3927.txt}
+\par Tras investigar un poco al respecto, encontramos que la segunda IP mencionada es una dirección reservada  a la que los dispositivos envian paquetes ARP al no encontrar el servidor DHCP ya sea por recien conectarse o perder la ruta hacia el , el dispositivo se asigna una direccion para acceder y comunicarse a la red que usará hasta que se le asigne una IP mediante DHCP\cite{rfc3927}.
 	\par Si nos quedamos solamente con aquellos hosts que interactúan con 169.254.255.255 se obtiene el siguiente grafo:   
 
 %[-Vecindad de la IP 169.254.255.255-]
-\begin{figure}[H]
+\begin{figure}[!htb]
 		\centering
 		\includegraphics[width=0.5\textwidth]{img/graph/escenario_3/169254_aislado.eps}
 		\caption{Vecindad de la IP 169.254.255.255}
@@ -47,7 +47,7 @@
     \par De la misma forma que hicimos antes, se puede generar el grafo de la vecindad a 0.0.0.0 y resulta similar al presentado anteriormente.
     
 %[-Vecindad de la IP 0.0.0.0-]
-\begin{figure}[H]
+\begin{figure}[!htb]
 		\centering
 		\includegraphics[width=0.5\textwidth]{img/graph/escenario_3/0000_aislado.eps}
 		\caption{Vecindad de la IP 0.0.0.0}
@@ -57,7 +57,7 @@
 	\par Al solo restringirnos a estos nodos, podemos ver que varios hosts se encontraban en esta situación.
 \vspace{6 mm}
 
-	\par El resto de las direcciones se encuentran en el rango 10.254.0.0/16, lo cual es completamente razonable y 169.254.0.0/16 que es un caso más interesante, estas direcciones son conocidas como \emph{Link-local addresses}, son direcciones reservadas asignadas en Windows cuando no se puede establecer contacto con el servidor DHCP y se genera su propia IP mediante el direccionamiento conocido como APIPA. \footnote{http://wiki.wireshark.org/APIPA}
+\par El resto de las direcciones se encuentran en el rango 10.254.0.0/16, lo cual es completamente razonable y 169.254.0.0/16 que es un caso más interesante, estas direcciones son conocidas como \emph{Link-local addresses}, son direcciones reservadas asignadas en Windows cuando no se puede establecer contacto con el servidor DHCP y se genera su propia IP mediante el direccionamiento conocido como APIPA\cite{apipa}.
 
 	\par El sistema operativo intentará constantemente conectarse con DHCP y recibir una IP válida, mientras tanto los hosts con estas direcciones pueden comunicarse entre sí dentro de la red, pero no con ninguno externo a la red local.
 \vspace{6 mm}
@@ -75,7 +75,7 @@
 \end{itemize}
 
 %[-Subgrafo con nodos aislados-]
-\begin{figure}[H]
+\begin{figure}[!htb]
 		\centering
 		\includegraphics[width=0.5\textwidth]{img/graph/escenario_3/nodos_aislados.eps}
 		\caption{Nodos considerados como aislados}
@@ -85,15 +85,13 @@
 
 \begin{itemize}
 \item Nodos Reflexivos:
-\par Podemos notar que algunos nodos envían paquetes a si mismos, algunos motivos por los que puede suceder esto es para actualizar la tabla ARP, para buscar duplicados de la direccion IP o cambios de la direccion MAC. Este envío de paquetes se conoce como Gratuitous ARP.  \footnote{http://wiki.wireshark.org/Gratuitous\_ARP}
+\par Podemos notar que algunos nodos envían paquetes a si mismos, algunos motivos por los que puede suceder esto es para actualizar la tabla ARP, para buscar duplicados de la direccion IP o cambios de la direccion MAC. Este envío de paquetes se conoce como Gratuitous ARP\cite{wireshark}\cite{rfc826}.
 \end{itemize}
 
 \subsubsection{Informaci\'on y Entrop\'ia}
 		        
 	\par En cuanto al análisis de la información de cada simbolo de ambas fuentes, primero calculamos la probabilidad muestral de ambas fuentes.
 	\par Las siguientes tablas muestran las 5 IPs con mayor probabilidad muestral obtenidas, tanto para la fuente $S_{src}$ como para $S_{dst}$, decidimos mostrar solo cinco en el orden decreciente ya que a partir de las siguientes la diferencia es menor a 0.005 y se hace imposible apreciarlo en los graficos.
-
-\newpage
 
 \begin{figure}[!ht]
     \centering

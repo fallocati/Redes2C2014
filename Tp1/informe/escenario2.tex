@@ -11,7 +11,7 @@
 		\label{fig:grafo_escenario2}
 	\end{figure}
     
-    A simple vista, este grafo no nos aporta demasiada información, pero el hecho de que sea una única gran componente conexa se corresponde con la configuración de la red. Inspeccionando las etiquetas de los nodos, observamos que efectivamente, todas las direcciones se encuentran en el rango 10.10.0.1-10.10.0.254, con excepción de dos casos particulares: la IP 0.0.0.0 y la IP 169.254.255.255. Más adelante nos concentraremos en estas dos direcciones. 
+    A simple vista, este grafo no nos aporta demasiada información, pero el hecho de que sea una única gran componente conexa se corresponde con la configuración de la red. Inspeccionando las etiquetas de los nodos, observamos que efectivamente, todas las direcciones se encuentran en el rango 10.10.0.1-10.10.0.254, con excepción de dos casos particulares: la IP 0.0.0.0, que es utilizada por los pedidos de ARP Gratuitos\cite{wireshark}\cite{rfc826} y la IP 169.254.255.255, que es utilizada por el protocolo DHCP.
     \par Lo primero que nos interesó ver fue cuales fueron las IPs más pedidas, y cuales fueron las que más pedidos realizaron. Para esto, realizamos histogramas que reflejan visualmente esto:
 \begin{figure}[!h]]
 		\centering
@@ -81,7 +81,7 @@
     \par La IP 10.10.0.128 sabemos que existe en la red, ya que se ve que envía pedidos a otras IP, por lo que inspeccionamos con mayor detalle los pedidos dirigidas a esta. Nos llamo la atención que de los 714, 579 provenian del gateway. Aún más, los 579 se originaron en un rango 16 minutos, en los que la IP 10.10.0.128 no emitió ningún pedido. La conclusión que sacamos de esto es que probablemente esa dirección estuviera asignada a un teléfono celular, y que el dueño del mismo salió durante esos 15 minutos, por lo que el gateway comenzó a reintentar los pedidos al ver que no obtenía respuesta para esa IP.
     \par Nos resta inspeccionar las IPs 10.10.0.119 y 10.10.0.122 (la 10.10.0.1 ya sabemos que es el gateway, por lo que tiene sentido que tenga muchos pedidos, y en el grafo de su vecindad se puede apreciar la variedad de equipos qe la solicitan). 
     \par Por lo que aprendimos de los casos anteriores, nuestro primer intento para ver si realmente son nodos importantes, o son solo anomalías, va a ser graficar la cantidad de pedidos a estas IPs en franjas de media hora. De esta manera, si vemos una gran concentración de pedidos en poco tiempo, sabremos que nos encontramos con un caso similar al anterior, caso contrario, tenemos un potencial nodo importante.
-    \begin{figure}[H]
+    \begin{figure}[!htb]
 		\centering
 		\includegraphics[width=0.5\textwidth]{img/graph/escenario_2/requestsCadaMediaHora119y122.eps}
 		\caption{Escenario 2 - Pedidos cada media hora}
@@ -90,7 +90,7 @@
     \par Para el caso de la IP 10.10.0.119 vemos que hay una distribución pareja de los pedidos a lo largo del tiempo, por lo que podemos concluir en que es un nodo importante. 
     \par Por otro lado, en la IP 10.10.0.122 vemos que hay dos picos de pedidos en determinados horarios, y en el resto del tiempo de captura una cantidad muy baja (menos de 30 en cada franja), por lo que nos encontramos en una situación muy parecida a la de la IP 10.10.0.128. Preguntando quien tenía una máquina con esta IP, nos encontramos con que era una notebook, por lo que tiene sentido que el equipo se haya ido de la red (por ejemplo si el dueño se fue de la oficina y se la llevó con el).
     \par Por lo tanto, hasta el momento encontramos una única IP, aparte del gateway, que parece ser importante. Como esto no nos conforma, decidimos encarar de otra manera la búsqueda: En lugar de buscar por cantidad de pedidos que se le hiceron (cosa que ya vimos que no es demasiado util), vamos a buscar los nodos que más IPs distintas pidieron por ella, es decir, los nodos del grafo que tengan mayor grado de entrada.    
-    \begin{table}[H]
+    \begin{table}[!htb]
 		\caption{Escenario 2 - IPs con mayor grado de entrada}
 		\centering
 		\begin{tabular}{c c}
@@ -104,14 +104,31 @@
   		\end{tabular}
   	\end{table}
     \par En este análisis si aparece como ganadora indiscutida la IP del gateway. Para corroborar que no nos encontramos con el mismo problema de los equipos que se van de la red y pasan a ser floodeados de pedidos de muchas IPs, graficamos la distribución de pedidos a cada una de ellas:
-    \begin{figure}[H]
+    \begin{figure}[!htb]
 		\centering
 		\includegraphics[width=0.5\textwidth]{img/graph/escenario_2/distribucionHoraria4IPsMasPedidas.eps}
 		\caption{Escenario 2 - Pedidos cada media hora}
 		\label{fig:escenario2_distribucionHoraria4IPsMasPedidas}
 	\end{figure}
     \par Efectivamente, en todas las IP se ve en mayor o menor medida una distribución pareja de los pedidos a lo largo del día. En base a este analisis entonces también podemos concluir que estas IP son significativas en la red.
-        
-	\par Entrop\'ia
+    
+    \par Procedimos a verificar entonces a que equipos/dispositivos pertenencían las 4 IP que obtuvimos como significativas, y nos llevamos una gran sorpresa. Las 4 eran IPs pertenecientes a computadoras de escritorio de los desarrolladores. Algunas de ellas tienen carpetas compartidas en la red, mientras que otras no.
+    
+\subsubsection{Entrop\'ia}
+	\par Modelando el conjunto de IPs Origen e IP Destino como Fuentes de Información, y tomando como probailidad de cada IP su frecuencia relativa (cantidad de apariciones de la IP dividido cantidad total de paquetes), calculamos la entropía de estas dos fuentes:
+    
+    \begin{table}[!htb]
+		\caption{Escenario 2 - Entropía de las fuentes}
+		\centering
+		\begin{tabular}{c c}
+          Fuente & Entropía \\
+          \hline 
+          Origen & 4.170459 \\ 
+          Destino & 4.798385 \\   
+  		\end{tabular}
+  	\end{table}
+	\par Calculamos también la entropía máxima posible de cada una de las fuentes, de la siguiente manera: Hay 46 IPs de origen distintas, y 46 IPs de destino distintas. Entonces, para cada una de las fuentes la máxima entropía posible es $\log_2{46} \approx 5.5235. $
+	\par Observamos que los valores de entropía de las Fuentes Origen y Destino se encuentran bastante cerca de la entropía máxima (la Fuente Destino considerablemente más), lo que se corresponde con los histogramas de paquetes, en los que se ve bastante distribución de los paquetes. Creemos que la diferencia que presenta la entropía de la Fuente Origen se debe a la
 
 \subsection{Conclusiones Preliminares}
+	\par La conclusión que sacamos de este escenario es que hay veces en las que no alcanza con observar los paquetes ARP para poder sacar conclusiones sobre los nodos de la red. Podría ser que subiendo en las capas de la arquitectura OSI, capturando paquetes de más alto nivel, se puedan llegar a identificar a los nodos verdaderamente importantes. 

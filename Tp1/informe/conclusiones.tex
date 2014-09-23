@@ -1,0 +1,63 @@
+%\section{Conclusiones}\label{sec:conclusiones}
+\par Llegados al final del trabajo expuesto, quedan m\'as expereciencias reales
+sobre que representa la entrop\'ia de una fuente de informaci\'on (pensada esta
+en el caso pr\'actico de una red inform\'atica) y sobre el protocolo ARP.
+
+\par A lo largo del trabajo se observaron distintas fuentes que mostraron distintos
+comportamientos y relaciones entre los distintos par\'ametros que se tomaron en cuenta.
+Estos par\'ametros var\'ian desde la topolog\'ia de la red (\textit{Wi-Fi}),
+\textit{ethernet}, redes laborales como p\'ublicas, de servidores, etc. En todas ellas
+se observaron distintos comportamientos y vol\'umenes, y a la hora de la distinci\'on
+de los nodos/s\'imbolos importantes de la red/fuente de informaci\'on, nos encontramos
+que no siempre estos eran los nodos que considerabamos importantes desde el conocimiento
+de la red\footnote{Por ejemplo, en muchos casos sab\'iamos de antemano que IP correspond\'ia
+al \textit{gateway}.}. As\'i pues, qued\'o claro que la informaci\'on provista por
+el protocolo ARP es l\'imitado, y no se pueden llegar a hacer aserciones definitor\'ias
+sobre el comportamiento de una determinada interfaz s\'olo observando los paquetes
+de esta \'indole.
+
+\par Volviendo al entendimiento del concepto de entrop\'ia, observamos \textit{explic\'itamente}
+que en redes donde la distribuci\'on de la probabilidad de los s\'imbolos era m\'as concentrada,
+la entrop\'ia efectivamente nos da un n\'umero m\'as bajo. No es casualidad que en estas
+redes fue m\'as f\'acil identificar nodos importantes o \textit{molestos}. Decimos molestos
+porque en varios casos nos encontramos donde la entrop\'ia de la fuente de origen era peque\~na
+y la de destino grande, debido a que ciertos \textit{hosts} se encontraban env\'iando
+paquetes ARP constantemente, indundado la red\footnote{Esto podr\'ia ser desde una terminal
+haciendo un monitoreo de la red, as\'i como u \textit{DoS} interno -poco probable- o m\'aquinas
+con \textit{Windows} cuya configuraci\'on de red no era adecuada.} y saturando en cierta
+medida el medio.
+
+\par En uno de nuestros casos incluso nos acercamos al caso de entrop\'ia m\'axima\footnote{%
+Secci\'on \ref{sec:escenario1}, \nameref{itm:vlan40}}, donde se pudo observar que 
+efectivamente la probabilidad muestral de la fuente de destino era casi equiprobable. En el mismo caso,
+en la fuente de origne era m\'inima, donde hab\'ia casi \'unicamente una terminal env\'iando
+paquetes ARP. Esto, asumimos, podr\'ia ser por como funciona la red (los tel\'efonos podr\'ian
+no tener que conectarse con otras terminales, sino con una unidad centralizada).
+
+\par En res\'umen, se puede concluir que si bien mediante la observaci\'on del flujo de paquetes ARP
+se distinguir algunos nodos particulares sin poder definir bien su funci\'on. Es decir,
+podemos ver cuan requerido es un nodo o que nodos hacen mucho uso de la red, pero no para qu\'e.
+Podr\'iamos estar en presencia de un \textit{gateway}, un servidor de NFS o FTP, o mismo
+un servidor Web interno, y con este protocolo dicho comportamiento es indistinguible. A\'un as\'i,
+esta medici\'on nos permite mediante la entrop\'ia y otros par\'ametros (conocimiento de la 
+topolog\'ia, variables temporales, etc) que nos puede ayudar a comprender alg\'un comportamiento
+de la red.
+
+\par \emph{¿Qu\'e quedar\'ia hacer para entender a\'un m\'as?}. Consideramos que el motivo
+did\'actico del trabajo ha sido cumplido. A\'un as\'i, con la informaci\'on recavada se podr\'ia
+pensar una \'unica fuente de informaci\'on en lugar de una fuente de direcciones origen y
+otra destino. As\'i pues, cada s\'imbolo de la fuente \'unica de informaci\'on pasar\'ia
+a ser la tupla de IP origen/IP destino. De esta manera, se estar\'ian observando que
+interfases de la red se comunican con mayor probabilidad. De hecho, consideramos que
+ser\'ia interesante observar que ocurre con la entrop\'ia en este caso, ya que esta nueva
+fuente estar\'ia modelando interacciones puntales entre terminales en lugar de interacciones
+entre \textit{hosts} y la red. Una alta entrop\'ia nos comunicar\'ia que la red est\'a
+siendo utilizada por una cantidad concentrada de pares de hosts, mientras que en el caso
+inverso se podr\'ia conlcuir que el uso de la red se encontrar\'ia repartido m\'as justamente
+o utilizado m\'as distribuidamnete.
+
+\par As\'i pues, se ve como la entrop\'ia termina siendo un dato que en si mismo nos
+dice bastante sobre la distribuci\'on del uso de una red, pero sin dar precisiones. Ahora bien,
+este dato comparado con otros par\'ametros resulta ser muy poderoso incluso cuando
+la fuente de informaci\'on no conlleva tanta informaci\'on al respecto , como ocurre con el
+protoclo ARP.
