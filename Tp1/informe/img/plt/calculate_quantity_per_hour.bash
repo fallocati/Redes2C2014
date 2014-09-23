@@ -14,17 +14,20 @@ else
         echo "Hora;${days[counter%7]}" > $output_file_tmp
         awk -F';' 'BEGIN{counter=0;hour=0}{
             $1=substr($1,9,2);
-            if($1-hour == 0){
-                if($2 != "Response") ++counter;
-            } else {
+	    if($1 < 18){
+                if($1-hour == 0){
+                    if($2 != "Response") ++counter;
+                } else {
     
-                printf"%d;%d\n",hour,counter;
-                counter=0;
-            };
-            hour=$1
+                    printf"%d;%d\n",hour,counter;
+                    counter=0;
+                };
+                hour=$1
 
-        } END{
-            printf"%d;%d\n",hour,counter;
+            }
+
+         } END{
+                printf"%d;%d\n",hour,counter;
 
         }' < $1 >> $output_file_tmp
 

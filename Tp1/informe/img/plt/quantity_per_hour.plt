@@ -26,7 +26,7 @@ set ylabel "Cantidad de Paquetes ARP"
 
 #Scale and tics
 #set yrange [1:1000000]
-#set xrange [1:200]
+#set xrange [*:18]
 #set autoscale
 #set logscale x
 #set logscale y
