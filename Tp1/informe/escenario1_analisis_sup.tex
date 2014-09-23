@@ -104,6 +104,22 @@ resoluci\'on de una IP.
 
 
 \subsubsection{Relaci\'on entrop\'ia - vol\'umen diario de paquetes ARP}
+\par Habiendo analizado el vol\'umen de los paquetes ARP en cada red
+seg\'un la variable temporal, ahora nos interesa ver si la variabilidad
+de este vol\'umen tiene alg\'una relaci\'on con la entrop\'ia. A su vez,
+un dato interesante a observar es ver si la entrop\'ia mantiene un comportamiento
+estable a lo largo del tiempo o si var\'ia mucho respecto de la informaci\'on
+que se capturo en un determinado \textit{frame} de tiempo.
+
+\par En la figura \ref{fig:arp_vs_entropia} podemos observar ambas cosas.
+Por un lado se puede observar como var\'ia la entrop\'ia de cada fuente
+a medida que pasan los d\'ias de las capturas, y a su vez, en un segundo
+plano con un histograma, se observa como var\'ia el vol\'umen de paquetes
+en esos d\'ias. Ambos datos graficados trabajan en una escala distinta, ya que las
+magnitudes de la cantidad de par\'ametros y la entrop\'ia poco tienen 
+que ver\footnote{Lo que nos interesa observar es como se relacionan los comportamientos,
+no sus magnitudes.}.
+
 \begin{figure*}[!ht]
     \begin{tabular}{cc}
         \centering
@@ -113,4 +129,63 @@ resoluci\'on de una IP.
         \subfloat[\nameref{itm:vlan1}]{\includegraphics[width=0.5\textwidth]{img/graph/escenario_1/vlan1/vlan1_arp_vs_entropia}} \\
     \end{tabular}
     \caption{Cantidad de paquetes ARP por hora}
+    \label{fig:arp_vs_entropia}
 \end{figure*}
+
+\par Se observa inicialmente que los comportamientos de la entrop\'ia de
+la fuente de origen y destino pareciesen ser similares. Es decir, como
+medida de informaci\'on/incertidumbre, vemos que dos fuentes de informaci\'on
+que se observan a partir de los mismos paquetes (aunque sea en campos distintos)
+demuestran que en cuanto a paquetes ARP, la variaci\'on del comportamiento
+de la red afecta de forma muy parecida a ambas fuentes.
+
+\par Por otro lado nos encontramos con que la entrop\'ia no var\'ia necesariamente
+seg\'un var\'ia el vol\'umen de paquetes. De hecho, vemos que esto si ocurre
+en todas las redes observadas salvo la de \nameref{itm:vlan40}. Pero este \'ultimo
+caso nos da la pauta de que no se puede asumir este comportamiento como regla.
+
+\par Analizando ahora los 3 casos donde la entrop\'ia efectivamente var\'ia
+con el vol\'umen de paquetes, vemos tambi\'en que no parece haber una relaci\'on
+fija entre las entrop\'ias de las dos fuentes. De hecho, se puede observar
+que con el incremento del vol\'umen de paquetes, en la red de \nameref{itm:vlan1}
+se ve que afecta de igual manera a la entrop\'ia de ambas fuentes\footnote{Por
+abuso de notaci\'on decimos que se afecta a la entrop\'ia y no a la fuente en
+si misma, ya que la entrop\'ia es un valor observacional de la fuente} mientras
+que en \nameref{itm:vlan10} la entrop\'ia de la red de \nameref{itm:vlan10}
+afecta a las entrop\'ias de forma inversa (una aumenta y la otra disminuye).
+
+\par Ahora bien, viendo que aumentan los paquetes ARP en un determinado momento,
+y viendo como var\'ian las entrop\'ias de la fuente, se puede llegar a alguna
+que otra conclusi\'on interesante.
+
+\par Por un lado, haciendo foco en la red de \nameref{itm:vlan20}, al observar
+que la entrop\'ia de la fuente origen aumenta acorde aumenta la cantidad
+de paquetes capturados durante el Jueves, podemos intuir que alguna(s)
+de las terminales de la red est\'an siendo consultada mucho m\'as que en otros d\'ias,
+ya que la incertidumbre\footnote{Otra forma de pensar a la entrop\'ia} a aumentado,
+distribuyendo la probabilidad de aparici\'on de las IPs de forma m\'as equilibrada%
+\footnote{Recordamos que la entrop\'ia es m\'axima para una fuente de informaci\'on
+equiprobable.}.
+
+\par En cambio, al observar la red \nameref{itm:vlan10}, observamos que ocurren
+dos cosas:
+\begin{enumerate*}[label=\itshape\alph*\upshape)]
+    \item La entrop\'ia de la fuente destino disminuye notoriamente cuando el Jueves
+    aumenta el vol\'umen de paquetes, d\'andonos la pauta de que este aumento fue
+    destinado a una cantidad a\'un m\'as concentrada de IPs de lo que ven\'ia siendo; y
+
+    \item La entrop\'ia de la fuente origen disminuye cuando llegamos al Viernes
+    y se vuelve a tener un vol\'umen m\'as acorde al promedio de la fuente. En este
+    caso, podemos imaginar que los paquetes que ya no aparecen m\'as en el dominio
+    de colisi\'on eran env\'iados el d\'ia anterior muy probablemente desde un conjunto grande
+    de IPs, ya que ahora al bajar el vol\'umen de paquetes vemos que la probabilidad
+    se encuentra m\'as concentrada en un conjunto m\'as peque\~nos de IPs (pues la
+    entrop\'ia disminuy\'o).
+\end{enumerate*}
+
+\par As\'i pues, si bien podemos concluir que la entrop\'ia no tiene un comportamiento
+fijo respecto al vol\'umen de s\'imbolos capturados de la fuente informaci\'on, nos
+puede da cierta direcci\'on en cuanto a que debe haber pasado acorde al cambi\'o del
+vol\'umen. No es lo mismo que la entrop\'ia aumente o disminuya si la cantidad de
+paquetes/mensajes capturados/enviados de la fuente, lo cual nos
+ayuda a entender que puede estar ocurriendo.
