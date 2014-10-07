@@ -86,7 +86,11 @@ int main(int argc, char* argv[]) {
                             //cout << "[@] Host " << ip_layer->GetSourceIP() << " up." << endl;
                             //counter++;
                             (*it_pk_ptr)->Print();
-                            cout << endl;
+
+                            /* Print time stamp */
+                            //timeval ts = (*it_pk_ptr)->GetTimestamp();
+                            //std::cout << "ts_sec = " << ts.tv_sec << " ts_usec = " << ts.tv_usec << std::endl;
+                            //cout << endl;
                 }
             }
         }
