@@ -10,6 +10,18 @@
 using namespace std;
 using namespace Crafter;
 
+void search_replace(string& String,
+                    string searchString,
+                    string replaceString,
+                    string::size_type pos = 0)
+    {
+
+    while((pos = String.find(searchString,pos)) != string::npos){
+        String.replace(pos,searchString.size(),replaceString);
+        pos+=replaceString.size();
+    }
+}
+
 int main(int argc, char* argv[]) {
 
     int result = 0;
@@ -55,16 +67,39 @@ int main(int argc, char* argv[]) {
                 //icmp_header.SetPayload("ThisIsThePayloadOfAPing\n");
 
                 Packet ping(ip_header/icmp_header);
+                ping.RawString(); //Complete automatically the remaining fields
 
-                stringstream id;
-                //id << "(icmp[0] = 11)";
-                id << "(icmp[0] = 11) or (icmp[0] = 0 and icmp[4:2] = 0x" << std::hex << icmp_header.GetIdentifier() << ")";
-                cout << id.str() << ' ' << icmp_header.GetIdentifier() << ' ' << RNG16() << endl;
-                Packet* rcv_pck = ping.SendRecv(iface,1,3,id.str());
+                stringstream tcpdump_filter;
+                tcpdump_filter << "(icmp[icmptype] = icmp-timxceed";
+
+                /*
+                byte* buffer = new byte[ping.GetLayer<IPLayer>()->GetSize()];
+                ping.GetLayer<IPLayer>()->GetRawData(buffer);
+                for(unsigned int byte = 0;byte<ping.GetLayer<IPLayer>()->GetSize();++byte){
+                    tcpdump_filter << " and icmp[" << dec << 8+byte << "] = 0x";
+                    tcpdump_filter << hex << (unsigned int)buffer[byte];
+                }
+
+                ping.GetLayer<ICMPLayer>()->GetRawData(buffer);
+                for(unsigned int byte = 0;byte<8;++byte){
+                    tcpdump_filter << " and icmp[" << dec << 8+ping.GetLayer<IPLayer>()->GetSize()+byte << "] = 0x";
+                    tcpdump_filter << hex << (unsigned int)buffer[byte];
+                }
+                delete[] buffer;
+                */
+
+                tcpdump_filter << ") or ";
+
+                tcpdump_filter << "(icmp[icmptype] = 0 and icmp[4:2] = 0x" << std::hex << icmp_header.GetIdentifier() << ")";
+                cout << endl << tcpdump_filter.str() << ' ' << icmp_header.GetIdentifier() << ' ' << RNG16() << endl;
+                cout << endl;
+                cout << "[#] ICMP request: " << endl;
+                ping.Print();
+                cout << endl;
+                Packet* rcv_pck = ping.SendRecv(iface,1,3,tcpdump_filter.str());
                 //Packet* rcv_pck = ping.SendRecv(iface);
                 if(rcv_pck) {
-                    cout << "[#] ICMP request: " << endl;
-                    ping.Print();
+                    ping.RawString(); //Complete automatically the remaining fields
                     cout << endl;
                     cout << "[#] ICMP reply : " << endl;
                     rcv_pck->Print();
@@ -79,7 +114,6 @@ int main(int argc, char* argv[]) {
                     cout << "[#] No response... " << endl;
 
                 cout << "------------------------------------" << endl;
-                sleep(2);
 
                 /* From Headers
                  * Packet* SendRecv(const std::string& iface = "",double timeout = 1, int retry = 3, const std::string& user_filter = " ");
