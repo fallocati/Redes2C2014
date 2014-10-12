@@ -96,7 +96,9 @@ int main(int argc, char* argv[]) {
                 cout << "[#] ICMP request: " << endl;
                 ping.Print();
                 cout << endl;
+                chrono::high_resolution_clock::time_point rtt_begin = chrono::high_resolution_clock::now();
                 Packet* rcv_pck = ping.SendRecv(iface,1,3,tcpdump_filter.str());
+                chrono::high_resolution_clock::time_point rtt_end = chrono::high_resolution_clock::now();
                 //Packet* rcv_pck = ping.SendRecv(iface);
                 if(rcv_pck) {
                     ping.RawString(); //Complete automatically the remaining fields
@@ -107,6 +109,7 @@ int main(int argc, char* argv[]) {
                     ICMPLayer* icmp = rcv_pck->GetLayer<ICMPLayer>();
                     cout << "[#] ICMP type : " << dec << (int)icmp->GetType() << endl;
                     cout << "[#] ICMP ID : " << hex << icmp->GetIdentifier() << endl;
+                    cout << "RTT : " << dec << chrono::duration_cast<chrono::duration<double> >(rtt_end-rtt_begin).count() << endl;
                     if(icmp->GetIdentifier() == icmp_header.GetIdentifier())
                         gotThere = true;
                     delete rcv_pck;
@@ -114,30 +117,6 @@ int main(int argc, char* argv[]) {
                     cout << "[#] No response... " << endl;
 
                 cout << "------------------------------------" << endl;
-
-                /* From Headers
-                 * Packet* SendRecv(const std::string& iface = "",double timeout = 1, int retry = 3, const std::string& user_filter = " ");
-                 */
-                //chrono::high_resolution_clock::time_point rtt_begin = chrono::high_resolution_clock::now();
-                //Packet *pong = ping.SendRecv(iface);
-                //chrono::high_resolution_clock::time_point rtt_end = chrono::high_resolution_clock::now();
-                /*
-                if(pong){
-                    ICMP* icmp_layer = pong->GetLayer<ICMP>();
-                    //if(icmp_layer->GetType() == ICMP::TimeExceeded || icmp_layer->GetType() == ICMP::EchoReply) {
-                        IP* ip_layer = pong->GetLayer<IP>();
-                        //cout << ';' << ip_layer->GetSourceIP() << ';' << chrono::duration_cast<chrono::milliseconds>(rtt_end-rtt_begin).count();
-                        cout << ';' << ttl << ';' << ip_layer->GetSourceIP() << ';' << pong->GetTimestamp().tv_sec  << ';' << pong->GetTimestamp().tv_usec << endl;
-                    //}
-                    pong->Print();
-                    cout << endl;
-                    cout << "------------------------"<< endl;
-                    delete pong;
-
-                }else{
-                    cout << ';' << ttl << ";*;*" << endl;
-                }
-                */
             }
         }
     }
