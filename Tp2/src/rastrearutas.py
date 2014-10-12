@@ -9,12 +9,15 @@ if len(sys.argv) != 2:
 
 ttl = 1
 while True:
-    reply=sr1(IP(dst=sys.argv[1],ttl=ttl)/ICMP(id=os.getpid()),verbose=0,retry=3,timeout=1)
+    begin = time.time()
+    reply=sr1(IP(dst=sys.argv[1],ttl=ttl)/ICMP(id=os.getpid()),verbose=0,retry=0,timeout=1)
+    end = time.time()
     if not (reply is None):
+        rtt = (end-begin) * 1000
         if reply[ICMP].type == 11 and reply[ICMP].code == 0:
-            print ttl, '->', reply.src
+            print ttl, '->', reply.src, ' ', rtt,'ms'
         elif reply[ICMP].type == 0:
-            print ttl, '->', reply.src
+            print ttl, '->', reply.src, ' ', rtt,'ms'
             break
 
     else:
