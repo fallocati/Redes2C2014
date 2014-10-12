@@ -1,25 +1,23 @@
-#traceroute.py
+#!/usr/bin/env python
 
-from scapy.all import *
 import sys
+import os
+from scapy.all import *
 
-def main():
-    host = sys.argv[1]
-    print 'Tracroute ', host
+if len(sys.argv) != 2:
+    sys.exit('Usage: rastrearutas.py <remote host>')
 
-    flag = True
-    ttl=1
-    hops = []
-    while flag:
-        ans, unans = sr(IP(dst=host,ttl=ttl)/ICMP())
-        if ans.res[0][1].type == 0: # checking for  ICMP echo-reply
-            flag = False
-        else:
-            hops.append(ans.res[0][1].src) # storing the src ip from ICMP error message
-            ttl +=1
-    i = 1
-    for hop in hops:
-        print i, ' ' + hop
-        i+=1
+ttl = 1
+while True:
+    reply=sr1(IP(dst=sys.argv[1],ttl=ttl)/ICMP(id=os.getpid()),verbose=0,retry=3,timeout=1)
+    if not (reply is None):
+        if reply[ICMP].type == 11 and reply[ICMP].code == 0:
+            print ttl, '->', reply.src
+        elif reply[ICMP].type == 0:
+            print ttl, '->', reply.src
+            break
 
-main()
+    else:
+        print ttl, '-> *'
+
+    ttl+=1
