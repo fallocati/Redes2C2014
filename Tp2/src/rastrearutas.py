@@ -4,31 +4,39 @@ import sys
 import os
 from scapy.all import *
 
-if len(sys.argv) != 3:
-    sys.exit('Usage: rastrearutas.py <remote host> <output file>')
+if len(sys.argv) < 4 or len(sys.argv) > 5:
+    sys.exit('Usage: rastrearutas.py <remote host> <max_hops> <runs quantity> [<output file>]')
 
-output_file = open(sys.argv[2],"a")
-output_file.write(time.strftime("%Y%m%d%H%M"))
+if len(sys.argv) == 5:
+    output_file = open(sys.argv[4],"a")
+    output_file.write(time.strftime("%Y%m%d%H%M"))
 
-ttl = 1
-while True:
-    begin = time.time()
-    reply=sr1(IP(dst=sys.argv[1],ttl=ttl)/ICMP(id=os.getpid()),verbose=0,retry=0,timeout=1)
-    end = time.time()
-    if not (reply is None):
-        rtt = (end-begin) * 1000
-        if reply[ICMP].type == 11 and reply[ICMP].code == 0:
-            output_file.write(";%s;%s" %(reply.src,rtt))
-            print ttl, '->', reply.src, ' ', rtt,'ms'
-        elif reply[ICMP].type == 0:
-            output_file.write(";%s;%s\n" %(reply.src,rtt))
-            print ttl, '->', reply.src, ' ', rtt,'ms'
-            break
+for i in range(0,int(sys.argv[3])):
+    if len(sys.argv) == 5 and i > 0:
+        output_file.write(time.strftime("\n%Y%m%d%H%M"))
+    
+    print
+    print "Run ",i,":"
+    for ttl in range(1,int(sys.argv[2])+1):
+        begin = time.time()
+        reply=sr1(IP(dst=sys.argv[1],ttl=ttl)/ICMP(id=os.getpid()),verbose=0,retry=0,timeout=1)
+        end = time.time()
+        if not (reply is None):
+            rtt = (end-begin) * 1000
+            if (reply[ICMP].type == 11 and reply[ICMP].code == 0) or (reply[ICMP].type == 0):
+                if len(sys.argv) == 5:
+                    output_file.write(";%s;%s" %(reply.src,rtt))
 
-    else:
-        output_file.write(";*;*")
-        print ttl, '-> *'
+                print ttl, '->', reply.src, ' ', rtt,'ms'
 
-    ttl+=1
+            if reply[ICMP].type == 0:
+                break
 
-output_file.close()
+        else:
+            if len(sys.argv) == 5:
+                output_file.write(";*;*")
+            print ttl, '-> *'
+
+if len(sys.argv) == 5:
+    output_file.write("\n")
+    output_file.close()
