@@ -1,1 +1,87 @@
-\IEEEPARstart{N}{o} se debe perder de vista el objetivo did\'actico de ...
+\IEEEPARstart{E}{ste} trabajo se concentra principalmente en el an\'alisis
+de las rutas que siguen los paquetes IPs enviados en una red hasta llegar a
+su destino. Como se sabe, el protocolo IP (al ser un servicio no orientado
+a conexi\'on), no nos asegura el orden ni el camino\footnote{Enti\'endase
+por camino a los sucesivos saltos o \textit{hops}\cite{hop} los cuales
+atraviesa un paquete IP para llegar a su destino.} que seguri\'a un paquete,
+y es justamente el objetivo de este trabajo poder observar dichos caminos:
+como var\'ian, sus tiempos de respuestas, ubicaci\'on geogr\'afica, etc.
+
+\par As\'i pues, podemos clasificar los pasos de este trabjo en 3 partes
+bien definidas:
+\begin{enumerate*}[label=\itshape\alph*\upshape)]
+    \item el desarrollo de una herramienta que nos permita determinar el
+        camino que siguen los paquetes IP hasta llegar a su destino y la
+        informaci\'on asociada a cada camino que ser\'a luego analizada, 
+
+    \item una experimentaci\'on variada con dicha herramienta para reunir
+        informaci\'on, y
+
+    \item un an\'alisis de la informaci\'on que nos permita llegar conclusiones
+        sobre las capacidades y caracter\'isticas de los caminos que siguen
+        los paquetes en la red global.
+\end{enumerate*} like this example.
+
+
+\subsection*{Herramienta desarrollada: \textit{El Rastrearutas}\footnote{Se
+pronuncia con acento espa\~nol.}}\label{sec:traceroute}
+\par La herramienta adjunta a partir de la cual se reuni\'o la informaci\'on
+analizada en este trabajo fue realizada siguiendo la metodolog\'ia propuesta
+por el enunciado: enviar paquetes \textit{ICMP}\cite{rfc792} incrementando
+su \textit{TTL} (comenzando desde 1) para luego recibir las respuestas de los
+\textit{routers/swtiches} que conforman los hops del camino que sigue el paquete
+enviado. Estas respuestas ser\'an del tipo \textit{TimeExceeded} hasta el
+momento en que se alcance el \textit{host} destino, cu\'ando la respuesta ser\'a
+\textit{EchoReply}\footnote{Podr\'ia darse el caso en que no se alcance el
+host destino. Esto podr\'ia deberse a m\'ultiples factores: el host destino
+no responde los paquetes ICMP, alg\'un hop intermedio no \textit{fowardea}/%
+delega este tipo de paquetes (para reducir su carga, por ejemplo), el host
+se encuentra ca\'ido, congesti\'on de la red, y infinidad de motivos m\'as}.
+
+\par Nuestro trabajo concisti\'o en un primer lugar en desarrollar una
+herramienta capaz de enviar estos paquetes ICMP siguiendo la metodolog\'ia
+expuesta: modificando el campo TTL del \textit{header} IP y obteniendo la demora
+entre el env\'io del paquete y su respuesta. Esto representa el \textit{Round
+Trip Time} o RTT muestral obtenido\footnote{Este RTT es el tiempo transcurrido
+entre el env\'i del paquete por nuestra herramienta y la respuesta obtenida.
+M\'as adelante se calculara el RTT entre hops.}. Y este valor es tenido en
+cuenta ya que luego ser\'a utilizado a la hora de analizar todos los datos
+recibidos.
+
+\par Esta herramienta fue desarrollada en \textit{python}\cite{python}
+utilizando la librer\'ia/api \textit{scapy}\cite{scapy}, y todos sus resultados
+fueron guardados un archivo de salida en formato \textit{csv}\cite{csv} para
+luego ser analizados utilizando \textit{R}\cite{R}.
+
+\par Vale la pena mencionar que por los motivos ya mencionados, podr\'ia pasar
+que al enviar un paquete ICMP, este no obtenga respuesta (tanto el \textit{%
+TimeExceeded} como el \textit{EchoReply}). Entre los motivos involucrados, bien
+podr\'iamos encontrarnos con que un \textit{router} tuvo una subrecargar
+moment\'anea y tuvo que descartar paquetes, o motivos similares donde
+normalmente obtendr\'iamos una respuesta. Para mitigar este tipo de situaciones,
+nuestra herramienta fue hecha de manera tal que al no recibir una respuesta
+luego de 1 segundo, considera que la respuesta no va a llegar (\textit{timeout})
+y reintenta nuevamente con el mismo TTL. Luego de 3 intentos sin obtener una
+respuesta, se considera que para dicho TTL no se puede obtener una respuesta
+y se continua. El RTT calculado (entre el host origen y el host/router que nos
+responde) no es acumulativo a trav\'es de los intentos. Es decir, una vez que
+se lleg\'o al \textit{timeout} para un env\'io, no se considera el tiempo
+transcurrido para calcular el RTT en el reintento siguiente.
+
+
+\subsection*{Sobre los experimentos realizados}
+\par Como se pide en el enunciado de este trabajo, se seleccionaron 3
+universidades de distintos lugares del mundo para realizar la experimentaci\'on
+y reunir la informaci\'on necesaria para cumplir con los objetivos propuestos.
+
+\par A su vez, estas 3 universidades fueron seleccionadas teniendo en cuenta
+los contintentes y las distancias desde donde se inician los paquetes IP que
+se utilizaran para analizar la red. As\'i es que se buscaron universidades
+lo suficientemente lejanas (en cuanto a distancia f\'isica) con la idea de que
+la conectividad entre ellas la \textit{Ciudad Aut\'onoma de Buenos Aires}
+requer\'ia de varios enlaces intermedios/\textit{hops}, a partir de los cuales
+podremos extraer la informaci\'on a analizar.
+
+
+\subsection*{Sobre los Datos analizados}
+\par Egg
