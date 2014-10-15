@@ -14,12 +14,14 @@ if len(sys.argv) == 5:
 for i in range(0,int(sys.argv[3])):
     if len(sys.argv) == 5 and i > 0:
         output_file.write(time.strftime("\n%Y%m%d%H%M"))
-    
+
     print
     print "Run ",i,":"
-    for ttl in range(1,int(sys.argv[2])+1):
+    for ttl in range(0,int(sys.argv[2])+1):
+        pk=IP(dst=sys.argv[1],ttl=ttl)/ICMP(id=os.getpid())
         begin = time.time()
-        reply=sr1(IP(dst=sys.argv[1],ttl=ttl)/ICMP(id=os.getpid()),verbose=0,retry=0,timeout=1)
+        #reply=sr1(IP(dst=sys.argv[1],ttl=ttl)/ICMP(id=os.getpid()),verbose=0,retry=0,timeout=1)
+        reply=sr1(pk,verbose=0,retry=0,timeout=1)
         end = time.time()
         if not (reply is None):
             rtt = (end-begin) * 1000
