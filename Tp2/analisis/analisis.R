@@ -58,9 +58,19 @@ meltedData <- function (data) {
 }
 
 summariseData <- function (data) {
-    ddply(meltedData(data), ~ip, summarise, mean = replace(mean(rtt, na.rm = T), 
+    melted <- meltedData(data)
+    
+    first <- ddply(meltedData(data), ~ip, summarise, mean = replace(mean(rtt, na.rm = T), 
     is.nan(mean(rtt, na.rm = T)), NA), sd = replace(sd(rtt, na.rm = T),
-    is.nan(sd(rtt, na.rm = T)), NA), min = min(rtt), max = max(rtt))
+    is.nan(sd(rtt, na.rm = T)), NA), min = min(rtt), max = max(rtt))    
+    
+    ips <- vector()
+    
+    for(i in 1:max(melted$ttl)) {        
+        ips <- append(ips, names(which.max(table(melted[melted$ttl == i, ]$ip))))
+    }
+        
+    first[first$ip %in% ips, ]
 }
 
 alteredSummarisedData <- function (data) {
@@ -73,7 +83,7 @@ alteredSummarisedData <- function (data) {
 
 plotAcumulated <- function (summarized, melted) {
     ggplot(data = summarized, aes(ip, mean, group = 1)) + 
-    geom_point(aes(x = ip, y = rtt), data = melted, colour = "red") +
+    geom_point(aes(x = ip, y = rtt), data = melted[melted$ip %in% summarized$ip, ], colour = "red") +
     geom_point(shape = 21, size = 6, fill = "white") +
     geom_errorbar(width = 0.5, aes(ymin = mean - sd, ymax = mean + sd)) +
     geom_smooth(aes(ymin = mean - sd, ymax = mean + sd), stat = "identity") +
