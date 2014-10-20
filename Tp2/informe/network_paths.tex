@@ -1,0 +1,69 @@
+\documentclass{standalone}
+
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata}
+\usepackage[latin1]{inputenc}
+\usepackage{mathtools}
+\newcommand{\plusplus}{\ensuremath{+\!\!\!+}}
+\begin{document}
+
+\begin{tikzpicture}[->,
+                    >=stealth',
+                    shorten >=1pt,
+                    auto,
+                    node distance=3cm,
+                    semithick]
+
+    \tikzstyle{every state}=[font=\Large]
+
+    %Estados
+    \node[state,scale=1.5]            (1)                                             {$h_i$};
+    \node[state,scale=1.5]            (2) [below of=1]                                {$h_{i+1}$};
+    \node[state,scale=1.5]            (3) [below of=2]                                {$h_{i+2}$};
+    \node[state,scale=1.5]            (4) [below of=3]                                {$h_{i+3}$};
+    \node[state,scale=1.5,draw=none]  (g) [right of=2,below of=2,node distance=1.5cm,font=\Huge] {$\not\equiv$};
+    \node[state,scale=1.5]            (1')[right of=1,node distance=6cm]              {$h_i$};
+    \node[state,scale=1.5]            (2')[below of=1',left of=1']                    {$h_{i+1}$};
+    \node[state,scale=1.5]            (2")[right of=2']                               {};
+    \node[state,scale=1.5]            (2"')[right of=2"]                              {};
+    \node[state,scale=1.5]            (3')[below of=2']                               {};
+    \node[state,scale=1.5]            (3")[below of=2"]                               {$h_{i+2}$};
+    \node[state,scale=1.5]            (3"')[below of=2"']                             {};
+    \node[state,scale=1.5]            (4')[below of=3']                               {};
+    \node[state,scale=1.5]            (4") [below of=3"]                              {};
+    \node[state,scale=1.5]            (4"')[below of=3"']                             {$h_{i+3}$};
+
+    %Etiquetas
+    \node[state,draw=none,text width=3cm,align=center](Supuesto)[below of=4]{Ruta Supuesta};
+    \node[state,draw=none,text width=3cm,align=center](Realidad)[below of=4"]{Posible Topolog\'ia};
+
+    %Supuesto
+    \path (1) edge[dashed] (2);
+    \path (2) edge[dashed] (3);
+    \path (3) edge[dashed] (4);
+
+    \path (2) edge[red,thick,bend right] (1);
+    \path (3) edge[blue,thick,bend left] (1);
+    \path (4) edge[green,thick,bend left=45] (1);
+
+    %Realidad
+    \path (1') edge (2');
+    \path (1') edge (2");
+    \path (1') edge (2"');
+
+    \path (2') edge (3');
+    \path (2") edge (3");
+    \path (2"') edge (3"');
+
+    \path (3') edge (4');
+    \path (3") edge (4");
+    \path (3"') edge (4"');
+
+    %TTL
+    \path (2') edge[red,thick,bend left] (1');
+    \path (3") edge[blue,thick,bend left] (1');
+    \path (4"') edge[green,thick,bend right=60] (1');
+\end{tikzpicture}
+
+\end{document}

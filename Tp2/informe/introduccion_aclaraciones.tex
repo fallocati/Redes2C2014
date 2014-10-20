@@ -4,7 +4,7 @@ su destino. Como se sabe, el protocolo IP (al ser un servicio no orientado
 a conexi\'on), no nos asegura el orden ni el camino\footnote{Enti\'endase
 por camino a los sucesivos saltos o \textit{hops}\cite{hop} los cuales
 atraviesa un paquete IP para llegar a su destino.} que seguri\'a un paquete,
-y es justamente el objetivo de este trabajo poder observar dichos caminos:
+y es justamente el objetivo de este trabajo es poder observar dichos caminos:
 como var\'ian, sus tiempos de respuestas, ubicaci\'on geogr\'afica, etc.
 
 \par As\'i pues, podemos clasificar los pasos de este trabjo en 3 partes
@@ -20,7 +20,7 @@ bien definidas:
     \item un an\'alisis de la informaci\'on que nos permita llegar conclusiones
         sobre las capacidades y caracter\'isticas de los caminos que siguen
         los paquetes en la red global.
-\end{enumerate*} like this example.
+\end{enumerate*}.
 
 
 \subsection*{Herramienta desarrollada: \textit{El Rastrearutas}\footnote{Se
@@ -36,7 +36,7 @@ momento en que se alcance el \textit{host} destino, cu\'ando la respuesta ser\'a
 host destino. Esto podr\'ia deberse a m\'ultiples factores: el host destino
 no responde los paquetes ICMP, alg\'un hop intermedio no \textit{fowardea}/%
 delega este tipo de paquetes (para reducir su carga, por ejemplo), el host
-se encuentra ca\'ido, congesti\'on de la red, y infinidad de motivos m\'as}.
+se encuentra ca\'ido, congesti\'on de la red, e infinidad de motivos m\'as}.
 
 \par Nuestro trabajo concisti\'o en un primer lugar en desarrollar una
 herramienta capaz de enviar estos paquetes ICMP siguiendo la metodolog\'ia
@@ -56,7 +56,7 @@ luego ser analizados utilizando \textit{R}\cite{R}.
 \par Vale la pena mencionar que por los motivos ya mencionados, podr\'ia pasar
 que al enviar un paquete ICMP, este no obtenga respuesta (tanto el \textit{%
 TimeExceeded} como el \textit{EchoReply}). Entre los motivos involucrados, bien
-podr\'iamos encontrarnos con que un \textit{router} tuvo una subrecargar
+podr\'iamos encontrarnos con que un \textit{router} tuvo una sobrecarga
 moment\'anea y tuvo que descartar paquetes, o motivos similares donde
 normalmente obtendr\'iamos una respuesta. Para mitigar este tipo de situaciones,
 nuestra herramienta fue hecha de manera tal que al no recibir una respuesta
@@ -84,4 +84,40 @@ podremos extraer la informaci\'on a analizar.
 
 
 \subsection*{Sobre los Datos analizados}
-\par Egg
+\subsubsection*{Rutas Experimentales vs Rutas Reales}
+\par A la hora de analizar los datos obtenidos mediante la experimentaci\'on,
+varias decisiones. En primer lugar, el experimento consiste en
+enviar paquetes ICMP incrementando su TTL, y presuponiendo que el host que
+nos responde el paquete $i$ es justamente el hop anterior al host que nos
+responde el paquete $i+$. Es decir, tratamos de descubrir el camino
+que har\'an los paquetes que enviaremos al host destino, pero como ya
+se ha mencionado, el protocolo IP no nos asegura que los paquetes vayan
+a seguir el mismo camino para 2 paquetes distintos. As\'i pues, nuestro
+experimento que nos otorga una serie de hops consecutivos podr\'ian, en la
+realidad, no serlo.
+
+\par Ilustraremos este concepto a continuaci\'on. Sean los hosts $h_0..h_n$,
+donde el sub\'indice nos indica el TTL inicial del paquete ICMP respondido por
+el host $h$. Suponemos tambi\'en que el host $h_i$ est\'a actuando como un
+balanceador de carga entre 3 distintos \textit{gateways}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{network_paths}
+    \caption{Caminos supuestos}
+    \label{fig:network_paths}
+\end{figure}
+
+\par Como se puede observar, este experimento nos podr\'ia dar una toplog\'ia
+de hops bastante alejada de la realida. A\'un as\'i, esta es una limitaci\'on
+que tendremos debido a la metodolog\'ia del \textit{rastrearutas} utilizando
+paquetes ICMP. Esperamos mitigar esta posible situaci\'on realizando una
+cantidad considerable de experimentos realizados (y luego qued\'andonos con
+las secuencias de hops m\'as frecuentes\footnote{Que esperamos que sean
+significativamente m\'as frecuentes que el resto.}). Esto se debe a que suponemos
+que los dispositivos que reconocemos como hops tambi\'en se encuentran
+respondiendo \textit{requests} provenientes de la red, y esperamos encontrar
+los hops m\'as frecuentes por salto, lo que ser\'a una posible aproximaci\'on
+al camino real m\'as frecuente que realizan los paquetes.
+
+\subsubsection*{Hops sin respuesta}
