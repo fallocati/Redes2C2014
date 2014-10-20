@@ -57,8 +57,8 @@ meltedData <- function (data) {
     melted[melted$ttl > 0, ]
 }
 
-summariseData <- function (data) {    
-    res <- ddply(meltedData(data), ~ip, summarise, mean = replace(mean(rtt, na.rm = T), 
+summariseData <- function (melted) {    
+    res <- ddply(melted, ~ip, summarise, mean = replace(mean(rtt, na.rm = T), 
     is.nan(mean(rtt, na.rm = T)), NA), sd = replace(sd(rtt, na.rm = T),
     is.nan(sd(rtt, na.rm = T)), NA), min = min(rtt), max = max(rtt))
     
@@ -72,8 +72,4 @@ plotAcumulated <- function (summarized, melted) {
     geom_errorbar(width = 0.5, aes(ymin = mean - sd, ymax = mean + sd)) +
     #geom_smooth(aes(ymin = mean - sd, ymax = mean + sd), stat = "identity") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
-}
-
-plotOriginal <- function (data) {
-    plotAcumulated(summariseData(data), meltedData(data))
 }
