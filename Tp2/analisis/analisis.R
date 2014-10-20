@@ -48,7 +48,7 @@ meltedData <- function (data) {
     for (experiment in 1:nrow(data)) {
         for (j in seq(2, ncol(data), 2)) {
             ttl <- j / 2
-            ip <- sprintf("Hop %d - %s", ttl, data[experiment, j])
+            ip <- sprintf("Hop %02d - %s", ttl, data[experiment, j])
             rtt <- data[experiment, j + 1]
             melted <- insertRow(melted, data.frame(ttl, experiment, ip, rtt))
         }
@@ -57,28 +57,12 @@ meltedData <- function (data) {
     melted[melted$ttl > 0, ]
 }
 
-summariseData <- function (data) {
-    melted <- meltedData(data)
-    
-    first <- ddply(meltedData(data), ~ip, summarise, mean = replace(mean(rtt, na.rm = T), 
+summariseData <- function (melted) {    
+    res <- ddply(melted, ~ip, summarise, mean = replace(mean(rtt, na.rm = T), 
     is.nan(mean(rtt, na.rm = T)), NA), sd = replace(sd(rtt, na.rm = T),
-    is.nan(sd(rtt, na.rm = T)), NA), min = min(rtt), max = max(rtt))    
+    is.nan(sd(rtt, na.rm = T)), NA), min = min(rtt), max = max(rtt))
     
-    ips <- vector()
-    
-    for(i in 1:max(melted$ttl)) {        
-        ips <- append(ips, names(which.max(table(melted[melted$ttl == i, ]$ip))))
-    }
-        
-    first[first$ip %in% ips, ]
-}
-
-alteredSummarisedData <- function (data) {
-    originalSummary <- summariseData(data)
-    for (i in i:nrow(originalSummary) - 1) {
-        
-    }
-    
+    res[order(as.character(res$ip)), ]
 }
 
 plotAcumulated <- function (summarized, melted) {
@@ -86,10 +70,6 @@ plotAcumulated <- function (summarized, melted) {
     geom_point(aes(x = ip, y = rtt), data = melted[melted$ip %in% summarized$ip, ], colour = "red") +
     geom_point(shape = 21, size = 6, fill = "white") +
     geom_errorbar(width = 0.5, aes(ymin = mean - sd, ymax = mean + sd)) +
-    geom_smooth(aes(ymin = mean - sd, ymax = mean + sd), stat = "identity") +
+    #geom_smooth(aes(ymin = mean - sd, ymax = mean + sd), stat = "identity") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
-}
-
-plotOriginal <- function (data) {
-    plotAcumulated(summariseData(data), meltedData(data))
 }
