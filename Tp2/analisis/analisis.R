@@ -87,8 +87,7 @@ getRtti <- function (summarized) {
         
         diff <- currRTT - lastRTT
         
-        if (wasNA) {
-            #ACA HAY QUE REPARTIR EL RTT Y AGREGAR LAS FILAS
+        if (wasNA) {            
             diff <- diff / (countNA + 1)
             for (j in countNA:0) {
                 newI <- i - j
