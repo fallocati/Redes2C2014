@@ -13,7 +13,7 @@ loadData <- function (filename) {
     raw <- read.csv(filename, header = F, sep=";", na.strings = "*", dec=".",
     allowEscapes = T, colClasses = as.vector(c("myDate", rep(c("character", "numeric"),
     ttls))), col.names = c(c("DateTime"), rbind(paste("IP_TTL_", 0:ttls, sep = ""), 
-    paste("RTT_TTL_", 0:ttls, sep = ""))), nrows = 20)
+    paste("RTT_TTL_", 0:ttls, sep = ""))))
     
     raw[, c(1, 4:(ncol(raw) - 2))]
 }
