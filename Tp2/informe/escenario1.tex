@@ -12,12 +12,103 @@ durante un d\'ia iniciando a las 00, 04, 09, 12, 16 y 20 hs (hora local Argentin
 
 \subsection{Resultados para el total de los Experimentos}
 \par Luego de realizar los experimentos descriptos, se obtuvieron en total
-6000 \textit{corridas} de la aplicaci\'on desarrollada. El resultado de el
-valor medio de RTT por salto y su varianza se presenta a continuaci\'on:
+6000 \textit{corridas} de la aplicaci\'on desarrollada. Como ya se explic\'o
+en la \textit{\nameref{sec:introduccion}}, durante todas estas corridas se
+obtivieron distintas secuencias/caminos de H\textit{hops}. As\'i pues,
+el primer an\'alisis realizado fue determinar cu\'antas veces se hab\'ian
+obtenido las mismas secuencias:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{r | r | r}
+            &\#caminos  & \\
+        ids &Distintos  &\#Veces\\
+        \hline\hline
+        1& 36& 1\\
+        37& 19& 2\\
+        56& 5& 3\\
+        61& 5& 4\\
+        66& 1& 6\\
+        67& 1& 9\\
+        68& 2& 10\\
+        70& 2& 11\\
+        72& 2& 12\\
+        74& 2& 13\\
+        76& 2& 14\\
+        78& 1& 15\\
+        79& 1& 17\\
+        80& 1& 22\\
+        81& 1& 30\\
+        82& 1& 35\\
+        83& 1& 61\\
+        84& 1& 76\\
+        85& 1& 80\\
+        86& 1& 98\\
+        87& 1& 128\\
+        88& 1& 138\\
+        89& 1& 159\\
+        90& 1& 294\\
+        91& 1& 1563\\
+        92& 1& 3040\\
+        \hline\hline
+    \end{tabular}
+    \bigskip
+    \caption{Frecuencia por \emph{path} de hops obtenida}
+    \label{tab:mcgill_sec_hops}
+\end{table}
+
+\par Podemos observar que como resultado de nuesta experimentaci\'on (6000
+expermientos corridos durante todo un d\'ia), a pesar de saber de que IP
+no nos asegura un camino de hops para llegar al destino, es notable la diferencia
+entre 2 o 3 secuencias que son el resultado de de cas\'i todo el experimento:
+entre las rutas muestrales 90, 91 y 92 se tienen 4897 experimentaciones (
+aproximadamente un 80\% del total de la experimentaci\'on). Es decir, a pesar
+de lo variable que puede ser la red a la hora de encontrar un camino entre 2
+hosts sobre el protocolo IP (y con todas las posibles combinaciones de hops que
+se podr\'ian obtener al tener en cuenta lo explicado en \emph{\nameref{sec:datos_analizados},
+\nameref{sec:introduccion}}), se observa cierta predictibilidad en este proceso,
+d\'andonos a entender que es muy pobable que esta sea la ruta real m\'as com\'un
+que har\'an los paquetes al establecerse una comunicaci\'on entre los hosts
+de origen y destino.
+
+\par De hecho, podemos observar estos datos como una fuente de informaci\'on
+donde se puede pensar que las distintas secuencias de hops como los s\'imbolos
+de la fuente. De esta manera podemos determinar la entrop\'ia de la posible
+ruta que se recibir\'a de realizar el \textit{rastrearutas}.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c | c}
+                   & Concentrac\'ion\\
+                   & de Probabilidad\\
+       Entro\'ia   & de Rutas 90, 91 y 92\\
+       \hline\hline
+       2.49631 & $81,6166\%$\\
+       %\hline\hline
+   \end{tabular}
+   \bigskip
+   \caption{Entrop\'ia de la fuente de Rutas}
+   \label{tab:mcgill_entropia}
+\end{table}
+
+\par Efecttivamente, como se esperaba, nos encontramos con un valor de entrop\'ia
+bastante bajo\footnote{Al menos, comparado con los resultados obtenidos en el
+\textit{TP1}.}
+
+\par Continuando, en este trabajo nos centramos en el estudio de los
+\textit{Round Trip Time} de los distintos hops. Como ya se explic\'o en la 
+introducci\'on, no haremos foco en aquellas secuencias de hops que aparecen
+con menor frecuencia. As\'i pues, exponemos los RTTs obtenidos
+entre la m\'aquina de origen donde fue corrido el experimento y los hops que
+respondieron para la secuencia m\'as obtenida\footnote{La secuencia 92 que 
+obtuvimos en 3040 experimentos, p\'agina \pageref{tab:mcgill_sec_hops}.}.
+
+\par En la figura \ref{fig:rtt_dev_mcgill} se observan el valor medio del RTT y
+su varianza por cada hop:
 
 \begin{figure}
     \centering
-    %\includegraphics[]{rtt_var_mcgill}
-    \caption{RTT media/Varianza por hop}
-    \label{fig:rtt_var_mcgill}
+    \includegraphics[width=0.5\textwidth]{img/escenario1/{mcgill_3040.path.92.rtt_acum}.pdf}
+    \caption{RTT media/Desv\'io Standad}
+    \label{fig:rtt_dev_mcgill}
 \end{figure}

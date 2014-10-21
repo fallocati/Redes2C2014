@@ -83,10 +83,10 @@ requeri\'a de varios enlaces intermedios/\textit{hops}, a partir de los cuales
 podremos extraer la informaci\'on a analizar.
 
 
-\subsection*{Sobre los Datos analizados}
+\subsection*{Sobre los Datos analizados}\label{sec:datos_analizados}
 \subsubsection*{Rutas Experimentales vs Rutas Reales}
 \par A la hora de analizar los datos obtenidos mediante la experimentaci\'on,
-varias decisiones. En primer lugar, el experimento consiste en
+varias decisiones debieron ser tomadas. En primer lugar, el experimento consiste en
 enviar paquetes ICMP incrementando su TTL, y presuponiendo que el host que
 nos responde el paquete $i$ es justamente el hop anterior al host que nos
 responde el paquete $i+$. Es decir, tratamos de descubrir el camino
@@ -115,7 +115,7 @@ para el comportamiento que se est\'a explicando.
 de hops bastante alejada de la realida. A\'un as\'i, esta es una limitaci\'on
 que tendremos debido a la metodolog\'ia del \textit{rastrearutas} utilizando
 paquetes ICMP. Esperamos mitigar esta posible situaci\'on realizando una
-cantidad considerable de experimentos realizados (y luego qued\'andonos con
+cantidad considerable de experimentos (y luego qued\'andonos con
 las secuencias de hops m\'as frecuentes\footnote{Que esperamos que sean
 significativamente m\'as frecuentes que el resto.}). Esto se debe a que suponemos
 que los dispositivos que reconocemos como hops tambi\'en se encuentran
