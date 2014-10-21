@@ -3,6 +3,7 @@ require(plyr)
 require(rjson)
 require(maps)
 require(geosphere)
+require(data.table)
 
 loadData <- function (filename) {
     setClass("myDate")
@@ -20,7 +21,8 @@ loadData <- function (filename) {
 
 meltedData <- function (data) {
     melted <- data.frame(ttl = integer(0), experiment = integer(0), name = character(0),
-    ip = character(0), rtt = numeric(0))
+                         ip = character(0), rtt = numeric(0))
+    rows.list = vector(mode="list",nrow(data))
     
     for (experiment in 1:nrow(data)) {
         for (j in seq(2, ncol(data), 2)) {
@@ -28,10 +30,12 @@ meltedData <- function (data) {
             name <- sprintf("Hop %02d - %s", ttl, data[experiment, j])
             ip <- data[experiment, j]
             rtt <- data[experiment, j + 1]
-            melted <- rbind(melted, data.frame(ttl, experiment, name, ip, rtt))
+            #melted <- rbind(melted, data.frame(ttl, experiment, name, ip, rtt))
+            rows.list[[length(rows.list)+1]] <- data.frame(ttl, experiment, name, ip, rtt)
         }
     }
     
+    melted <- rbindlist(rows.list)
     melted$name <- as.character(melted$name)
     melted$ip <- as.character(melted$ip)
     
@@ -39,7 +43,8 @@ meltedData <- function (data) {
 }
 
 geolocateIps <- function(ip) {        
-    ret <- data.frame()
+    #ret <- data.frame()
+    rows.list = vector(mode="list",length(ip))
     
     for (i in 1:length(ip)) {
         if (is.na(ip[i]))
@@ -49,9 +54,11 @@ geolocateIps <- function(ip) {
         
         value <- data.frame(t(unlist(fromJSON(readLines(url, warn=FALSE)))), stringsAsFactors = F)
                 
-        ret <- rbind(ret, value)
+        #ret <- rbind(ret, value)
+        rows.list[[length(rows.list)+1]] <-data.frame(t(unlist(fromJSON(readLines(url, warn=FALSE)))), stringsAsFactors = F)
     }
     
+    ret <- rbindlist(rows.list)
     ret    
 }
 
@@ -86,8 +93,8 @@ getRtti <- function (summarized) {
         }
         
         diff <- currRTT - lastRTT
-        
         if (wasNA) {            
+        
             diff <- diff / (countNA + 1)
             for (j in countNA:0) {
                 newI <- i - j

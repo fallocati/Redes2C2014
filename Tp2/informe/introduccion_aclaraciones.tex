@@ -78,8 +78,8 @@ y reunir la informaci\'on necesaria para cumplir con los objetivos propuestos.
 los contintentes y las distancias desde donde se inician los paquetes IP que
 se utilizaran para analizar la red. As\'i es que se buscaron universidades
 lo suficientemente lejanas (en cuanto a distancia f\'isica) con la idea de que
-la conectividad entre ellas la \textit{Ciudad Aut\'onoma de Buenos Aires}
-requer\'ia de varios enlaces intermedios/\textit{hops}, a partir de los cuales
+la conectividad entre ellas
+requeri\'a de varios enlaces intermedios/\textit{hops}, a partir de los cuales
 podremos extraer la informaci\'on a analizar.
 
 
@@ -96,10 +96,13 @@ a seguir el mismo camino para 2 paquetes distintos. As\'i pues, nuestro
 experimento que nos otorga una serie de hops consecutivos podr\'ian, en la
 realidad, no serlo.
 
-\par Ilustraremos este concepto a continuaci\'on. Sean los hosts $h_0..h_n$,
+\par Ilustraremos este concepto a continuaci\'on. Sean los hops $h_0..h_n$,
 donde el sub\'indice nos indica el TTL inicial del paquete ICMP respondido por
-el host $h$. Suponemos tambi\'en que el host $h_i$ est\'a actuando como un
-balanceador de carga entre 3 distintos \textit{gateways}.
+el host/router del hop $h$. Suponemos tambi\'en que el router/host asociado al hop
+$h_i$ est\'a actuando como un balanceador de carga entre 3 distintos
+\textit{gateways}. En el caso de las respuestas recibidas desde los hops, el
+camino que siguan para alcanzar a nuestro host \textit{source} es irrelevante
+para el comportamiento que se est\'a explicando.
 
 \begin{figure}[h]
     \centering

@@ -17,37 +17,56 @@
 
     \tikzstyle{every state}=[font=\Large]
 
-    %Estados
-    \node[state,scale=1.5]            (1)                                             {$h_i$};
-    \node[state,scale=1.5]            (2) [below of=1]                                {$h_{i+1}$};
-    \node[state,scale=1.5]            (3) [below of=2]                                {$h_{i+2}$};
-    \node[state,scale=1.5]            (4) [below of=3]                                {$h_{i+3}$};
-    \node[state,scale=1.5,draw=none]  (g) [right of=2,below of=2,node distance=1.5cm,font=\Huge] {$\not\equiv$};
-    \node[state,scale=1.5]            (1')[right of=1,node distance=6cm]              {$h_i$};
-    \node[state,scale=1.5]            (2')[below of=1',left of=1']                    {$h_{i+1}$};
-    \node[state,scale=1.5]            (2")[right of=2']                               {};
-    \node[state,scale=1.5]            (2"')[right of=2"]                              {};
-    \node[state,scale=1.5]            (3')[below of=2']                               {};
-    \node[state,scale=1.5]            (3")[below of=2"]                               {$h_{i+2}$};
-    \node[state,scale=1.5]            (3"')[below of=2"']                             {};
-    \node[state,scale=1.5]            (4')[below of=3']                               {};
-    \node[state,scale=1.5]            (4") [below of=3"]                              {};
-    \node[state,scale=1.5]            (4"')[below of=3"']                             {$h_{i+3}$};
+    %Supuesto Nodos
+    \node[state,scale=1.5]            (1)                               {$h_i$};
+    \node[state,scale=1.5]            (2) [below of=1]                  {$h_{i+1}$};
+    \node[state,scale=1.5]            (3) [below of=2]                  {$h_{i+2}$};
+    \node[state,scale=1.5]            (4) [below of=3]                  {$h_{i+3}$};
+
+    %Equiv
+    \node[state,scale=1.5,draw=none]  (g) [right of=2,
+                                            below of=2,
+                                            node distance=1.5cm,
+                                            font=\Huge] {$\not\equiv$};
+
+    %Realidad Nodos
+    \node[state,scale=1.5]            (1')[right of=1,node distance=6cm]{$h_i$};
+    \node[state,scale=1.5]            (2')[below of=1',left of=1']      {$h_{i+1}$};
+    \node[state,scale=1.5]            (2")[right of=2']                 {};
+    \node[state,scale=1.5]            (2"')[right of=2"]                {};
+    \node[state,scale=1.5]            (3')[below of=2']                 {};
+    \node[state,scale=1.5]            (3")[below of=2"]                 {$h_{i+2}$};
+    \node[state,scale=1.5]            (3"')[below of=2"']               {};
+    \node[state,scale=1.5]            (4')[below of=3']                 {};
+    \node[state,scale=1.5]            (4") [below of=3"]                {};
+    \node[state,scale=1.5]            (4"')[below of=3"']               {$h_{i+3}$};
+
+    %Host
+    \node[state,scale=1.5]            (hs)[above of=1]                  {$src$};
+    \node[state,scale=1.5]            (hr)[above of=1']                 {$src$};
 
     %Etiquetas
     \node[state,draw=none,text width=3cm,align=center](Supuesto)[below of=4]{Ruta Supuesta};
     \node[state,draw=none,text width=3cm,align=center](Realidad)[below of=4"]{Posible Topolog\'ia};
 
     %Supuesto
+    \path (hs) edge[-,dotted](1);
     \path (1) edge[dashed] (2);
     \path (2) edge[dashed] (3);
     \path (3) edge[dashed] (4);
 
-    \path (2) edge[red,thick,bend right] (1);
-    \path (3) edge[blue,thick,bend left] (1);
-    \path (4) edge[green,thick,bend left=45] (1);
+    \path (2)   edge[left,red,dashed,thick,bend right]
+                node[above,sloped,font=\Large]{$TimeExceeded_{i+1}$} (hs);
+
+    \path (3)   edge[blue,dashed,thick,bend left]
+                node[above,sloped,font=\Large]{$TimeExceeded_{i+2}$} (hs);
+
+    \path (4)   edge[green,dashed,thick,bend left=45]
+                node[above,sloped,font=\Large]{$TimeExceeded_{i+3}$} (hs);
 
     %Realidad
+    \path (hr) edge[-,dotted](1');
+
     \path (1') edge (2');
     \path (1') edge (2");
     \path (1') edge (2"');
@@ -61,9 +80,14 @@
     \path (3"') edge (4"');
 
     %TTL
-    \path (2') edge[red,thick,bend left] (1');
-    \path (3") edge[blue,thick,bend left] (1');
-    \path (4"') edge[green,thick,bend right=60] (1');
+    \path (2') edge[red,dashed,thick,bend left]
+                node[above,sloped,font=\Large]{$TimeExceeded_{i+1}$} (hr);
+
+    \path (3") edge[blue,dashed,thick,bend left]
+                node[above,near end,sloped,font=\Large]{$TimeExceeded_{i+2}$} (hr);
+
+    \path (4"') edge[green,dashed,thick,bend right=45]
+                node[above,near end,sloped,font=\Large]{$TimeExceeded_{i+3}$} (hr);
 \end{tikzpicture}
 
 \end{document}
