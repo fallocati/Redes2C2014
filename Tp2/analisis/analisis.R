@@ -18,26 +18,6 @@ loadData <- function (filename) {
     raw[, c(1, 4:(ncol(raw) - 2))]
 }
 
-ipColumns <- function (data) {    
-    seq(2, ncol(data), 2)
-}
-
-rttColumns <- function (data) {    
-    seq(3, ncol(data), 2)
-}
-
-rttMatrix <- function (data) {
-    data.matrix(data[, rttColumns(data)])
-}
-
-rttMeans <- function (data) {
-    sapply(data[, rttColumns(data)], mean, na.rm = T)
-}
-
-rttSd <- function (data) {
-    sapply(data[, rttColumns(data)], sd, na.rm = T)
-}
-
 meltedData <- function (data) {
     melted <- data.frame(ttl = integer(0), experiment = integer(0), name = character(0),
     ip = character(0), rtt = numeric(0))
