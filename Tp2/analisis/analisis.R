@@ -27,7 +27,7 @@ meltedData <- function (data) {
     for (experiment in 1:nrow(data)) {
         for (j in seq(2, ncol(data), 2)) {
             ttl <- j / 2
-            name <- sprintf("Hop %02d - %s", ttl, data[experiment, j])
+            name <- sprintf("%02d - %s", ttl, data[experiment, j])
             ip <- data[experiment, j]
             rtt <- data[experiment, j + 1]
             #melted <- rbind(melted, data.frame(ttl, experiment, name, ip, rtt))
@@ -74,6 +74,28 @@ summarizeData <- function (melted) {
     sd = replace(sd(rtt, na.rm = T), is.nan(sd(rtt, na.rm = T)), NA)    )
     
     res[order(as.character(res$name)), ]
+}
+
+filterHops <- function (hops){
+    result_ttls <- vector()
+    result_ttls[1] <- nrow(hops) #No puede faltar el ultimo salto = destino
+    paths_indexes <- order(as.numeric(hops$mean)) #paths_indexes[i] == ttl_j == hops[j]
+    
+    hop_ptr = which.max(paths_indexes)-1
+    while (hop_ptr >= 1)
+    {
+        if (paths_indexes[hop_ptr] > result_ttls[length(result_ttls)]){
+            if(hops$sd[paths_indexes[hop_ptr]] < hops$sd[result_ttls[length(result_ttls)]]){
+                result_ttls[length(result_ttls)] <- paths_indexes[hop_ptr]
+            }
+            
+        } else {
+            result_ttls[length(result_ttls)+1] <- paths_indexes[hop_ptr]
+        }
+        hop_ptr <- hop_ptr-1 #paths_indexes esta ordenado de menor a mayor segun mean
+    }
+
+    hops[result_ttls,]
 }
 
 getRtti <- function (summarized) {
@@ -124,7 +146,7 @@ plotAcumulated <- function (summarized, melted, filename) {
     geom_point(shape = 21, size = 6, fill = "white") +
     geom_errorbar(width = 0.5, aes(ymin = mean - sd, ymax = mean + sd)) +    
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    labs(title = 'RTT a cada Host Intermedio', x = "Hop", y = "RTT")
+    labs(title = 'RTT a cada Host Intermedio', x = "Hop - IP", y = "RTT [ms]")
     
     ggsave(filename, width = 8, height = 8)
 }
@@ -197,9 +219,12 @@ doAll <- function (filename) {
     melted <- meltedData(data)
     summary <- summarizeData(melted)
     rttis <- getRtti(summary)
+    rttis_filtered <- getRtti(filterHops(summary))
     
     plotAcumulated(summary, melted, paste(filename, ".rtt_acum.pdf", sep=""))
+    plotAcumulated(filterHops(summary), melted, paste(filename, ".rtt_acum_filtered.pdf", sep=""))
     plotZscore(rttis, paste(filename, ".rtti_zscore.pdf", sep=""))
+    plotZscore(rttis, paste(filename, ".rtti_zscore_filtered.pdf", sep=""))
     plotMap(summary, paste(filename, ".map.pdf", sep=""))
     
     print("RTT a cada Host")
