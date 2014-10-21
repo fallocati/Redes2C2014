@@ -2,13 +2,8 @@ require(ggplot2)
 require(plyr)
 require(rjson)
 require(maps)
+require(geosphere)
 
-# Helper functions
-insertRow <- function(existingDF, newrow) {    
-    rbind(existingDF, newrow)
-}
-
-# Analisis functions
 loadData <- function (filename) {
     setClass("myDate")
     setAs("character", "myDate", function(from) as.POSIXct(from, format = "%Y%m%d%H%M") )
@@ -53,7 +48,7 @@ meltedData <- function (data) {
             name <- sprintf("Hop %02d - %s", ttl, data[experiment, j])
             ip <- data[experiment, j]
             rtt <- data[experiment, j + 1]
-            melted <- insertRow(melted, data.frame(ttl, experiment, name, ip, rtt))
+            melted <- rbind(melted, data.frame(ttl, experiment, name, ip, rtt))
         }
     }
     
@@ -80,7 +75,7 @@ geolocateIps <- function(ip) {
     ret    
 }
 
-summariseData <- function (melted) {
+summarizeData <- function (melted) {
     geoData <<- geolocateIps(unique(melted$ip)) 
     
     res <- ddply(melted, ~name, summarise, ip = unique(ip), 
@@ -89,33 +84,76 @@ summariseData <- function (melted) {
     city = replace(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip), c("city")], nrow(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip),])  == 0, NA),
     country = replace(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip), c("country_name")], nrow(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip),]) == 0, NA),
     mean = replace(mean(rtt, na.rm = T), is.nan(mean(rtt, na.rm = T)), NA),
-    sd = replace(sd(rtt, na.rm = T), is.nan(sd(rtt, na.rm = T)), NA),
-    min = min(rtt), max = max(rtt))
+    sd = replace(sd(rtt, na.rm = T), is.nan(sd(rtt, na.rm = T)), NA)    )
     
     res[order(as.character(res$name)), ]
 }
 
-plotAcumulated <- function (summarized, melted) {
-    ggplot(data = summarized, aes(ip, mean, group = 1)) + 
-    geom_point(aes(x = ip, y = rtt), data = melted[melted$ip %in% summarized$ip, ], colour = "red") +
-    geom_point(shape = 21, size = 6, fill = "white") +
-    geom_errorbar(width = 0.5, aes(ymin = mean - sd, ymax = mean + sd)) +
-    #geom_smooth(aes(ymin = mean - sd, ymax = mean + sd), stat = "identity") +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    labs(title = 'RTT a cada Host Intermedio', x = "Hop", y = "RTT")
+getRtti <- function (summarized) {
+    rttis <- data.frame(ttl = numeric(0), name = character(0), rtti = numeric(0))
+    
+    lastRTT <- 0
+    wasNA <- FALSE
+    countNA <- 0
+    
+    for (i in 1:nrow(summarized)) {
+        currRTT <- summarized$mean[i]
+        
+        if (is.na(currRTT)) {
+            wasNA <- TRUE
+            countNA <- countNA + 1
+            next
+        }
+        
+        diff <- currRTT - lastRTT
+        
+        if (wasNA) {
+            #ACA HAY QUE REPARTIR EL RTT Y AGREGAR LAS FILAS
+            diff <- diff / (countNA + 1)
+            for (j in countNA:0) {
+                newI <- i - j
+                rttis <- rbind(rttis, data.frame(ttl = newI, name = summarized$name[newI ], rtti = diff))	
+            }
+        } else {
+            rttis <- rbind(rttis, data.frame(ttl = i, name = summarized$name[i], rtti = diff))
+        }
+        
+        lastRTT <- currRTT
+        wasNA <- FALSE
+        countNA <- 0    
+    }
+    
+    meanRtti <- mean(rttis$rtti)
+    sdRtti <- sd(rttis$rtti)
+    
+    rttis$zscore <- sapply(rttis$rtti, function (x) { (x - meanRtti) / sdRtti } )
+    
+    rttis
 }
 
-plotZscore <- function (zscore) {    
+
+plotAcumulated <- function (summarized, melted, filename) {    
+    ggplot(data = summarized, aes(name, mean, group = 1)) + 
+    geom_point(aes(x = name, y = rtt), data = melted[melted$ip %in% summarized$ip, ], colour = "red") +
+    geom_point(shape = 21, size = 6, fill = "white") +
+    geom_errorbar(width = 0.5, aes(ymin = mean - sd, ymax = mean + sd)) +    
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    labs(title = 'RTT a cada Host Intermedio', x = "Hop", y = "RTT")
+    
+    ggsave(filename, width = 8, height = 8)
+}
+
+plotZscore <- function (zscore, filename) {
     ggplot(data=zscore, aes(x=ip, y=prom),na.rm = TRUE) +    
     geom_bar(stat="identity",position = "identity") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
     labs(title = 'ZScore de cada RTTi', x = "IP", y = "ZScore")     
-    #ggsave(file="zscore.pdf") 
+        
+    ggsave(filename, width = 8, height = 8)
 }
 
-plotMap <-  function(summarized) {    
-    #xlim <- c(-171.738281, -56.601563)
-    #ylim <- c(12.039321, 71.856229)
+plotMap <-  function (summarized, filename) {    
+    pdf(filename)
     
     data <- summarized[!is.na(summarized$longitude) & summarized$longitude != 0 & !is.na(summarized$latitude) & summarized$latitude != 0, c("longitude", "latitude")]
             
@@ -123,11 +161,9 @@ plotMap <-  function(summarized) {
     points(x = data$longitude, y = data$latitude, col = 'red', cex=0.5, pch=19)    
     
     firstNonNa <- -1
-    
-    
+        
     for(i in 1:nrow(summarized)) {            
-        if (!is.na(summarized$longitude[i]) & summarized$longitude[i] != 0 & !is.na(summarized$latitude[i]) & summarized$latitude[i] != 0)
-        {
+        if (!is.na(summarized$longitude[i]) & summarized$longitude[i] != 0 & !is.na(summarized$latitude[i]) & summarized$latitude[i] != 0) {
             firstNonNa <- i
             break
         }
@@ -137,24 +173,11 @@ plotMap <-  function(summarized) {
         return
         
     wasNA <- FALSE
-    
-    # lat_d2 <- as.numeric(geo[13,5])
-    # lon_d2 <- as.numeric(geo[13,6])
-    # inter <- gcIntermediate(c(lon_o, lat_o), c(lon_d, lat_d), n=50, addStartEnd=TRUE)
-    # inter2 <- gcIntermediate(c(lon_d, lat_d), c(lon_d2, lat_d2), n=50, addStartEnd=TRUE)
-    # lines(inter)
-    # lines(inter2)
-    #inter <- gcIntermediate(c(lon_o, lat_o), c(lon_d, lat_d), n=50, addStartEnd=TRUE)
-    #lines(inter)
-    
+        
     lastLongitude <- summarized$longitude[firstNonNa]
     lastLatitude <- summarized$latitude[firstNonNa]
     
-    pallete <- topo.colors(nrow(data) + 1)
-    nextColor <- 1
-    
-    for (i in (firstNonNa + 1):nrow(summarized)) {
-        
+    for (i in (firstNonNa + 1):nrow(summarized)) {        
         currLongitude <- summarized$longitude[i]
         currLatitude <- summarized$latitude[i]
         
@@ -170,18 +193,32 @@ plotMap <-  function(summarized) {
         greatCircle <- gcIntermediate(c(lastLongitude, lastLatitude), c(currLongitude, currLatitude), n=5000, addStartEnd=TRUE)
                 
         if (wasNA) {
-            lines(greatCircle, lwd= 0.5, lty = 2)
-            #arrows(lastLongitude, lastLatitude, currLongitude, currLatitude, code=2, lwd= 0.5, length = 0.03, col = pallete[nextColor])
+            lines(greatCircle, lwd= 0.5, lty = 2)            
         } else {
-            lines(greatCircle, lwd= 0.5, lty = 1)
-            #arrows(lastLongitude, lastLatitude, currLongitude, currLatitude, code=2, lwd= 0.5, length = 0.03, col = pallete[nextColor])
+            lines(greatCircle, lwd= 0.5, lty = 1)            
         }
+        
         lastLongitude <- currLongitude
         lastLatitude <- currLatitude
-        wasNA <- FALSE
-        nextColor <- nextColor + 1
+        wasNA <- FALSE        
     }
+
+    dev.off()
+}
+
+doAll <- function (filename) {
+    data <- loadData(filename)
+    melted <- meltedData(data)
+    summary <- summarizeData(melted)
+    rttis <- getRtti(summary)
     
-     dev.print(pdf, file="filename.pdf");
-     dev.off()
+    plotAcumulated(summary, melted, paste(filename, ".rtt_acum.pdf", sep=""))
+    plotMap(summary, paste(filename, ".map.pdf", sep=""))
+    
+    print("RTT a cada Host")
+    print(summary)
+    
+    print("RTTi")
+    print(rttis)
+    
 }
