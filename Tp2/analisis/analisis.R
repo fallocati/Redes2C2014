@@ -90,7 +90,7 @@ summarizeData <- function (melted) {
 }
 
 getRtti <- function (summarized) {
-    rttis <- data.frame(ttl = numeric(0), name = character(0), rtti = numeric(0))
+    rttis <- data.frame(ttl = numeric(0), rtti = numeric(0))
     
     lastRTT <- 0
     wasNA <- FALSE
@@ -112,10 +112,10 @@ getRtti <- function (summarized) {
             diff <- diff / (countNA + 1)
             for (j in countNA:0) {
                 newI <- i - j
-                rttis <- rbind(rttis, data.frame(ttl = newI, name = summarized$name[newI ], rtti = diff))	
+                rttis <- rbind(rttis, data.frame(ttl = newI, rtti = diff))	
             }
         } else {
-            rttis <- rbind(rttis, data.frame(ttl = i, name = summarized$name[i], rtti = diff))
+            rttis <- rbind(rttis, data.frame(ttl = i, rtti = diff))
         }
         
         lastRTT <- currRTT
@@ -143,11 +143,11 @@ plotAcumulated <- function (summarized, melted, filename) {
     ggsave(filename, width = 8, height = 8)
 }
 
-plotZscore <- function (zscore, filename) {
-    ggplot(data=zscore, aes(x=ip, y=prom),na.rm = TRUE) +    
+plotZscore <- function (rttis, filename) {
+    ggplot(data=rttis, aes(x=ttl, y=zscore), na.rm = TRUE) +    
     geom_bar(stat="identity",position = "identity") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    labs(title = 'ZScore de cada RTTi', x = "IP", y = "ZScore")     
+    labs(title = 'Z Score de cada RTTi', x = "RTTi", y = "Z Score")     
         
     ggsave(filename, width = 8, height = 8)
 }
@@ -213,12 +213,13 @@ doAll <- function (filename) {
     rttis <- getRtti(summary)
     
     plotAcumulated(summary, melted, paste(filename, ".rtt_acum.pdf", sep=""))
+    plotZscore(rttis, paste(filename, ".rtti_zscore.pdf", sep=""))
     plotMap(summary, paste(filename, ".map.pdf", sep=""))
     
     print("RTT a cada Host")
     print(summary)
     
-    print("RTTi")
+    print("RTTi con Z Score")
     print(rttis)
     
 }
