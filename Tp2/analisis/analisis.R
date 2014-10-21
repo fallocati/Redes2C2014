@@ -224,7 +224,7 @@ doAll <- function (filename) {
     plotAcumulated(summary, melted, paste(filename, ".rtt_acum.pdf", sep=""))
     plotAcumulated(filterHops(summary), melted, paste(filename, ".rtt_acum_filtered.pdf", sep=""))
     plotZscore(rttis, paste(filename, ".rtti_zscore.pdf", sep=""))
-    plotZscore(rttis, paste(filename, ".rtti_zscore_filtered.pdf", sep=""))
+    plotZscore(rttis_filtered, paste(filename, ".rtti_zscore_filtered.pdf", sep=""))
     plotMap(summary, paste(filename, ".map.pdf", sep=""))
     
     print("RTT a cada Host")
