@@ -104,7 +104,7 @@ respondieron para la secuencia m\'as obtenida\footnote{La secuencia 92 que
 obtuvimos en 3040 experimentos, p\'agina \pageref{tab:mcgill_sec_hops}.}.
 
 \par En la figura \ref{fig:rtt_dev_mcgill} se observan el valor medio del RTT y
-su varianza por cada hop:
+su varianza por cada hop, m\'as los resultados de las diferentes mediciones:
 
 \begin{figure}
     \centering
@@ -187,4 +187,23 @@ los $RTTs$ de los hops que ser\'an analizados con el $ZScore$.
     \label{fig:rtt_dev_mcgill_filtered}
 \end{figure}
 
-\par Tambi\'en 
+\par Tambi\'en se puede observar en este subconjunto de hops que evaluaremos
+en lo que resta de este escenario que el hop 8 fue filtrado. Se puede observar
+que el mismo es el hop con mayor desv\'io est\'andard (ergo, mayor variabilidad
+de sus tiempos de respuesta). A su vez, el $RTT$ promedio que nos di\'o es
+mayor al de su hop consecutivo, que tiene un desv\'io mucho menor. Por lo tanto,
+conclu\'imos que este hop se comportaba m\'as como un $outlier$ en cuanto
+al an\'alisis de enlaces relevantes, que es el foco de este trabajo.
+
+\par Ya habiendo filtrado aquellos hops que no nos presentan informaci\'on
+relevante para detectar los enlaces submarinos, se presenta en la figura
+\ref{fig:zscore_mcgill_filtered} el resultado de los $ZScore$ para cada
+uno de estos hops:
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth
+                    ]{img/escenario1/{mcgill_3040.path.92.rtti_zscore_filtered}.pdf}
+    \caption{$ZScore$ por $RTT_i$}
+    \label{fig:zscore_mcgill_filtered}
+\end{figure}
