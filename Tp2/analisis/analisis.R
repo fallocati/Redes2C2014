@@ -94,8 +94,20 @@ filterHops <- function (hops){
         }
         hop_ptr <- hop_ptr-1 #paths_indexes esta ordenado de menor a mayor segun mean
     }
+    
+    res <- hops[result_ttls,]
+    
+    #Agregamos NA
+    for (i in 1:nrow(hops)){
+        if(! (i %in% result_ttls)){
+            res <- rbind(res,hops[i,])
+            res$mean[nrow(res)] <- NA
+            res$sd[nrow(res)] <- NA
+        }
+    }
 
-    hops[result_ttls,]
+    #hops[result_ttls,]
+    res[order(res$name),]
 }
 
 getRtti <- function (summarized) {
