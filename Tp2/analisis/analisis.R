@@ -66,8 +66,7 @@ geolocateIps <- function(ip) {
             latitude = as.numeric(html[1])))
         }        
     }
-    
-    #ret <- rbindlist(rows.list)
+        
     ret    
 }
 
@@ -76,9 +75,7 @@ summarizeData <- function (melted) {
     
     res <- ddply(melted, ~name, summarise, ip = unique(ip), 
     longitude = as.numeric(replace(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip), c("longitude")], nrow(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip),]) == 0, NA)),
-    latitude = as.numeric(replace(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip), c("latitude")], nrow(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip),]) == 0, NA)),
-    #city = replace(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip), c("city")], nrow(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip),])  == 0, NA),
-    #country = replace(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip), c("country_name")], nrow(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip),]) == 0, NA),
+    latitude = as.numeric(replace(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip), c("latitude")], nrow(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip),]) == 0, NA)),    
     mean = replace(mean(rtt, na.rm = T), is.nan(mean(rtt, na.rm = T)), NA),
     sd = replace(sd(rtt, na.rm = T), is.nan(sd(rtt, na.rm = T)), NA)    )
     
@@ -111,13 +108,11 @@ filterHops <- function (hops){
     #Agregamos NA
     for (i in 1:nrow(hops)){
         if(! (i %in% result_ttls)){
-            res <- rbind(res,hops[i,])
+            res <- rbind(res, hops[i,])
             res$name[nrow(res)] <- sprintf("%02d - Filtrado", i)
             res$ip[nrow(res)] <- NA
             res$longitude[nrow(res)] <- NA
-            res$latitude[nrow(res)] <- NA
-            res$country[nrow(res)] <- NA
-            res$city[nrow(res)] <- NA
+            res$latitude[nrow(res)] <- NA            
             res$mean[nrow(res)] <- NA
             res$sd[nrow(res)] <- NA
         }
