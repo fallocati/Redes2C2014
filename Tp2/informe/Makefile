@@ -2,10 +2,13 @@ PARAMS="-halt-on-error -file-line-error -output-format pdf"
 
 TIKZ = network_paths.pdf \
 
-all: informe
+all: informe 
 
-informe: $(TIKZ) informe.tex
+informe: $(TIKZ) bibliography informe.tex
 	pdflatex $(PARAMS) informe.tex
+
+%.bcf: %.tex
+	pdflatex $(PARAMS) $<
 
 %.pdf: %.tex
 	pdflatex $(PARAMS) $<
