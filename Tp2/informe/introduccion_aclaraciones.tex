@@ -19,9 +19,65 @@ bien definidas:
 
     \item un an\'alisis de la informaci\'on que nos permita llegar conclusiones
         sobre las capacidades y caracter\'isticas de los caminos que siguen
-        los paquetes en la red global.
+        los paquetes en la red global
 \end{enumerate*}.
 
+%-------------------------------------------------------------------------------
+
+\subsection*{Notaci\'on}\label{sec:notacion}
+\par A lo largo de este trabajo se utilizar\'a cierta terminolog\'ia que,
+en el marco de la materia, puede ser interpretado de diferentes maneras. Por
+ello que se presenta a continaci\'on un pequen\~no glosario con los
+terminos que utilizaremos de aqu\'i en m\'as y sus significados:
+
+\bigskip
+
+\begin{description}
+	\item[Host] Representa las PC/Servidores (nodos de la red) en los
+		extremos del experimento. En particular tendremos el 
+		$host$ origen (las computadoras desde donde se realizaron
+		los experimentos) y destino (las universidades seleccionadas).
+	\bigskip
+
+	\item[Hop] Hace referencia a todos los nodos intermedios ($routers$,
+		$gateways$) que se encuentran entre nosotros y el host
+		destino. En algunos casos, por abuso de notaci\'on, nos
+		referiremos como $hop$ a alg\'un $host$ (de hecho, estos
+		$hop$ tienen un sistema operativo\footnote{En muchos casos
+		son servidores, o hasta posiblemente switches capa 3.}, por
+		lo cual se podr\'ia decir que tambi\'en son hosts). El
+		caso m\'as frecuente de esta utilizaci\'on del termino es
+		cuando hacemos referencia al $host$ destino.
+	\bigskip
+
+	\item[RTT] $Round Trip Time$ entre el host de origen donde fueron
+		corridos los experimentos y el $hop$ que respond\'io.
+	\bigskip
+
+	\item[RTT$_i$] Al agregar el sub\'indice al $keyword$ RTT,
+		estamos hablando del RTT entre el i-\'esimo hops
+		y su predecesor. Obviamente, por la naturaleza del experimento
+		(con los TTL incrementales), dichos $RTT_i$ son la diferencia
+		de los RTT muestrales entre los hops $i$ e \textit{i-1}.
+	\bigskip
+
+	\item[Ruta] Es una secuencia de hops que hay entre en host origen
+		y el host destino. En algunos casos nos refer\'imos a esto
+		como $path$ o $camino$.
+	\bigskip
+	
+	\item[TTL] \textit{Time to Live}\cite{rfc792} de los paquetes $ICMP$
+	\bigskip
+
+	\item[TimeExceeded/EchoReply] Son posibles mensajes del protocolo $ICMP$%
+	\cite{rfc792}. El primer ocurre cuando el TTL de un paquete llega
+	con valor 1 a un hop, el cual descarta el paquete y env\'ia el mensaje
+	$TimeExceeded$ a la IP de origen, para informar que su paquete fue
+	descartado. El $EchoReply$ es la respuesta que da el host destino
+	cuando recibe el paquete enviado.
+\end{description}
+
+%-------------------------------------------------------------------------------
 
 \subsection*{Herramienta desarrollada: \textit{El Rastrearutas}\footnote{Se
 pronuncia con acento espa\~nol.}}\label{sec:traceroute}
@@ -32,11 +88,21 @@ su \textit{TTL} (comenzando desde 1) para luego recibir las respuestas de los
 \textit{routers/swtiches} que conforman los hops del camino que sigue el paquete
 enviado. Estas respuestas ser\'an del tipo \textit{TimeExceeded} hasta el
 momento en que se alcance el \textit{host} destino, cu\'ando la respuesta ser\'a
-\textit{EchoReply}\footnote{Podr\'ia darse el caso en que no se alcance el
+\textit{EchoReply}
+
+\begin{figure}[hbt]
+	\centering
+	\includegraphics[width=0.5\textwidth,
+			]{img/introduccion/rastrearutas.png}
+	\caption{Metodolog\'ia TTL incrementales}
+	\label{fig:metodologia_rastrearutas}
+\end{figure}
+
+\par Podr\'ia darse el caso en que no se alcance el
 host destino. Esto podr\'ia deberse a m\'ultiples factores: el host destino
 no responde los paquetes ICMP, alg\'un hop intermedio no \textit{fowardea}/%
 delega este tipo de paquetes (para reducir su carga, por ejemplo), el host
-se encuentra ca\'ido, congesti\'on de la red, e infinidad de motivos m\'as}.
+se encuentra ca\'ido, congesti\'on de la red, e infinidad de motivos m\'as.
 
 \par Nuestro trabajo consisti\'o en un primer lugar en desarrollar una
 herramienta capaz de enviar estos paquetes ICMP siguiendo la metodolog\'ia
@@ -68,8 +134,9 @@ responde) no es acumulativo a trav\'es de los intentos. Es decir, una vez que
 se lleg\'o al \textit{timeout} para un env\'io, no se considera el tiempo
 transcurrido para calcular el RTT en el reintento siguiente.
 
+%-------------------------------------------------------------------------------
 
-\subsection*{Sobre los experimentos realizados}
+\subsection*{Sobre los experimentos realizados}\label{sec:experimentacion}
 \par Como se pide en el enunciado de este trabajo, se seleccionaron 3
 universidades de distintos lugares del mundo para realizar la experimentaci\'on
 y reunir la informaci\'on necesaria para cumplir con los objetivos propuestos.
@@ -82,42 +149,10 @@ la conectividad entre ellas
 requeri\'a de varios enlaces intermedios/\textit{hops}, a partir de los cuales
 podremos extraer la informaci\'on a analizar.
 
-\subsection*{Notaci\'on}\label{sec:notacion}
-\par A lo largo de este trabajo se utilizar\'a cierta terminolog\'ia que,
-en el marco de la materia, puede ser interpretado de diferentes maneras. Por
-ello que se presenta a continaci\'on un pequen\~no glosario con los
-terminos que utilizaremos de aqu\'i en m\'as y sus significados:
-
-\begin{description}
-	\item[Host] Representa las PC/Servidores (nodos de la red) en los
-		extremos del experimento. En particular tendremos el 
-		$host$ origen (las computadoras desde donde se realizaron
-		los experimentos) y destino (las universidades seleccionadas).
-	\bigskip
-
-	\item[Hop] Hace referencia a todos los nodos intermedios ($routers$,
-		$gateways$) que se encuentran entre nosotros y el $host$
-		destino. En algunos casos, por abuso de notaci\'on, nos
-		referiremos como $hop$ a alg\'un $host$ (de hecho, estos
-		$hop$ tienen un sistema operativo\footnote{En muchos casos
-		son servidores, o hasta posiblemente switches capa 3.}. El
-		caso m\'as frecuente de esta utilizaci\'on del termino es
-		cuando hacemos referencia al $host$ destino.
-	\bigskip
-
-	\item[RTT] $Round Trip Time$ entre el host de origen donde fueron
-		corridos los experimentos y el $hop$ que respond\'io.
-	\bigskip
-
-	\item[RTT$_i$] Al agregar el sub\'indice al $keyword$ RTT,
-		estamos hablando del RTT entre el i-\'esimo hops
-		y su predecesor. Obviamente, por la naturaleza del experimento
-		(con los TTL incrementales), dichos $RTT_i$ son la diferencia
-		de los RTT muestrales entre los hops $i$ e \textit{i-1}.
-	%\bigskip
-\end{description}
+%-------------------------------------------------------------------------------
 
 \subsection*{Sobre los Datos analizados}\label{sec:datos_analizados}
+
 \subsubsection*{Rutas Experimentales vs Rutas Reales}
 \par A la hora de analizar los datos obtenidos mediante la experimentaci\'on,
 varias decisiones debieron ser tomadas. En primer lugar, el experimento consiste en
@@ -157,5 +192,47 @@ respondiendo \textit{requests} provenientes de la red, y esperamos encontrar
 los hops m\'as frecuentes por salto, lo que ser\'a una posible aproximaci\'on
 al camino real m\'as frecuente que realizan los paquetes.
 
-\subsubsection*{Hops sin respuesta}
+%-----------------------------------
 
+\subsubsection*{Hops sin respuesta}
+\par Como ya se ha mencionado en esta secci\'on, ocurre frecuentemente que
+varios hops en una ruta no env\'ian la respuesta $TimeExceeded$ cuando reciben
+un paquete ICMP con TTL 1. Los posibles motivos de este comportamiento ya fueron
+comentados en p\'arrafos anteriores, lo que importa definir ahora es que
+se har\'a ante esta situaci\'on a la hora de analizar los datos.
+
+\par A la hora de analizar estos datos no hay mucho que se pueda inferir. Con
+esta herramienta no se puede saber cual de todos los motivos posibles (o cuales)
+son los que ocurren. Entonces, si bien se decide mostrar gr\'aficamente a
+los hops que no responden, a la hora de calcular los $RTT_i's$ hay que tomar
+una decisi\'on.
+
+\par Por un lado se puede ignorar al hop que no respondi\'o a los ICMP, e
+hacer como si el salto se diera entre  los hops que lo rodean. Pero
+de esta manera estar\'iamos asign\'andole un $RTTi$ bastante mayor al
+hop posterior, lo cual nos afectar\'ia el an\'alisis posterior para identificar
+enlaces significativos.
+
+\par Para mitigar esto, tomamos otro camino: calculamos la diferencia entre
+los hops que lo rodean, y luego dividimos ese RTT calculado por 2, para repartir
+de forma equivalente el RTT entre el hop que no respondi\'o y el posterior
+(que si lo hizo).
+
+\par Esto se debe extender a la situaci\'on donde varios hops consecutivos
+no responden: 
+
+\begin{itemize}
+	\item Sean los $hop_i$ y $hop_j$ hops descubiertos mediante
+	la experimentacion.
+	\smallskip
+
+	\item Sea una sucesi\'on de hops que no respondieron $hop_k$
+	para $i < k <j,k\in[1,k_n]$
+	\smallskip
+
+	\item Entonces $RTT_k = \frac{RTT_j-RTT_i}{k_n+1}$
+
+\end{itemize}
+%-----------------------------------
+
+\subsubsection*{$RTT_i's$ Negativos}
