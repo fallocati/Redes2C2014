@@ -9,26 +9,26 @@ Los datos utilizados para hacer el an\'alisis se obtuvieron de 1000 experimentos
 
 %{Mapa}
 
-\begin{figure}[H]
+\begin{figure*}[htb]
     \centering
-    \includegraphics[width=0.5\textwidth , trim={6cm 7.3cm 3.1cm 6cm},clip]{img/escenario3/{tokyouniv_3.path.978.map}.pdf}
+    \includegraphics[width=0.9\textwidth , trim={5.8cm 6.8cm 3.0cm 5cm},clip]{img/escenario3/{tokyouniv_3.path.978.map}.pdf}
     \caption{Mapa de Ruta a destino}
     \label{fig:map_tokyo}
-\end{figure}
+\end{figure*}
 
 \par Como vemos en la figura \ref{fig:map_tokyo} el recorrido del paquete es de Buenos Aires, Argentina a Galicia y Madrid en España y de ah\'i a Tokyo en Jap\'on. \newline
 
 \par Como mencionamos anteriormente, al momento de evaluar cu\'ales eran los valores de RTT\_{i} entre cada par de nodos consecutivos de la ruta, filtramos varios de ellos en donde o no hab\'ia respuesta o avanzar un hop disminu\'ia el valor total acumulado de RTT en vez de aumentarlo, las figuras \ref{fig:rtt_tokyo} y \ref{fig:rtt_tokyo_filtered} muestran los valores obten\'idos antes y despues de filtrarlos respectivamente. \newline
  
 %{Valores de rtti}
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.4\textwidth]{img/escenario3/{tokyouniv_3.path.978.rtt_acum}.pdf}
     \caption{RTTs de cada par de hops}
     \label{fig:rtt_tokyo}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.4\textwidth]{img/escenario3/{tokyouniv_3.path.978.rtt_acum_filtered}.pdf}
     \caption{RTTs obten\'idos filtrando valores irrelevantes}
@@ -39,17 +39,17 @@ Los datos utilizados para hacer el an\'alisis se obtuvieron de 1000 experimentos
 
 %Valor de zscore y posibles umbrales:
 
-\par Se puede observar que aquellos que ten\'ian desv\io est\'andar muy alto provocan que el calculo de RTT total indique que disminuye al avanzar al siguiente hop. Los valores de RTT que terminamos considerando son\ aquellos que quedan luego de filtrar. 
+\par Se puede observar que aquellos que ten\'ian desv\'io est\'andar muy alto provocan que el calculo de RTT total indique que disminuye al avanzar al siguiente hop. Los valores de RTT que terminamos considerando son\ aquellos que quedan luego de filtrar. 
 Los valores de Z score obtenidos terminan siendo en su mayor\'ia cercanos o mayores a  1, puesto que al quedarnos con tan pocos nodos respecto a la cantidad que ten\'iamos originalmente ( 8 de 14) los RTT resultantes son basatante m\'as altos a los que ten\'iamos antes de filtrar.Al normalizar estos valores es razonable que el Z score sea m\'as alto del esperado. 
 
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.4\textwidth]{img/escenario3/{tokyouniv_3.path.978.rtti_salteando_zscore_filtered}.pdf}
     \caption{ZRTT de cada salto}
     \label{fig:zrtt_tokyo}
 \end{figure}
 
-\par Los valores obten\'idos claramente no son suficientes para establecer un posible umbral que nos determine la presencia de enlaces submarrinos para cualquier otra muestra. El salto de Argentina a España se lleva a cabo al pasar de \textt{200.51.240.181} a \textt{213.140.39.116}, y el salto de España a Jap\'on sucede cuando pasamos de 213.140.52.186 a 111.87.3.25. En ambos casos el Z score dio negativo \footnote{Los valores son -0.72936154 y -0.76973635 respectivamente.} y casualmente el RTT relativo a esos pares de hops consecutivos son de los menores respecto a los dem\'as. Al filtrar una gran cantidad de hops en el medio de dos hops cercanos geograficamente el RTT relativo de ellos esta resultando mayor al de los dos mencionados anteriormente. \newline
+\par Los valores obten\'idos claramente no son suficientes para establecer un posible umbral que nos determine la presencia de enlaces submarrinos para cualquier otra muestra. El salto de Argentina a Espa\~na se lleva a cabo al pasar de $200.51.240.181$ a $213.140.39.116$, y el salto de Espa\~na a Jap\'on sucede cuando pasamos de 213.140.52.186 a 111.87.3.25. En ambos casos el Z score dio negativo \footnote{Los valores son -0.72936154 y -0.76973635 respectivamente.} y casualmente el RTT relativo a esos pares de hops consecutivos son de los menores respecto a los dem\'as. Al filtrar una gran cantidad de hops en el medio de dos hops cercanos geograficamente el RTT relativo de ellos esta resultando mayor al de los dos mencionados anteriormente. \newline
 En base a todo esto conclu\'imos que para esta muestra no se puede determinar un umbral a partir del cual conseguir pares de nodos distinguidos, la naturaleza de nuestra ruta real al destino nos hizo filtrar una cantidad considerable de hops que luego hicieron que los valores de RTT y Z score no aporten informaci\'on de enlaces importantes. 
 
 %\par El valor de la primera IP es alto y ,como siempre, se encuentra por encima de lo normal, 2.0445089.Luego disminuye a -0.9018753 y aumenta a 0.1841476 al pasar de Argentina a España, despu\'es se mantiene en valores cercanos a ese valor (0.1841476, 0.5019909, 0.2142066) hasta realizar el salto a Japón que disminuye el z score a -0.8948795. \newline
