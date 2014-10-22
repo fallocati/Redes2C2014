@@ -1,1 +1,7 @@
-\IEEEPARstart{LL}{e}gados al final del trabajo expuesto, ...
+\IEEEPARstart{LL}{e}gados al final del trabajo expuesto, concluimos en que el m\'etodo de $traceroute$ no es demasiado \'util para diagnosticar la ruta entre 2 hosts, dada la naturaleza cambiante de la red IP. Tambi\'en observamos que es muy dificil estimar en donde se encuentran los cuellos de botella en una conexi\'on IP, dado que algunos hosts forwardean paquetes IP con mayor velocidad que con la que contestan pedidos ICMP Echo, por lo que la experimentaci\'on termina mostrando datos distintos a los reales. 
+
+\par Cuando se estudian las latencias teniendo una fuente de datos donde la secuencia de nodos es consistente, y se puede analizar un camino en particular con muchas apariciones, pensamos que es posible llegar a alguna conclusi\'on m\'as segura. En nuestros casos, los escenarios 1 y 2 presentaron estas situaciones (con mucho mayor magnitud de datos en el primero), y se pudo obtener (con gran certeza en el primer escenario, no as\'i en el segundo) un valor de umbral igual a 1 para determinar saltos destacados. Si tuvieramos que continuar realizando experimentaciones luego de esto, tomar\'iamos como base este valor para el an\'alisis.
+
+\par Nos llevamos como positivo de este trabajo la experiencia en an\'alisis de datos, tener que probar distintos m\'etodos hasta obtener resultados que tuvieran algo de sentido. 
+
+\par Quedamos un poco disconformes con el rendimiento del framework Scapy, ya que introduce una gran latencia en comparación de la implementaci\'on nativa de linux (por ejemplo, 124ms contra 3ms), pensamos que hubiera sido interesante implementar el traceroute en un lenguaje de bajo nivel, como C o C++. 
