@@ -20,36 +20,36 @@ obtenido las mismas secuencias:
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{r | r | r}
-            &\#caminos  & \\
-        ids &Distintos  &\#Veces\\
+    \begin{tabular}{c | c}
+                      &\#Caminos\\
+        \#Apariciones &Distintos\\
         \hline\hline
-        1& 36& 1\\
-        37& 19& 2\\
-        56& 5& 3\\
-        61& 5& 4\\
-        66& 1& 6\\
-        67& 1& 9\\
-        68& 2& 10\\
-        70& 2& 11\\
-        72& 2& 12\\
-        74& 2& 13\\
-        76& 2& 14\\
-        78& 1& 15\\
-        79& 1& 17\\
-        80& 1& 22\\
-        81& 1& 30\\
-        82& 1& 35\\
-        83& 1& 61\\
-        84& 1& 76\\
-        85& 1& 80\\
-        86& 1& 98\\
-        87& 1& 128\\
-        88& 1& 138\\
-        89& 1& 159\\
-        90& 1& 294\\
-        91& 1& 1563\\
-        92& 1& 3040\\
+        1& 36\\
+        2& 19\\
+        3& 5\\
+        4& 5\\
+        6& 1\\
+        9& 1\\
+        10& 2\\
+        11& 2\\
+        12& 2\\
+        13& 2\\
+        14& 2\\
+        15& 1\\
+        17& 1\\
+        22& 1\\
+        30& 1\\
+        35& 1\\
+        61& 1\\
+        76& 1\\
+        80& 1\\
+        98& 1\\
+        128& 1\\
+        138& 1\\
+        159& 1\\
+        294& 1\\
+        1563& 1\\
+        3040& 1\\
         \hline\hline
     \end{tabular}
     \bigskip
@@ -61,9 +61,9 @@ obtenido las mismas secuencias:
 expermientos corridos durante todo un d\'ia), a pesar de saber de que IP
 no nos asegura un camino de hops para llegar al destino, es notable la diferencia
 entre 2 o 3 secuencias que son el resultado de de cas\'i todo el experimento:
-entre las rutas muestrales 90, 91 y 92 se tienen 4897 experimentaciones (%
-aproximadamente un 80\% del total de la experimentaci\'on). Es decir, a pesar
-de lo variable que puede ser la red a la hora de encontrar un camino entre 2
+entre las 3 ulitmas rutas del cuadro \ref{tab:mcgill_sec_hops} se tienen 4897
+experimentaciones (aproximadamente un 80\% del total de la experimentaci\'on).
+Es decir, a pesar de lo variable que puede ser la red a la hora de encontrar un camino entre 2
 hosts sobre el protocolo IP (y con todas las posibles combinaciones de hops que
 se podr\'ian obtener al tener en cuenta lo explicado en \emph{\nameref{sec:datos_analizados},
 \nameref{sec:introduccion}}), se observa cierta predictibilidad en este proceso,
@@ -81,7 +81,7 @@ ruta que se recibir\'a de realizar el \textit{rastrearutas}.
     \begin{tabular}{c | c}
                    & Concentrac\'ion\\
        Entrop\'ia  & de Probabilidad\\
-       		   & de Rutas 90, 91 y 92\\
+                    & de 3 ultimas rutas\\
        \hline\hline
        2.49631 & $81,6166\%$\\
        %\hline\hline
@@ -100,11 +100,11 @@ bastante bajo\footnote{Al menos, comparado con los resultados obtenidos en el
 introducci\'on, no haremos foco en aquellas secuencias de hops que aparecen
 con menor frecuencia. As\'i pues, exponemos los RTTs obtenidos
 entre la m\'aquina de origen donde fue corrido el experimento y los hops que
-respondieron para la secuencia m\'as obtenida\footnote{La secuencia 92 que 
+respondieron para la secuencia m\'as obtenida\footnote{La secuencia en la que 
 obtuvimos en 3040 experimentos, p\'agina \pageref{tab:mcgill_sec_hops}.}.
 
 \par En la figura \ref{fig:rtt_dev_mcgill} se observan el valor medio del RTT y
-su varianza por cada hop, m\'as los resultados de las diferentes mediciones:
+su desv\'io est\'andard por cada hop, m\'as los resultados de las diferentes mediciones.
 
 \begin{figure}
     \centering
@@ -196,9 +196,9 @@ conclu\'imos que este hop se comportaba m\'as como un $outlier$ en cuanto
 al an\'alisis de enlaces relevantes, que es el foco de este trabajo.
 
 \par Ya habiendo filtrado aquellos hops que no nos presentan informaci\'on
-relevante para detectar los enlaces submarinos, se presenta en la figura
+relevante para detectar los enlaces representativos, se presenta en la figura
 \ref{fig:zscore_mcgill_filtered} el resultado de los $ZScore$ para cada
-uno de estos hops:
+uno de estos hops.
 
 \begin{figure}
     \centering
@@ -207,3 +207,26 @@ uno de estos hops:
     \caption{$ZScore$ por $RTT_i$}
     \label{fig:zscore_mcgill_filtered}
 \end{figure}
+
+\par Observando la figura, podemos claramente proponer utilizar un umbral
+$u = 1$. Esta propuesta no es m\'agica, sin que surge de ver que utilizando
+dicho $u$ el \'unico hop que queda filtrado ser\'a el n\'umero 9. Esto
+se condice con la realidad que se puede observar mediante la geolocalizaci\'on
+de las IPs, donde el hop previo se encuentra localizado en la \textit{Ciudad
+Aut\'onoma de Buenos Aires}, mientras que el hop 9 est\'a en los \textit{EEUU}.
+Evidentemente este parecer\'ia ser el enlace destacado del experimento\footnote{%
+El singular en este caso aplica a este experimento, bien podr\'ian haber m\'as
+de un enlace representativo.}.
+
+\par Mirando con m\'as detalle, uno se podr\'ia preguntar porque no queremos
+considerar al hop 18 como un enlace destacado (y seleccionar un $u$ por debajo
+de su $ZScore$ y por encima del resto). Esto se debe a que al salto anterior
+(muestral, tenido en cuenta para calcular los $RTT_i's$ y los $ZScores$) es
+justamente el salto 9. Como se vi\'o en la figura \ref{fig:rtt_dev_mcgill}, todos
+los $RTT's$ obtenidos para los $hosts$ entre los saltos 10 y 18 fueron filtrados
+por ser muy similares y dar como resultados $RTT_i's$ negativos. As\'i pues,
+al momento de calcuar el $RTT_{18}$, este es en realidad el $RTT$ entre el hop
+9 y el 18, en lugar de ser entre el 17 y \'el. Esto, sumado al hecho de que
+la informaci\'on de geolocalizaci\'on nos situ\'a al host del salto 17 en
+\textit{EEUU} (en \textit{Wilmington}) y al 18 en \textit{Montr\'eal}, las cuales
+son ciudades muy cercanas.
