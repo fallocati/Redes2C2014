@@ -1,4 +1,5 @@
 require(ggplot2)
+require(grid)
 require(plyr)
 require(rjson)
 require(maps)
@@ -116,10 +117,11 @@ filterHops <- function (hops){
     res[order(res$name),]
 }
 
-getRtti <- function (summarized) {
+getRttiDividiendo <- function (summarized) {
     rttis <- data.frame(ttl = numeric(0), ip = character(0), rtti = numeric(0))
     
     lastRTT <- 0
+    lastHost <- "Host"
     wasNA <- FALSE
     countNA <- 0
     
@@ -138,12 +140,14 @@ getRtti <- function (summarized) {
             diff <- diff / (countNA + 1)
             for (j in countNA:0) {
                 newI <- i - j
-                rttis <- rbind(rttis, data.frame(ttl = newI, ip=summarized$ip[i],rtti = diff))	
+                rttis <- rbind(rttis, data.frame(ttl = newI, name = sprintf("%02d: %s - %s", newI, lastHost, summarized$ip[newI]), rtti = diff))
+                lastHost <- summarized$ip[newI]
             }
         } else {
-            rttis <- rbind(rttis, data.frame(ttl = i, ip=summarized$ip[i], rtti = diff))
+            rttis <- rbind(rttis, data.frame(ttl = i, name = sprintf("%02d: %s - %s", i, lastHost, summarized$ip[i]), rtti = diff))
         }
         
+        lastHost <- summarized$ip[i]
         lastRTT <- currRTT
         wasNA <- FALSE
         countNA <- 0    
@@ -153,10 +157,39 @@ getRtti <- function (summarized) {
     sdRtti <- sd(rttis$rtti)
     
     rttis$zscore <- sapply(rttis$rtti, function (x) { (x - meanRtti) / sdRtti } )
+    rttis$name <- as.character(rttis$name)
     
     rttis
 }
 
+getRttiSalteandoNA <- function (summarized) {
+    rttis <- data.frame(ttl = numeric(0), ip = character(0), rtti = numeric(0))
+    
+    lastRTT <- 0
+    lastHost <- "Host"
+        
+    for (i in 1:nrow(summarized)) {
+        currRTT <- summarized$mean[i]
+        diff <- NA
+                
+        if (!is.na(currRTT)) {
+            diff <- currRTT - lastRTT
+            lastRTT <- currRTT
+        }
+        
+        rttis <- rbind(rttis, data.frame(ttl = i, name = sprintf("%02d: %s - %s", i, lastHost, summarized$ip[i]), rtti = diff))
+        
+        lastHost <- summarized$ip[i]
+    }
+    
+    meanRtti <- mean(rttis$rtti, na.rm=T)
+    sdRtti <- sd(rttis$rtti, na.rm=T)
+    
+    rttis$zscore <- sapply(rttis$rtti, function (x) { (x - meanRtti) / sdRtti } )
+    rttis$name <- as.character(rttis$name)
+    
+    rttis
+}
 
 plotAcumulated <- function (summarized, melted, filename) {    
     ggplot(data = summarized, aes(name, mean, group = 1)) + 
@@ -164,17 +197,19 @@ plotAcumulated <- function (summarized, melted, filename) {
     geom_point(shape = 21, size = 6, fill = "white") +
     geom_errorbar(width = 0.5, aes(ymin = mean - sd, ymax = mean + sd)) +    
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    labs(title = 'RTT a cada Host Intermedio', x = "Hop - IP", y = "RTT [ms]")
+    labs(title = 'RTT a cada Host Intermedio', x = "TTL - IP", y = "RTT [ms]")
     
     ggsave(filename, width = 8, height = 8)
 }
 
 plotZscore <- function (rttis, filename) {
-    ggplot(data=rttis, aes(ttl,zscore), na.rm = TRUE) +    
-    geom_bar(stat="identity",position = "identity") + 
-    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    labs(title = 'Z Score de cada RTTi', x = "RTTi", y = "Z Score")     
-        
+    ggplot(data=rttis, aes(name, zscore), na.rm = TRUE) +    
+    geom_bar(stat="identity", position = "identity") + 
+    scale_x_discrete(labels=rttis$name) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+    plot.margin = unit(c(1, 1, 1, 1), "cm")) +
+    labs(title = 'Z Score de cada Hop', x = "Hop", y = "Z Score")
+    
     ggsave(filename, width = 8, height = 8)
 }
 
@@ -236,19 +271,38 @@ doAll <- function (filename) {
     data <- loadData(filename)
     melted <- meltedData(data)
     summary <- summarizeData(melted)
-    rttis <- getRtti(summary)
-    rttis_filtered <- getRtti(filterHops(summary))
+    summary_filtered <- filterHops(summary)
+    rttis_dividiendo <- getRttiDividiendo(summary)
+    rttis_dividiendo_filtered <- getRttiDividiendo(summary_filtered)
+    rttis_salteando <- getRttiSalteandoNA(summary)
+    rttis_salteando_filtered <- getRttiSalteandoNA(summary_filtered)
     
     plotAcumulated(summary, melted, paste(filename, ".rtt_acum.pdf", sep=""))
-    plotAcumulated(filterHops(summary), melted, paste(filename, ".rtt_acum_filtered.pdf", sep=""))
-    plotZscore(rttis, paste(filename, ".rtti_zscore.pdf", sep=""))
-    plotZscore(rttis_filtered, paste(filename, ".rtti_zscore_filtered.pdf", sep=""))
+    plotAcumulated(summary_filtered, melted, paste(filename, ".rtt_acum_filtered.pdf", sep=""))
+    
+    plotZscore(rttis_dividiendo, paste(filename, ".rtti_dividiendo_zscore.pdf", sep=""))    
+    plotZscore(rttis_salteando, paste(filename, ".rtti_salteando_zscore.pdf", sep=""))
+    plotZscore(rttis_dividiendo_filtered, paste(filename, ".rtti_dividiendo_zscore_filtered.pdf", sep=""))
+    plotZscore(rttis_salteando_filtered, paste(filename, ".rtti_salteando_zscore_filtered.pdf", sep=""))
+    
     plotMap(summary, paste(filename, ".map.pdf", sep=""))
+    plotMap(summary_filtered, paste(filename, ".map_filtered.pdf", sep=""))
     
     print("RTT a cada Host")
     print(summary)
     
-    print("RTTi con Z Score")
-    print(rttis)
+    print("RTTi (Dividiendo) con Z Score")
+    print(rttis_dividiendo)
     
+    print("RTTi (Salteando) con Z Score")
+    print(rttis_salteando)
+            
+    print("RTT a cada Host Filtrado")
+    print(summary_filtered)
+    
+    print("RTTi (Dividiendo) con Z Score Filtrado")
+    print(rttis_dividiendo_filtered)
+    
+    print("RTTi (Salteando) con Z Score Filtrado")
+    print(rttis_salteando_filtered)
 }
