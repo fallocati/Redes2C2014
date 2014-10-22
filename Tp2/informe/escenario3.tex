@@ -1,3 +1,60 @@
-\IEEEPARstart{E}{S}cenario 1
+\IEEEPARstart{E}{N} este escenario se eligi\'o una universidad en Asia, tras varios intentos donde no siempre se llegaba a la IP destino,nos quedamos con la universidad de Tokyo en Jap\'on.
+Los datos utilizados para hacer el an\'alisis se obtuvieron de 1000 experimentos obtenidos con el \emph{rastrearutas} al host de la universidad que se encuentra en las direcciones \texttt{59.106.161.0/24}. \newline
 
-\subsection{Descripci\'on}
+\par Al igual que en los escenarios anteriores para evitar obtener anomal\'ias en los valores de RTT, no se est\'a considerando el promedio de los 1000 experimentos sino la ruta que m\'as veces se obtuvo dentro de las 1000 ejecuciones del emph{rastrearutas} ya que al tomar el promedio puede resultar en alg\'un valor de RTT absoluto menor respecto al obtenido en el nodo anterior. \newline
+
+
+\subsection{Resultados para el total de los Experimentos}
+
+\par Como primera consideraci\'on importante de este experimento se distingue que el ISP\footnote{Speedy} de la conexi\'on de la PC en la cual hicimos las ejecuciones de este caso, dirige nuestro pedido de Buenos Aireas a España( en la región de Gal\'icia o Madrid ) \footnote{Un host que seg\'un las herramientas de geolocalizaci\'on casualmente se llama Telefonica Data Corporacion}. Esto sucede cuando la ruta es hacia cualquier direcci\'on fuera de Argentina (entre otros algunos muy cercanos como Uruguay, Brasil,Chile), mientras que esto no sucede si nos dirigimos a alguna IP dentro del pa\'is. \newline
+
+%{Mapa}
+
+%\begin{figure}
+%    \centering
+%    \includegraphics[width=0.5\textwidth]{img/escenario3/{tokyouniv_1.path.1.map}.pdf}
+%    \caption{Mapa de Ruta }
+%    \label{fig:map_tokyo}
+%\end{figure}
+
+\par Como vemos en la figura %Map
+el recorrido del paquete es de Buenos Aires, Argentina a Galicia y Madrid en España y de ah\'i a Tokyo en Jap\'on. \newline
+
+\par Como mencionamos anteriormente, al momento de evaluar cuales eran los valores de RTT\_{i} entre cada par de nodos de la ruta, tambi\'en sucedi\'o que hubo que filtrar varios de ellos en donde avanzar un hop disminu\'ia el valor total de RTT en vez de aumentarlo o no se obten\'ia respuesta,las figuras \ref{fig:rtt_tokyo} y \ref{fig:rtt_tokyo_filtered} muestran los valores obtenidos antes y despues de filtrarlos respectivamente. \newline
+ 
+%{Valores de rtti}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.4\textwidth]{img/escenario3/{tokyouniv_1.path.1.rtt_acum}.pdf}
+    \caption{RTTs obtenidos}
+    \label{fig:rtt_tokyo}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.4\textwidth]{img/escenario3/{tokyouniv_1.path.1.rtt_acum_filtered}.pdf}
+    \caption{RTTs filtrando casos}
+    \label{fig:rtt_tokyo_filtered}
+\end{figure}
+
+%Valor de zscore y posibles umbrales:
+
+Los resultados de Z score obten\'idos en esta muestra se reflejan en la figura \ref{fig:zrtt_tokyo}:
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.4\textwidth]{img/escenario3/{tokyouniv_1.path.1.rtti_zscore}.pdf}
+    \caption{ZRTTs}
+    \label{fig:zrtt_tokyo}
+\end{figure}
+
+\par El valor de la primera IP es alto y ,como siempre, se encuentra por encima de lo normal, 2.0445089.Luego disminuye a -0.9018753 y aumenta a 0.1841476 al pasar de Argentina a España, despu\'es se mantiene en valores cercanos a ese valor (0.1841476, 0.5019909, 0.2142066) hasta realizar el salto a Japón que disminuye el z score a -0.8948795. \newline
+
+
+\par Podemos ver que al hacer saltos submarinos el valor del zscore aumenta o disminuye (en este caso disminuye en ambas ocaciones) una diferencia respecto al anterior cercana a 1, en el resto de los casos no se suele dar una diferencia tan considerable entre dos valores de z score de enlaces consecutivos. \newline
+
+%La heur\'istica de elecci\'on de un cierto umbral tal que al obtener valores mayores a él se reconozca tal par de hops como distingu\'idos, no necesariamente funciona en los casos obtenidos mediante este experimento, a partir de lo analizado anteriormente, considerar un umbral entre la diferencia del z score de dos pares consecutivos de hops parece un método más correcto para este tipo de casos
+
+\par A pesar de que a simple vista se podr\'ia elegir como umbral valores entre [0.8 , 1] en este tipo de experimentos parece ser más f\'acil de reconocer si hay pares de hops distinguidos si la diferencia entre el z score de pares consecutivos es mayor a 1 
+
+--COMPLETAR--
