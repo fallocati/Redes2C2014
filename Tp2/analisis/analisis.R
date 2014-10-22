@@ -94,7 +94,9 @@ filterHops <- function (hops){
     while (hop_ptr >= 1)
     {
         if (paths_indexes[hop_ptr] > result_ttls[length(result_ttls)]){
-            if(hops$sd[paths_indexes[hop_ptr]] < hops$sd[result_ttls[length(result_ttls)]]){
+            if(hops$sd[paths_indexes[hop_ptr]] < hops$sd[result_ttls[length(result_ttls)]] &
+                 paths_indexes[hop_ptr] < result_ttls[length(result_ttls)-1])
+            {
                 result_ttls[length(result_ttls)] <- paths_indexes[hop_ptr]
             }
             
