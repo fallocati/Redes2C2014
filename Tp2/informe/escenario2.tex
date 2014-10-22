@@ -39,8 +39,8 @@
 
 \begin{figure}
     \centering
-    %\includegraphics[width=0.5\textwidth
-    %                ]{img/escenario2/{hel_134.path.86.rtt_acum}.pdf}
+    \includegraphics[width=0.5\textwidth
+                    ]{img/escenario2/{hel_134.path.86.rtt_acum}.pdf}
     \caption{RTT media/Desv\'io Est\'andard}
     \label{fig:rtt_dev_helsinki}
 \end{figure}
@@ -51,18 +51,61 @@
 
 \begin{figure}
     \centering
-    %\includegraphics[width=0.5\textwidth
-    %                ]{img/escenario2/{hel_134.path.86.rtt_acum_filtered}.pdf}
+    \includegraphics[width=0.5\textwidth
+                    ]{img/escenario2/{hel_134.path.86.rtt_acum_filtered}.pdf}
     \caption{RTT media/Desv\'io Est\'andard para Hops Relevantes}
     \label{fig:rtt_dev_helsinki_filtered}
 \end{figure}
 
-\par Con esta informaci\'on filtrada, pasamos a calcular el $ZScore$ para cada hop. El resultado se ve en la figura \ref{fig:zscore_helsinki_filtered}
+\par Con esta informaci\'on filtrada, pasamos a calcular el $ZScore$ para cada hop. El resultado se ve en la figura \ref{fig:zscore_helsinki_filtered}. Podemos observar que hay 2 nodos que tienen un puntaje positivo y grande. El primero es el salto entre el Host y el Gateway local. El alto puntaje que tiene se debe a que la media de su $RTT_i$ es 101.70987ms (cuando en realidad debería ser casi nulo, debido a que la conexi\'on a la red era por medio de cableado Gigabit), y suponemos que es por el overhead que introduce el framework Scapy. El otro hop que tiene un puntaje positivo alto, el 10, es un posible candidato a ser un enlace intercontinental. Si vemos la posición geográfica de los nodos de ese salto (que en este caso el valor fue filtrado, por lo que buscaremos el nodo inmediato anterior: el del hop 08 − IP 159.63.23.5), observamos que efectivamente hay un cambio grande de coordenadas:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c | c | c | c}                   
+      Hop & IP & Longitud & Latitud \\
+      \hline\hline       	
+       8 & 159.63.23.5 & -97.000 & 38.00\\
+	   10 & 213.248.76.189 & 47.000 & 275.4220\\
+      \hline\hline
+    \end{tabular}
+    \bigskip    
+\end{table}
 
 \begin{figure}
     \centering
-    %\includegraphics[width=0.5\textwidth
-     %               ]{img/escenario1/{hel_134.path.86.rtti_salteando_zscore_filtered}.pdf}
+    \includegraphics[width=0.5\textwidth
+                    ]{img/escenario2/{hel_134.path.86.rtti_salteando_zscore_filtered}.pdf}
     \caption{$ZScore$ por $RTT_i$}
     \label{fig:zscore_helsinki_filtered}
+\end{figure}
+
+\par Con este candidato, decidimos entonces que tomar como umbral el valor 1 podría ser un valor adecuado, ya que sobrepasa el overhead introducido por Scapy. Lamentablemente, en este experimento no nos aparecio otro nodo con $ZScore$ alto, por lo que no podemos comparar para ver si es un valor adecuado. Por completitud, mostramos el resto de los valores de $RTT_i$ y de $ZScore$:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c | c | c | c}                   
+      Hop & Origen - Destino & $RTT_i$ & $ZScore$ \\
+      \hline\hline       	
+		1  & Host - 10.10.0.1					& 101.70987	& 0.96085592	 \\
+		8  & NA - 159.63.23.5					& 47.22018	& -0.27089050	 \\
+		10 & NA - 213.248.76.189				& 126.49196	& 1.52105825	 \\
+		11 & 213.248.76.189 - 62.115.141.78		& 62.45252	& 0.07343851	 \\
+		13 & NA - 213.155.130.154				& 59.94940	& 0.01685498	 \\
+		14 & 213.155.130.154 - 80.91.253.245	& 14.24033	& -1.01640436	 \\
+		22 & NA - 128.214.166.78				& 2.36212	& -1.28491281	 \\
+      \hline\hline
+    \end{tabular}
+    \bigskip    
+\end{table}
+
+\par Por \'ultimo, veamos en el mapa la ruta hasta el destino. Esta ruta fue dibujada con los datos originales (previo al filtrado).
+
+\begin{figure}
+    \centering
+    \includegraphics[trim= 2.5cm 6.5cm 10cm 5cm,
+                    clip,
+                    width=0.4\textwidth
+                    ]{img/escenario2/{hel_134.path.86.map}.pdf}
+    \caption{Distribuci\'on Geogr\'afica de los Hops}
+    \label{fig:map_helsinki}
 \end{figure}
