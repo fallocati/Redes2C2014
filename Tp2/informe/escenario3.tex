@@ -10,9 +10,9 @@ Esta distribuci\'on de rutas nos estar\'ia indicando que debe haber un balancead
 
 %{Mapa}
 
-\begin{figure*}[htb]
+\begin{figure*}
     \centering
-    \includegraphics[width=0.9\textwidth , trim={5.8cm 6.8cm 3.0cm 5cm},clip]{img/escenario3/{tokyouniv_3.path.978.map}.pdf}
+    \includegraphics[width=\textwidth , trim={5.8cm 6.8cm 3.0cm 5cm},clip]{img/escenario3/{tokyouniv_3.path.978.map}.pdf}
     \caption{Mapa de Ruta a destino}
     \label{fig:map_tokyo}
 \end{figure*}
@@ -22,14 +22,14 @@ Esta distribuci\'on de rutas nos estar\'ia indicando que debe haber un balancead
 \par Como mencionamos anteriormente, al momento de evaluar cu\'ales eran los valores de RTT\_{i} entre cada par de nodos consecutivos de la ruta, filtramos varios de ellos en donde o no hab\'ia respuesta o avanzar un hop disminu\'ia el valor total acumulado de RTT en vez de aumentarlo, las figuras \ref{fig:rtt_tokyo} y \ref{fig:rtt_tokyo_filtered} muestran los valores obten\'idos antes y despues de filtrarlos respectivamente. \newline
  
 %{Valores de rtti}
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width=0.4\textwidth]{img/escenario3/{tokyouniv_3.path.978.rtt_acum}.pdf}
     \caption{RTTs de cada par de hops}
     \label{fig:rtt_tokyo}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width=0.4\textwidth]{img/escenario3/{tokyouniv_3.path.978.rtt_acum_filtered}.pdf}
     \caption{RTTs obten\'idos filtrando valores irrelevantes}
@@ -43,7 +43,7 @@ Esta distribuci\'on de rutas nos estar\'ia indicando que debe haber un balancead
 \par Se puede observar que aquellos que ten\'ian desv\'io est\'andar muy alto provocan que el calculo de RTT total indique que disminuye al avanzar al siguiente hop. Los valores de RTT que terminamos considerando son\ aquellos que quedan luego de filtrar. 
 Los valores de Z score obtenidos en su mayor\'ia terminan siendo cercanos o mayores a  1, como nos quedamos con tan pocos nodos respecto a la cantidad que ten\'iamos originalmente ( 8 de 14) los RTT resultantes son basatante m\'as altos a los que ten\'iamos antes de filtrar.Al normalizar estos valores es razonable que el Z score sea m\'as alto del esperado. 
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width=0.4\textwidth]{img/escenario3/{tokyouniv_3.path.978.rtti_salteando_zscore_filtered}.pdf}
     \caption{ZRTT de cada salto}
@@ -52,19 +52,19 @@ Los valores de Z score obtenidos en su mayor\'ia terminan siendo cercanos o mayo
 
 En la siguiente tabla se resumen los valores resultantes para los pares de hops de la muestra filtrada: 
 
-\begin{table}[h]
+\begin{table}
     \centering
     \begin{tabular}{r | r | r}
         $Hop$ &$RTT_i$  &Zscore\\
         \hline\hline
-\textit{03: NA  200.51.240.181}& 153.53465& 1.58333792\\
-\textit{04: 200.51.240.181 - 213.140.39.116}&  16.86200& -0.72936154\\
-\textit{05: 213.140.39.116 - 5.53.5.138}& 149.60059&  1.51676783\\
-\textit{07: NA - 213.140.52.186}& 57.21807& -0.04647817\\
-\textit{08: 213.140.52.186 - 111.87.3.25}&  14.47598& -0.76973635\\
-\textit{10: NA - 118.155.197.42}&  53.60572& -0.10760452\\
-\textit{16: NA - 59.106.161.2}& 20.81958& -0.66239339\\
-\textit{17: 59.106.161.2 - 59.106.161.20}&  13.60162& -0.78453179\\
+        \textit{03: NA  200.51.240.181}& 153.53& 1.582\\
+        \textit{04: 200.51.240.181 - 213.140.39.116}&  16.86& -0.72\\
+        \textit{05: 213.140.39.116 - 5.53.5.138}& 149.60&  1.51\\
+        \textit{07: NA - 213.140.52.186}& 57.21& -0.046\\
+        \textit{08: 213.140.52.186 - 111.87.3.25}&  14.47& -0.76\\
+        \textit{10: NA - 118.155.197.42}&  53.60572& -0.10\\
+        \textit{16: NA - 59.106.161.2}& 20.81& -0.66\\
+        \textit{17: 59.106.161.2 - 59.106.161.20}&  13.60& -0.78\\
         \hline\hline
     \end{tabular}
     \bigskip

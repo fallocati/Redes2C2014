@@ -207,32 +207,50 @@ son los que ocurren. Entonces, si bien se decide mostrar gr\'aficamente a
 los hops que no responden, a la hora de calcular los $RTT_i's$ hay que tomar
 una decisi\'on.
 
-\par Por un lado se puede ignorar al hop que no respondi\'o a los ICMP, e
-hacer como si el salto se diera entre  los hops que lo rodean. Pero
-de esta manera estar\'iamos asign\'andole un $RTTi$ bastante mayor al
-hop posterior, lo cual nos afectar\'ia el an\'alisis posterior para identificar
-enlaces significativos.
+\par Por un lado se puede calcular la diferencia entre los hops que lo rodean,
+y luego dividir ese RTT calculado por 2, para repartir de forma equivalente el
+RTT entre el hop que no respondi\'o y el posterior (que si lo hizo).
 
-\par Para mitigar esto, tomamos otro camino: calculamos la diferencia entre
-los hops que lo rodean, y luego dividimos ese RTT calculado por 2, para repartir
-de forma equivalente el RTT entre el hop que no respondi\'o y el posterior
-(que si lo hizo).
+\par El problema de esta decisi\'on ser\'ia que, extendiendo a muchos hops consecutivos
+que no respondan (en la realidad observamos hasta 4 hops consecutivos sin responder,
+pero esto no es determinante), podr\'ia ocurrir que uno de esos 3 tenga una
+latencia significativa, mientras que los otros 3 no. Entonces al repartir equitativamente
+la latencia de todos juntos entre ellos igualar\'a sus $ZScores$, haciendo muy
+d\'ificil distinguir cual de ellos es un enlace significativo y cual no.
+
+\par Para mitigar esto tomamos otro camino: ignorar el hop que no respondi\'o a los ICMP, e
+hacer como si el salto se diera entre los hops que lo rodean. De esta manera
+estar\'iamos asign\'andole un $RTTi$ bastante mayor al
+hop posterior, lo cual nos afectar\'ia el an\'alisis posterior para identificar
+enlaces significativos, pero al menos podemos asegurar que entre esa serie de hops
+hay una latencia/$RTT_i$ importante, y se podr\'a buscar herramientas para determinar
+cual(es) de ellos son los enlances destacados.
 
 \par Esto se debe extender a la situaci\'on donde varios hops consecutivos
 no responden: 
 
 \begin{itemize}
-	\item Sean los $hop_i$ y $hop_j$ hops descubiertos mediante
-	la experimentacion.
-	\smallskip
+    \item Sean los $hop_i$ y $hop_j$ hops descubiertos mediante
+    la experimentacion.
+    \smallskip
 
-	\item Sea una sucesi\'on de hops que no respondieron $hop_k$
-	para $i < k <j,k\in[1,k_n]$
-	\medskip
+    \item Sea una sucesi\'on de hops que no respondieron $hop_k$
+    para $i < k <j,k\in[1,k_n]$
+    \medskip
 
-	\item Entonces $RTT_k = \dfrac{RTT_j-RTT_i}{k_n+1}$
-
+    \item Entonces $RTT_k = 0$ y $RTT_j = RTT_{hop_j} - RTT_{hop_i}$
 \end{itemize}
 %-----------------------------------
 
 \subsubsection*{$RTT_i's$ Negativos}
+\par La otra decisi\'on que debi\'o tomarse fue a la hora de calcular los $ZScore$.
+Por todos los motivos que ya se explicaron, ocurre que muchas veces los RTT
+de hops posteriores son menores que lo de hops anteriores. Si se analizan esos datos,
+se analizar\'an $RTT_i's$ negativos, los cuales conceptualmente no tienen sentido, pues
+no se puede \emph{ganar} tiempo en un salto\footnote{\url{http://www.imdb.com/title/tt0088763/}}.
+
+\par As\'i pues, se decidi\'io, en primer lugar, no tomar en cuenta aquellos hops
+que tuvieran un $RTT$ superior al del host destino o menores al del host origen. Luego,
+al encontrarse saltos consecutivos entre los hops restantes que presentasen esta situaci\'on,
+se decidi\'o descatar aquel hop con mayor desv\'io est\'andard, pues esto ser\'ia un
+indicio de que dicho hop es un $outlier$ para el an\'alasis que se ha realizado.
