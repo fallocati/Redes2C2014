@@ -61,7 +61,7 @@ obtenido las mismas secuencias:
 expermientos corridos durante todo un d\'ia), a pesar de saber de que IP
 no nos asegura un camino de hops para llegar al destino, es notable la diferencia
 entre 2 o 3 secuencias que son el resultado de de cas\'i todo el experimento:
-entre las rutas muestrales 90, 91 y 92 se tienen 4897 experimentaciones (
+entre las rutas muestrales 90, 91 y 92 se tienen 4897 experimentaciones (%
 aproximadamente un 80\% del total de la experimentaci\'on). Es decir, a pesar
 de lo variable que puede ser la red a la hora de encontrar un camino entre 2
 hosts sobre el protocolo IP (y con todas las posibles combinaciones de hops que
@@ -81,7 +81,7 @@ ruta que se recibir\'a de realizar el \textit{rastrearutas}.
     \begin{tabular}{c | c}
                    & Concentrac\'ion\\
                    & de Probabilidad\\
-       Entro\'ia   & de Rutas 90, 91 y 92\\
+       Entrop\'ia   & de Rutas 90, 91 y 92\\
        \hline\hline
        2.49631 & $81,6166\%$\\
        %\hline\hline
@@ -108,7 +108,83 @@ su varianza por cada hop:
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{img/escenario1/{mcgill_3040.path.92.rtt_acum}.pdf}
+    \includegraphics[width=0.5\textwidth
+                    ]{img/escenario1/{mcgill_3040.path.92.rtt_acum}.pdf}
     \caption{RTT media/Desv\'io Standad}
     \label{fig:rtt_dev_mcgill}
 \end{figure}
+
+\par Como toda experimentaci\'on con casos reales (internet en este caso) nos
+encontramos con resultados que distan de lo esperado teor\'icamente. Idealmente
+se hubiera esperado encontrar una secuencia creciente de RTTs para los hops,
+pero por los motivos ya expuestos en la \textit{\nameref{sec:introduccion}},
+nos encontramos con un entorno donde el primer resultado que salta a la vista
+es una serie consecutiva y considerable\footnote{La mitad de los hops.} de hops
+que tienen un RTT 
+\begin{enumerate*}[label=\itshape\alph*\upshape)]
+    \item muy similar, con oscilaciones peque\~nas entre pares de hops
+        consecutivos (del hop 10 al hop 16), y m\'as curioso a\'un
+
+    \item para todos estos nodos (m\'as algunos m\'as) se obtuvo un RTT
+        menor al RTT del \'ultimo hop (es decir, nuestro host destino).
+\end{enumerate*}
+
+\par En el caso \emph{a}, y extendiendo
+lo siguiente a los \'ultimos 4 hops ya que estos tienen RTTs similares, es
+de suma utilidad observar las posibles ubicaciones geogr\'aficas de los hops,
+para observar si estos se encuentran en la misma ciudad (en cuyo caso los
+resultados obtenidos ser\'ian razonables, ya que la distancia f\'isica entre
+dos nodos de la red es directamente proporcional al RTT, c\'omo se explic\'o
+en las clases te\'oricas\footnote{A pesar de que en una red
+IP bien se podr\'ian tener dos hosts en la misma ciudad con RTTs extremadamente
+distintos, aunque normalmente esto se deber\'ia a las configuraciones de los hops/%
+\textit{gateways} intermedios.}).
+
+\begin{figure}
+    \centering
+    \includegraphics[trim= 2.5cm 6.5cm 10cm 5cm,
+                    clip,
+                    width=0.4\textwidth
+                    ]{img/escenario1/{mcgill_3040.path.92.map}.pdf}
+    \caption{Distribuci\'on Geogr\'afica de los Hops}
+    \label{fig:map_mcgill}
+\end{figure}
+
+\par Podemos observar entonces en la figura \ref{fig:map_mcgill} como existe
+un gran hop que cubre mucha distancia (entre los EEUU y la Argentina), mientras
+que luego, todos los hops se dan entre hosts ubicados mucho m\'as cerca entre
+ellos (entre la costa este de EEUU, principalmente al norte, y la regi\'on
+sur este de Canada).
+
+\par Dada esta ubicaci\'on de los hops encontrados, es razonable obtener los
+resultados en cuesti\'on. En primer lugar ya que es l\'ogico (y hasta deseable%
+\cite{cdn}) que hops que se encuentran todos a gran distancia del host a partir
+del cual se miden el RTT den resultados similares, ya que la diferencia de
+1000km\footnote{Distancia aproximada entre el centro y northe de EEUU} entre hops
+no es tan significante si se tiene en cuenta un salto previo de 8000km para llegar
+desde la Argentina a ambos hosts\footnote{M\'as a\'un teniendo en cuenta el
+\textit{overhead} en los tiempos medidos agregado por \textit{Scapy}
+y los posibles esquemas de prioridades que pueden implementar los \textit{gateways/hops}
+tanto para el protocolo ICMP como para el origen o destino -Argentina/Canada- de
+los paquetes, como se explic\'o en la secci\'on \textit{\nameref{sec:introduccion}}.}.
+
+\par A la hora del an\'alisis para detectar enlaces relevantes, toda esta secuencia
+de hops cercanos geogr\'aficamente (al menos as\'i todo pareciera indicarlo)
+no nos es particularmente relevante (justamente, por el an\'alisis reci\'en hecho
+sobre ellos vemos que no son relevantes en cuanto al $RTT_i$ entre ellos). A
+su vez, estas oscilaciones nos perjudicaran al utilizar el $ZScore$ para comparar
+los $RTT_i's$ de todos los dem\'as nodo (tal como ya se explic\'o al comienzo de
+este trabajo). As\'i pues, al filtrar aquellos hops que no nos suman mucho
+con nuestro objetivo (ya que las oscilaciones nos dar\'an $RTT_i's$ negativos),
+se obtiene la figura \ref{fig:rtt_dev_mcgill_filtered}, que no es otra cosa que
+los $RTTs$ de los hops que ser\'an analizados con el $ZScore$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth
+                    ]{img/escenario1/{mcgill_3040.path.92.rtt_acum_filtered}.pdf}
+    \caption{RTT media/Desv\'io Standad para $Hops$ Relevantes}
+    \label{fig:rtt_dev_mcgill_filtered}
+\end{figure}
+
+\par Tambi\'en 

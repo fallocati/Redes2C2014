@@ -10,5 +10,8 @@ informe: $(TIKZ) informe.tex
 %.pdf: %.tex
 	pdflatex $(PARAMS) $<
 
+bibliography: informe.bcf
+	biber informe.bcf
+
 clean:
 	rm -f $(TIKZ) informe.pdf
