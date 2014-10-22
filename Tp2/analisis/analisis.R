@@ -44,22 +44,30 @@ meltedData <- function (data) {
 }
 
 geolocateIps <- function(ip) {        
-    #ret <- data.frame()
-    rows.list = vector(mode="list",length(ip))
-    
-    for (i in 1:length(ip)) {
+    ret <- data.frame()
+        
+    for (i in 1:length(ip)) {        
         if (is.na(ip[i]))
             next
         
-        url <- paste(c("http://freegeoip.net/json/", ip[i]), collapse='')
+        url <- paste(c("http://www.plotip.com/ip/", ip[i]), collapse='')
+        html <- readLines(url, warn=FALSE)
+        html <- html[grep(x=html, pattern="Latitude/Longitude") + 1]
+        sapply(unlist(strsplit(html, "([+-]?\\d+.\\d+)|\\s")), function (x) { html <<- sub(x, "", html) })
+        html <- unlist(strsplit(sub("^\\s+", "", html), " "))
         
-        value <- data.frame(t(unlist(fromJSON(readLines(url, warn=FALSE)))), stringsAsFactors = F)
-                
-        #ret <- rbind(ret, value)
-        rows.list[[length(rows.list)+1]] <-data.frame(t(unlist(fromJSON(readLines(url, warn=FALSE)))), stringsAsFactors = F)
+        if (length(html) != 2) {            
+            url <- paste(c("http://freegeoip.net/json/", ip[i]), collapse='')            
+            value <- fromJSON(readLines(url, warn=FALSE))
+            ret <- rbind(ret, data.frame(ip = ip[i], longitude = as.numeric(value$longitude),
+            latitude = as.numeric(value$latitude)))            
+        } else {
+            ret <- rbind(ret, data.frame(ip = ip[i], longitude = as.numeric(html[2]),
+            latitude = as.numeric(html[1])))
+        }        
     }
     
-    ret <- rbindlist(rows.list)
+    #ret <- rbindlist(rows.list)
     ret    
 }
 
@@ -69,8 +77,8 @@ summarizeData <- function (melted) {
     res <- ddply(melted, ~name, summarise, ip = unique(ip), 
     longitude = as.numeric(replace(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip), c("longitude")], nrow(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip),]) == 0, NA)),
     latitude = as.numeric(replace(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip), c("latitude")], nrow(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip),]) == 0, NA)),
-    city = replace(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip), c("city")], nrow(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip),])  == 0, NA),
-    country = replace(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip), c("country_name")], nrow(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip),]) == 0, NA),
+    #city = replace(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip), c("city")], nrow(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip),])  == 0, NA),
+    #country = replace(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip), c("country_name")], nrow(geoData[!is.na(unique(ip)) & geoData$ip == unique(ip),]) == 0, NA),
     mean = replace(mean(rtt, na.rm = T), is.nan(mean(rtt, na.rm = T)), NA),
     sd = replace(sd(rtt, na.rm = T), is.nan(sd(rtt, na.rm = T)), NA)    )
     
