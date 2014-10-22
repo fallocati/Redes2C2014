@@ -101,6 +101,12 @@ filterHops <- function (hops){
     for (i in 1:nrow(hops)){
         if(! (i %in% result_ttls)){
             res <- rbind(res,hops[i,])
+            res$name[nrow(res)] <- sprintf("%02d - Filtrado", i)
+            res$ip[nrow(res)] <- NA
+            res$longitude[nrow(res)] <- NA
+            res$latitude[nrow(res)] <- NA
+            res$country[nrow(res)] <- NA
+            res$city[nrow(res)] <- NA
             res$mean[nrow(res)] <- NA
             res$sd[nrow(res)] <- NA
         }
@@ -111,7 +117,7 @@ filterHops <- function (hops){
 }
 
 getRtti <- function (summarized) {
-    rttis <- data.frame(ttl = numeric(0), rtti = numeric(0))
+    rttis <- data.frame(ttl = numeric(0), ip = character(0), rtti = numeric(0))
     
     lastRTT <- 0
     wasNA <- FALSE
@@ -132,10 +138,10 @@ getRtti <- function (summarized) {
             diff <- diff / (countNA + 1)
             for (j in countNA:0) {
                 newI <- i - j
-                rttis <- rbind(rttis, data.frame(ttl = newI, rtti = diff))	
+                rttis <- rbind(rttis, data.frame(ttl = newI, ip=summarized$ip[i],rtti = diff))	
             }
         } else {
-            rttis <- rbind(rttis, data.frame(ttl = i, rtti = diff))
+            rttis <- rbind(rttis, data.frame(ttl = i, ip=summarized$ip[i], rtti = diff))
         }
         
         lastRTT <- currRTT
@@ -164,7 +170,7 @@ plotAcumulated <- function (summarized, melted, filename) {
 }
 
 plotZscore <- function (rttis, filename) {
-    ggplot(data=rttis, aes(x=ttl, y=zscore), na.rm = TRUE) +    
+    ggplot(data=rttis, aes(ttl,zscore), na.rm = TRUE) +    
     geom_bar(stat="identity",position = "identity") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
     labs(title = 'Z Score de cada RTTi', x = "RTTi", y = "Z Score")     
