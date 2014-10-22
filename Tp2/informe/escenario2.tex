@@ -1,3 +1,68 @@
-\IEEEPARstart{E}{S}cenario 1
+\IEEEPARstart{E}{N} este segundo escenario, la universidad elegida fue la Universidad de Helsinki\cite{helsinki}, ubicada en \emph{Helsinki, Finlandia}. 
 
-\subsection{Descripci\'on}
+\par Para este experimento, realizamos 500 pedidos al host de la p\'agina web del Departamento de Computaci\'on de dicha universidad\cite{helsinkics}. 
+
+\subsection{Resultados para el total de los Experimentos}
+\par Igual que en el escenario anterior, primero vamos a determinar cuantas veces apareci\'o cada secuencia de nodos:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c | c}
+                   &\#Caminos \\
+      \#Aparicione &Distintos \\
+      \hline\hline
+       	1& 51\\
+       	2& 9\\
+        3& 5\\
+        4& 5\\
+		5& 2\\
+        6& 2\\
+        7& 2\\
+        8& 2\\
+        9& 1\\
+       10& 1\\
+       26& 2\\
+       28& 1\\
+       31& 1\\
+       80& 1\\
+      134& 1\\       
+      \hline\hline
+    \end{tabular}
+    \bigskip
+    \caption{Frecuencia por \emph{path} de hops obtenida}
+    \label{tab:helsinki_sec_hops}
+\end{table}
+
+\par A diferencia del escenario anterior, nos encontramos con mucha mayor variabilidad en las rutas. A pesar de tener un claro ganador, las tres rutas con mayor cantidad de apariciones no llegan a acumular ni un 50\% del total de la experimentaci\'on.
+
+\par Procedemos entonces a realizar el an\'alisis sobre la ruta con 134 apariciones. En la figura \ref{fig:rtt_dev_helsinki} podemos observar la media de RTT para cada TTL, junto con su desv\'io estandar y todas sus mediciones.
+
+\begin{figure}
+    \centering
+    %\includegraphics[width=0.5\textwidth
+    %                ]{img/escenario2/{hel_134.path.86.rtt_acum}.pdf}
+    \caption{RTT media/Desv\'io Est\'andard}
+    \label{fig:rtt_dev_helsinki}
+\end{figure}
+
+\par En este caso, lo primero que notamos es una anomalía en el salto 2, en el que se ve que el desv\'io estandar es muy grande (y teniendo mediciones de RTT que se acercan a 1 segundo). Si no tenemos en cuenta este hop, el resto de los resultados parecen bastante aceptables, aunque se repite el comportamiento de tener hops continuados con RTT similares y peque\~nas oscilaciones.
+
+\par Procedemos entonces a filtrar los datos de manera similar al caso anterior, para quedarnos con los nodos que nos aporten información, y no perjudiquen el cálculo del $ZScore$. En la figura \ref{fig:rtt_dev_helsinki_filtered} se observa como nos quedan los datos luego del proceso.
+
+\begin{figure}
+    \centering
+    %\includegraphics[width=0.5\textwidth
+    %                ]{img/escenario2/{hel_134.path.86.rtt_acum_filtered}.pdf}
+    \caption{RTT media/Desv\'io Est\'andard para Hops Relevantes}
+    \label{fig:rtt_dev_helsinki_filtered}
+\end{figure}
+
+\par Con esta informaci\'on filtrada, pasamos a calcular el $ZScore$ para cada hop. El resultado se ve en la figura \ref{fig:zscore_helsinki_filtered}
+
+\begin{figure}
+    \centering
+    %\includegraphics[width=0.5\textwidth
+     %               ]{img/escenario1/{hel_134.path.86.rtti_salteando_zscore_filtered}.pdf}
+    \caption{$ZScore$ por $RTT_i$}
+    \label{fig:zscore_helsinki_filtered}
+\end{figure}
