@@ -10,12 +10,12 @@
 ##########################################################
 
 
-import sys, os
+import sys, time, os
 try:
-    from ptc import Socket
+    from ptc import Socket, SHUT_WR
 except:
     sys.path.append('./')
-    from ptc import Socket
+    from ptc import Socket, SHUT_WR
 
 
 class FileTransferBase(object):
@@ -23,6 +23,7 @@ class FileTransferBase(object):
     CHUNK_SIZE = 500
     DEFAULT_IP = '127.0.0.1'
     DEFAULT_PORT = 6677
+    DEFAULT_EXPERIMENT_TIME = 5
 
     def __init__(self):
         self.received_bytes = str()
@@ -31,15 +32,22 @@ class FileTransferBase(object):
     def _initialize_address(self):
         # La dirección y el puerto pueden venir como opciones de línea de
         # comando.
-        if len(sys.argv) >= 4:
+        if len(sys.argv) >= 5:
             self.server_ip = sys.argv[1]
             self.server_port = int(sys.argv[2])
+            self.experiment_timeout = int(sys.argv[3])
+        if len(sys.argv) == 4:
+            self.server_ip = sys.argv[1]
+            self.server_port = int(sys.argv[2])
+            self.experiment_timeout = self.DEFAULT_EXPERIMENT_TIME
         elif len(sys.argv) == 3:
             self.server_ip = sys.argv[1]
             self.server_port = self.DEFAULT_PORT
+            self.experiment_timeout = self.DEFAULT_EXPERIMENT_TIME
         else:
             self.server_ip = self.DEFAULT_IP
             self.server_port = self.DEFAULT_PORT
+            self.experiment_timeout = self.DEFAULT_EXPERIMENT_TIME
 
     def transferReceive(self):
         to_send = open(self.outgoing_filename).read()
@@ -65,33 +73,22 @@ class FileTransferBase(object):
         self._write_file()
 
     def transfer(self):
-        filesToTransferDir = 'filesToTransfer'
         with Socket() as sock:
             self._connect_socket(sock)
-
-            for outgoing_filename in os.listdir(filesToTransferDir):
-                print "Transfiriendo "+outgoing_filename
-                to_send = open(self.outgoing_filename).read()
+            start = time.time()
+            while time.time()-start < self.experiment_timeout:
+                to_send = str(os.urandom(self.CHUNK_SIZE))
                 sock.send(to_send)
-		#i = 0
-            	#while len(i*self.CHUNK_SIZE) < len(to_send):
-                    #print "enviando..."
-                    #sock.send(to_send[i:i+self.CHUNK_SIZE])
-                    #chunk = sock.recv(self.CHUNK_SIZE)
-                    #i += self.CHUNK_SIZE
+            sock.close()
 
     def receive(self):
-        filesToReceiveDir = 'filesToTransfer'
         with Socket() as sock:
             self._connect_socket(sock)
-
-            for incoming_filename in os.listdir(filesToReceiveDir):
-                print "Recibiendo "+incoming_filename
-                expected_size = len(open(self.incoming_filename).read())
-                self.received_bytes = 0
-                while len(self.received_bytes) < expected_size:
-                    self.received_bytes += sock.recv(self.CHUNK_SIZE)
-                self._write_file()
+            sock.shutdown(SHUT_WR)
+            start = time.time()
+            while time.time()-start < self.experiment_timeout:
+                sock.recv(self.CHUNK_SIZE)
+            sock.close()
 
     def _write_file(self):
         incoming_filename = 'filesReceived/recvd_%s' % self.incoming_filename.rpartition('/')[2]
