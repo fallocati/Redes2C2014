@@ -9,6 +9,8 @@
 #              Segundo cuatrimestre de 2014              #
 ##########################################################
 
+import random
+import time
 
 from constants import CLOSED, SYN_RCVD, ESTABLISHED, SYN_SENT,\
                       LISTEN, FIN_WAIT1, FIN_WAIT2, CLOSE_WAIT,\
@@ -18,9 +20,12 @@ from packet import SYNFlag, ACKFlag, FINFlag
 
 class IncomingPacketHandler(object):
     
-    def __init__(self, protocol):
+    def __init__(self, protocol, ackWait, ackDropChance):
         self.protocol = protocol
         self.socket = self.protocol.socket
+	self.ackWait = ackWait
+	self.ackDropChance = ackDropChance
+	print 'IncomingPacketHandler initialized with ackWait {} and ackDropChance {}'.format(ackWait, ackDropChance)
         
     def initialize_control_block_from(self, packet):
         self.protocol.initialize_control_block_from(packet)
@@ -119,7 +124,9 @@ class IncomingPacketHandler(object):
         # Esto es para evitar el envío de ACKs para paquetes que sólo
         # reconozcan datos.
         if packet.has_payload():
-            self.send_ack()
+		if random.randint(0, 100) > self.ackDropChance:
+			time.sleep(self.ackWait)
+			self.send_ack()
             
     def handle_incoming_on_established(self, packet):
         if FINFlag in packet:

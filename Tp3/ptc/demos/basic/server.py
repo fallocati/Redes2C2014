@@ -26,7 +26,7 @@ received = str()
 # Usar sockets PTC dentro de bloques with. Esto nos asegura que los recursos
 # subyacentes serán liberados de forma adecuada una vez que el socket ya no
 # se necesite.
-with Socket() as server_sock:
+with Socket(5, 0) as server_sock:
     # Ligar el socket a una interfaz local a través de la tupla (IP, PORT).
     server_sock.bind((SERVER_IP, SERVER_PORT))
     # Pasar al estado LISTEN.
