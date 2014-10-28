@@ -32,15 +32,15 @@ class FileTransferBase(object):
     def _initialize_address(self):
         # La dirección y el puerto pueden venir como opciones de línea de
         # comando.
-        if len(sys.argv) >= 5:
+        if len(sys.argv) >= 4:
             self.server_ip = sys.argv[1]
             self.server_port = int(sys.argv[2])
             self.experiment_timeout = int(sys.argv[3])
-        if len(sys.argv) == 4:
+        elif len(sys.argv) == 3:
             self.server_ip = sys.argv[1]
             self.server_port = int(sys.argv[2])
             self.experiment_timeout = self.DEFAULT_EXPERIMENT_TIME
-        elif len(sys.argv) == 3:
+        elif len(sys.argv) == 2:
             self.server_ip = sys.argv[1]
             self.server_port = self.DEFAULT_PORT
             self.experiment_timeout = self.DEFAULT_EXPERIMENT_TIME
@@ -86,8 +86,11 @@ class FileTransferBase(object):
             self._connect_socket(sock)
             sock.shutdown(SHUT_WR)
             start = time.time()
+            i=0
             while time.time()-start < self.experiment_timeout:
                 sock.recv(self.CHUNK_SIZE)
+                i+=1
+            print i
             sock.close()
 
     def _write_file(self):
