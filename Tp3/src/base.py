@@ -66,34 +66,32 @@ class FileTransferBase(object):
 
     def transfer(self):
         filesToTransferDir = 'filesToTransfer'
-        for outgoing_filename in os.listdir(filesToTransferDir):
-            to_send = open(self.outgoing_filename).read()
-            with Socket() as sock:
-                # La conexión del socket queda definida por cada subclase.
-                # El cliente se conecta activamente mientras que el servidor se
-                # ligará a una dirección determinada y escuchará allí.
-                self._connect_socket(sock)
+        with Socket() as sock:
+            self._connect_socket(sock)
+
+            for outgoing_filename in os.listdir(filesToTransferDir):
+                print "Transfiriendo "+outgoing_filename
+                to_send = open(self.outgoing_filename).read()
                 sock.send(to_send)
+		#i = 0
+            	#while len(i*self.CHUNK_SIZE) < len(to_send):
+                    #print "enviando..."
+                    #sock.send(to_send[i:i+self.CHUNK_SIZE])
+                    #chunk = sock.recv(self.CHUNK_SIZE)
+                    #i += self.CHUNK_SIZE
 
     def receive(self):
         filesToReceiveDir = 'filesToTransfer'
-        for incoming_filename in os.listdir(filesToReceiveDir):
-            expected_size = len(open(self.incoming_filename).read())
-            with Socket() as sock:
-                # La conexión del socket queda definida por cada subclase.
-                # El cliente se conecta activamente mientras que el servidor se
-                # ligará a una dirección determinada y escuchará allí.
-                self._connect_socket(sock)
-                i = 0
-                # Para recibir el archivo, iterar hasta que el tamaño deseado
-                # queda totalmente cubierto.
+        with Socket() as sock:
+            self._connect_socket(sock)
+
+            for incoming_filename in os.listdir(filesToReceiveDir):
+                print "Recibiendo "+incoming_filename
+                expected_size = len(open(self.incoming_filename).read())
+                self.received_bytes = 0
                 while len(self.received_bytes) < expected_size:
-                    # Siendo PTC un protocolo full-duplex, al mismo tiempo también
-                    # podemos mandar datos a nuestro interlocutor.
-                    chunk = sock.recv(self.CHUNK_SIZE)
-                    self.received_bytes += chunk
-                    i += self.CHUNK_SIZE
-            self._write_file()
+                    self.received_bytes += sock.recv(self.CHUNK_SIZE)
+                self._write_file()
 
     def _write_file(self):
         incoming_filename = 'filesReceived/recvd_%s' % self.incoming_filename.rpartition('/')[2]
