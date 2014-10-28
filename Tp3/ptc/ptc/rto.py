@@ -11,6 +11,7 @@
 
 
 import threading
+import time
 
 from constants import INITIAL_RTO, MAX_RTO, ALPHA, BETA, K
 from seqnum import SequenceNumber
@@ -68,6 +69,7 @@ class RTOEstimator(object):
                 sampled_rtt = self.protocol.get_ticks() - self.rtt_start_time
                 self.update_rtt_estimation_with(sampled_rtt)
                 self.update_rto()
+		print '{};{};{};{}'.format(time.time(), ALPHA, BETA, self.rto) 
                 self.untrack()
                 
     def update_rtt_estimation_with(self, sampled_rtt):
