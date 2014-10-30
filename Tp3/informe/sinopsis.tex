@@ -1,1 +1,20 @@
-Esta tercera parte de la materia nos propone experimentar 
+Esta tercera parte de la materia se centra en los protocolos de comunicaci\'on
+interprocesos, donde seguramente los m\'as conocidos son \textit{TCP}\cite{rfc675}
+y \textit{UDP}\cite{rfc768}.
+
+\par En particular, el aspecto que sobre el que nos focalizaremos es la
+congesti\'on de la red. En particular, el protocolo TCP implementa un mecanismo
+de control de congesti\'on\cite{rfc5681} que hoy d\'ia controla, o trata de regular
+aproximadamente un 90\% de la congesti\'on de internet\footnote{Dato provisto
+en la clase te\'orica.}.
+
+\par Este mecanismo fue replicado por la c\'atedra mediante un nuevo protocolo
+(\textit{PTC\cite{ptc}}) implementado en \textit{python}\cite{python}, con el
+objetivo didactico de poder trabajar con las variables que afectan a este
+mecanismo.
+
+\par El trabajo aqu\'i presentado muestra un an\'alisis realizado sobre el
+mecanismo de control de congesti\'on con el objetivo de poder observar y
+encontrar como var\'ia la congesti\'on de una red que utiliza el protocolo
+PTC seg\'un var\'ia el entorno y la variables del control de congesti\'on
+replicado.

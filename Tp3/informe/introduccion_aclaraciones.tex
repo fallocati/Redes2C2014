@@ -1,1 +1,48 @@
-\IEEEPARstart{E}{ste} trabajo se concentra principalmente en el an\'alisis
+\IEEEPARstart{A}{} la hora de trabajar y analizar el comportamiento del protocolo
+respecto de la congesti\'on, es inmediato dirigirnos hacia el mecanismo (si lo
+hay) implementado por el protocolo con este prop\'osito.
+
+\par El primer dato importante a mencionar, es que el protocolo PTC replica/%
+implementa el mismo mecanismo de control de congesti\'on de TCP\cite{rfc5681}.
+Este mecanismo est\'a basado en poder estimar ciertos valores de la red para
+saber a que \emph{rate} se puede enviar segmentos a la red sin congestionarla%
+\footnote{Esto no significa que la red no se vaya a congestionar o que el
+mecanismo sea infalible. Sino que se trata de estimar si la red est\'a congestionada,
+y en el caso contrario se incrementa la cantidad de paquetes que se estan
+enviando a trav\'es de la red.}, o al menos reconociendo cuando la misma se
+encuentra en este estado no deseable y contribuir a revertirlo.
+
+\par Entre estos valores que se estiman se encuentran el
+\textit{RTO}\cite{rfc6298} (\emph{Retransmission Timeout}), el
+\textit{RTT}\cite{rfc1323}\cite{karns_algorithm}\cite{rfc6298}, y a partir
+de este \'ultimo resultado se calcula el \textit{SRTT} (\textit{Smoothed Round
+Trip Time}\cite{rfc6298}). La estimaci\'on de estos valores se encuentran
+estrechamente relacionadas, as\'i pues que a la hora de estimar el RTO, se
+utilizan los dem\'as valores estimados, y a la hora de estimar el RTT y el SRTT
+se utilizan 2 constantes denominadas \emph{alpha} y \emph{beta}\footnote{De
+ahora en m\'as $\alpha$ y $\beta$.}\cite{rfc6298}.
+
+\par Entonces, explicado esto, ya se ve de donde salen\footnote{Y de donde el
+TP sugiere.} las primeras variables que iremos analizando a la hora de ver como
+se comporta el protocolo: $\alpha$ y $\beta$.
+
+\par Nos queda ahora el problema de encontrar un entorno lo suficientemente estable
+que nos permita analizar el comportamiento de manera justa. El problema aqu\'i
+es que el control de congesti\'on tiene como objetivo ser lo suficientemente
+din\'amico para poder seguir los cambios de la red (recordemos que el RTT
+en redes IP es din\'amico, por ejemplo), particularmente como afecta a la red
+que esta sea m\'as utilizada (mayor cantidad de tr\'afico de paquetes).
+
+\par Entonces se nos plantea el objetivo de introducir en el protocolo un delay
+$\delta$ y una probabilidad $\phi$ p\'erdida/$dropeo$ de los \textit{ACK}. El
+objetivo de esto es simular la congesti\'on de la red (a mayor $\alpha$ y $\beta$
+se puede pensar que hay mayor congesti\'on). Obviamente, esto tiene sentido
+en una red estable que mantenga las condiciones de la red lo suficientemente
+estables para que podamos asumir que la simulaci\'on de la congesti\'on es
+correcta.
+
+%-------------------------------------------------------------------------------
+
+\subsection*{La Variables}
+
+\subsection*{Entorno de Experimentaci\'on}
