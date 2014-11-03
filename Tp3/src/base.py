@@ -23,7 +23,7 @@ class FileTransferBase(object):
     CHUNK_SIZE = 500
     DEFAULT_IP = '127.0.0.1'
     DEFAULT_PORT = 6677
-    DEFAULT_EXPERIMENT_TIME = 5
+    DEFAULT_EXPERIMENT_TIME = 60
 
     def __init__(self):
         self.received_bytes = str()
@@ -82,7 +82,7 @@ class FileTransferBase(object):
             sock.close()
 
     def receive(self):
-        with Socket() as sock:
+        with Socket(3, 25) as sock:
             self._connect_socket(sock)
             sock.shutdown(SHUT_WR)
             start = time.time()

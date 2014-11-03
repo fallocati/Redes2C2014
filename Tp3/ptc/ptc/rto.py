@@ -11,7 +11,7 @@
 
 
 import threading
-import time
+import datetime
 
 from constants import INITIAL_RTO, MAX_RTO, ALPHA, BETA, K
 from seqnum import SequenceNumber
@@ -67,9 +67,9 @@ class RTOEstimator(object):
                 return
             if self.ack_covers_tracked_packet(ack_packet.get_ack_number()):
                 sampled_rtt = self.protocol.get_ticks() - self.rtt_start_time
+                print '{};{};{};{};{}'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3], ALPHA, BETA, self.rto, sampled_rtt) 
                 self.update_rtt_estimation_with(sampled_rtt)
-                self.update_rto()
-		print '{};{};{};{}'.format(time.time(), ALPHA, BETA, self.rto) 
+                self.update_rto()		
                 self.untrack()
                 
     def update_rtt_estimation_with(self, sampled_rtt):

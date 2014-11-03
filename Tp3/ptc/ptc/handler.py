@@ -14,7 +14,7 @@ import time
 
 from constants import CLOSED, SYN_RCVD, ESTABLISHED, SYN_SENT,\
                       LISTEN, FIN_WAIT1, FIN_WAIT2, CLOSE_WAIT,\
-                      LAST_ACK, CLOSING
+                      LAST_ACK, CLOSING, CLOCK_TICK
 from packet import SYNFlag, ACKFlag, FINFlag
 
 
@@ -25,8 +25,7 @@ class IncomingPacketHandler(object):
         self.socket = self.protocol.socket
 	self.ackWait = ackWait
 	self.ackDropChance = ackDropChance
-	print 'IncomingPacketHandler initialized with ackWait {} and ackDropChance {}'.format(ackWait, ackDropChance)
-        
+            
     def initialize_control_block_from(self, packet):
         self.protocol.initialize_control_block_from(packet)
         self.control_block = self.protocol.control_block
@@ -125,7 +124,7 @@ class IncomingPacketHandler(object):
         # reconozcan datos.
         if packet.has_payload():
 		if random.randint(0, 100) > self.ackDropChance:
-			time.sleep(self.ackWait)
+			time.sleep(self.ackWait * CLOCK_TICK)
 			self.send_ack()
             
     def handle_incoming_on_established(self, packet):
