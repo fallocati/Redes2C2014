@@ -23,8 +23,8 @@ class IncomingPacketHandler(object):
     def __init__(self, protocol, ackWait, ackDropChance):
         self.protocol = protocol
         self.socket = self.protocol.socket
-	self.ackWait = ackWait
-	self.ackDropChance = ackDropChance
+        self.ackWait = ackWait
+        self.ackDropChance = ackDropChance
             
     def initialize_control_block_from(self, packet):
         self.protocol.initialize_control_block_from(packet)

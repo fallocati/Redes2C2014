@@ -14,15 +14,15 @@ import random
 import threading
 
 from constants import NULL_ADDRESS, SHUT_RD, SHUT_WR, SHUT_RDWR,\
-                      WAIT, NO_WAIT, ABORT
+                      WAIT, NO_WAIT, ABORT, ALPHA, BETA
 from exceptions import PTCError
 from protocol import PTCProtocol
 
 
 class Socket(object):
     
-    def __init__(self, ackWait=0, ackDropChance=0):
-        self.protocol = PTCProtocol(ackWait, ackDropChance)
+    def __init__(self, alpha=ALPHA, beta=BETA, ackWait=0, ackDropChance=0):
+        self.protocol = PTCProtocol(alpha, beta, ackWait, ackDropChance)
         self.sockname = None
 
     def bind(self, address_tuple=None):
