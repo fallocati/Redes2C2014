@@ -32,7 +32,7 @@ for alpha in alphas:
     for beta in betas:        
         for delay in delays:
             for prob in probs:
-                print '#Alpha: {} - Beta: {} - Delay: {} ticks - Probabilidad de dropeo: {}'.format(alpha, beta, delay, prob)        
+                print '#Alpha: {} - Beta: {} - Delay: {} ticks - Probabilidad de dropeo: {}'.format(alpha, beta, delay, prob)
                 with Socket(alpha, beta, delay, prob) as client_sock:
                     try:
                         time.sleep(2)
