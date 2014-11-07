@@ -11,6 +11,7 @@
 
 
 try:
+    import sys
     from ptc import Socket, WAIT
 except:
     import sys
@@ -22,16 +23,21 @@ import time, os
 CHUNK_SIZE = 500
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 6677
-EXPERIMENT_PACKETS = 100
+EXPERIMENT_PACKETS = 10
 
-alphas = [0.5]
-betas = [0.5]
-delays = [1, 2]
-probs = [0, 10, 50]
+alphas = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+betas = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+delays = [0, 1, 10, 25, 50]
+probs = [0]
+orig_stdout = sys.stdout
+
 for alpha in alphas:
     for beta in betas:        
         for delay in delays:
             for prob in probs:
+                filename = open("prob"+str(prob)+"_delay"+str(delay)+"0ms"+"_beta"+str(beta)+"_alpha"+str(alpha)+".csv",'at',1)
+                print '#Alpha: {} - Beta: {} - Delay: {} ticks - Probabilidad de dropeo: {}'.format(alpha, beta, delay, prob)
+                sys.stdout = filename
                 print '#Alpha: {} - Beta: {} - Delay: {} ticks - Probabilidad de dropeo: {}'.format(alpha, beta, delay, prob)
                 with Socket(alpha, beta, delay, prob, True) as client_sock:
                     try:
@@ -55,3 +61,6 @@ for alpha in alphas:
                             pass
                         time.sleep(5)
                         pass        
+                sys.stdout = orig_stdout
+                filename.close()
+                print "Pasamos al siguiente experimento"
