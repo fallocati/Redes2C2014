@@ -3,15 +3,15 @@ require(rgl)
 loadData <- function (filename) {
   #options(max.print=1000000) 
   raw <- read.csv(filename, header = F,comment.char = "#", sep = ";", col.names = c("time","prob","delay","alpha", "beta","rto","rtt"))
-	raw
+  raw
 }
 
 #usando distintas libs
 plot_alpha_beta_rto <- function(data){
   
   plot3d(data$alpha, data$beta, data$rto, xlab = "alpha", ylab = "beta", zlab = "rto", type="s", col=heat.colors(150), size=1, box = F, xlim=c(0,1),ylim=c(0,1),zlim=c(0,1))
-  zmat <- matrix(data$z, 11,11)
-  persp3d(x=seq(0,10), y=seq(0,10), z=zmat)
+  #zmat <- matrix(data$z, 11,11)
+  #persp3d(x=seq(0,10), y=seq(0,10), z=zmat)
   #rgl.viewpoint( theta = 0, phi = 15, fov = 60, zoom = 0.5, scale = par3d("scale"))
 	#r3dDefaults$windowRect <- c(0,50, 700, 700) 
   
