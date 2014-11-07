@@ -23,7 +23,7 @@ import time, os
 CHUNK_SIZE = 500
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 6677
-EXPERIMENT_PACKETS = 10
+EXPERIMENT_PACKETS = 1000
 
 alphas = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 betas = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
@@ -43,6 +43,7 @@ for alpha in alphas:
                     try:
                         time.sleep(2)
                         
+                        start_time = time.time()
                         client_sock.connect((SERVER_IP, SERVER_PORT), timeout=1000)
                         
                         for i in range(EXPERIMENT_PACKETS):
@@ -51,8 +52,10 @@ for alpha in alphas:
 
                         client_sock.send("FINEXPERIMENTO")
                         client_sock.recv(14)
-                        
                         client_sock.close(WAIT)                
+
+                        experiment_time = time.time() - start_time
+                        print 'Tiempo del Experimento: %s' % str(experiment_time)
                     except Exception,e: 
                         print str(e)  
                         try:
