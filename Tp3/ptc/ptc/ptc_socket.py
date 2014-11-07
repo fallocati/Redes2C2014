@@ -21,8 +21,8 @@ from protocol import PTCProtocol
 
 class Socket(object):
     
-    def __init__(self, alpha=ALPHA, beta=BETA, ackWait=0, ackDropChance=0):
-        self.protocol = PTCProtocol(alpha, beta, ackWait, ackDropChance)
+    def __init__(self, alpha=ALPHA, beta=BETA, delay=0, dropChance=0, wait=False):
+        self.protocol = PTCProtocol(alpha, beta, delay, dropChance, wait)
         self.sockname = None
 
     def bind(self, address_tuple=None):

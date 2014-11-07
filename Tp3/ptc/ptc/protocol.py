@@ -12,7 +12,7 @@
 
 import threading
 import random
-
+import time
 
 from cblock import PTCControlBlock
 from constants import CLOSED, ESTABLISHED, SYN_SENT,\
@@ -22,7 +22,7 @@ from constants import CLOSED, ESTABLISHED, SYN_SENT,\
                       NO_WAIT,\
                       MSS, MAX_SEQ, RECEIVE_BUFFER_SIZE,\
                       MAX_RETRANSMISSION_ATTEMPTS,\
-                      BOGUS_RTT_RETRANSMISSIONS
+                      BOGUS_RTT_RETRANSMISSIONS, CLOCK_TICK
 from exceptions import PTCError
 from handler import IncomingPacketHandler
 from packet import ACKFlag, FINFlag, SYNFlag
@@ -37,7 +37,7 @@ from timer import RetransmissionTimer
 
 class PTCProtocol(object):
     
-    def __init__(self, alpha, beta, ackWait, ackDropChance):
+    def __init__(self, alpha, beta, delay, dropChance, wait):
         self.state = CLOSED
         self.control_block = None
         self.packet_builder = PacketBuilder()
@@ -47,8 +47,11 @@ class PTCProtocol(object):
         self.rqueue = RetransmissionQueue()
         self.read_stream_open = True
         self.write_stream_open = True
-        self.rto_estimator = RTOEstimator(self, alpha, beta, ackWait, ackDropChance)
-        self.packet_handler = IncomingPacketHandler(self, ackWait, ackDropChance)        
+        self.rto_estimator = RTOEstimator(self, alpha, beta, delay, dropChance)
+        self.packet_handler = IncomingPacketHandler(self)
+        self.delay = delay
+        self.dropChance = dropChance
+        self.wait = wait
         self.ticks = 0
         self.retransmissions = 0
         self.close_mode = NO_WAIT
@@ -148,8 +151,15 @@ class PTCProtocol(object):
             # Usar la estimación actual del RTO para medir este paquete.
             current_rto = self.rto_estimator.get_current_rto()
             self.retransmission_timer.start(current_rto)
-            
-        self.socket.send(packet)
+
+        if self.wait and self.state == ESTABLISHED:
+            if random.randint(0, 100) >= self.dropChance:
+                time.sleep(self.delay * CLOCK_TICK)
+                self.socket.send(packet)
+            else:
+                print '#DROP!'
+        else:
+            self.socket.send(packet)
         
     def set_destination_on_packet_builder(self, address, port):
         self.packet_builder.set_destination_address(address)
@@ -195,6 +205,10 @@ class PTCProtocol(object):
         updated_rcv_wnd = self.control_block.get_rcv_wnd()
         if updated_rcv_wnd > 0:
             wnd_packet = self.build_packet(window=updated_rcv_wnd)
+
+            if self.wait:
+                time.sleep(self.delay * CLOCK_TICK)
+
             self.socket.send(wnd_packet)
         return data
 

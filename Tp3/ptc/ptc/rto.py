@@ -20,15 +20,15 @@ from seqnum import SequenceNumber
 # Estimación de RTO según el RFC 6298, pero implementado en forma naive.
 class RTOEstimator(object):
     
-    def __init__(self, protocol, alpha, beta, ackWait, ackDropChance):
+    def __init__(self, protocol, alpha, beta, delay, dropChance):
         self.srtt = 0
         self.rttvar = 0
         self.rto = INITIAL_RTO
         self.protocol = protocol
         self.alpha = alpha
         self.beta = beta
-        self.ackWait = ackWait
-        self.ackDropChance = ackDropChance
+        self.delay = delay
+        self.dropChance = dropChance
         self.tracking = False
         self.lock = threading.RLock()
     
@@ -71,7 +71,7 @@ class RTOEstimator(object):
                 return
             if self.ack_covers_tracked_packet(ack_packet.get_ack_number()):
                 sampled_rtt = self.protocol.get_ticks() - self.rtt_start_time
-                print '{};{};{};{};{};{};{}'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3], self.ackWait, self.ackDropChance, self.alpha , self.beta, self.rto, sampled_rtt) 
+                print '{};{};{};{};{};{};{}'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3], self.delay, self.dropChance, self.alpha , self.beta, self.rto, sampled_rtt) 
                 self.update_rtt_estimation_with(sampled_rtt)
                 self.update_rto()		
                 self.untrack()
