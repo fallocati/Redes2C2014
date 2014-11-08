@@ -3,7 +3,7 @@
 ##########################################################
 #                 Trabajo Práctico 3                     #
 #         Programación de protocolos end-to-end          #
-#                                                        # 
+#                                                        #
 #              Teoría de las Comunicaciones              #
 #                       FCEN - UBA                       #
 #              Segundo cuatrimestre de 2014              #
@@ -36,7 +36,7 @@ from timer import RetransmissionTimer
 
 
 class PTCProtocol(object):
-    
+
     def __init__(self, alpha, beta, delay, dropChance, wait):
         self.state = CLOSED
         self.control_block = None
@@ -58,48 +58,48 @@ class PTCProtocol(object):
         self.close_event = threading.Event()
         self.initialize_threads()
         self.initialize_timers()
-        
+
     def initialize_threads(self):
         self.packet_sender = PacketSender(self)
         self.packet_receiver = PacketReceiver(self)
         self.clock = Clock(self)
-    
+
     def initialize_timers(self):
         self.retransmission_timer = RetransmissionTimer(self)
-        
+
     def start_threads(self):
         self.packet_receiver.start()
         self.packet_sender.start()
         self.clock.start()
-        
+
     def stop_threads(self):
         self.packet_receiver.stop()
         self.packet_sender.stop()
         self.packet_sender.notify()
         self.clock.stop()
-        
+
     def join_threads(self):
         self.packet_receiver.join()
         self.packet_sender.join()
         self.clock.join()
-        
+
     def set_state(self, state):
         self.state = state
         if state == CLOSED or\
            (self.close_mode == NO_WAIT and state == FIN_WAIT2):
             # Señalizar este evento cuando la conexión queda completamente
-            # cerrada o bien cuando el usuario del socket explícitamente 
-            # eligió esperar a que el interlocutor también cierre. Por 
+            # cerrada o bien cuando el usuario del socket explícitamente
+            # eligió esperar a que el interlocutor también cierre. Por
             # defecto, el comportamiento es similar al de TCP (i.e., cierre
             # asimétrico).
             self.close_event.set()
         if state == ESTABLISHED:
             self.connected_event.set()
-    
+
     def compute_iss(self):
         value = random.randint(0, MAX_SEQ/2)
         return SequenceNumber(value)
-        
+
     def initialize_control_block_from(self, packet):
         # +1 dado que el SYN se secuencia.
         receive_seq = 1 + packet.get_seq_number()
@@ -108,12 +108,12 @@ class PTCProtocol(object):
         receive_window = self.rcv_wnd
         self.control_block = PTCControlBlock(send_seq, receive_seq,
                                              send_window, receive_window)
-    
+
     def is_connected(self):
         connected_states = [ESTABLISHED, FIN_WAIT1, FIN_WAIT2, CLOSE_WAIT,
                             CLOSING, LAST_ACK]
         return self.state in connected_states
-        
+
     def build_packet(self, seq=None, ack=None, payload=None, flags=None,
                      window=None):
         if seq is None:
@@ -139,14 +139,14 @@ class PTCProtocol(object):
                     self.rto_estimator.untrack()
         else:
             # Sólo se hará seguimiento de paquetes frescos para estimar el
-            # RTT (otra vez por el algoritmo de Karn). 
+            # RTT (otra vez por el algoritmo de Karn).
             if not self.rto_estimator.is_tracking_packets():
                 self.rto_estimator.track(packet)
             # Encolar este paquete fresco para eventuales retransmisiones.
             # Las retransmisiones no se reencolan pues quedan al principio de
             # la cola hasta que son correctamente reconocidas.
             self.rqueue.put(packet)
-            
+
         if not self.retransmission_timer.is_running():
             # Usar la estimación actual del RTO para medir este paquete.
             current_rto = self.rto_estimator.get_current_rto()
@@ -160,29 +160,29 @@ class PTCProtocol(object):
                 print '#DROP!'
         else:
             self.socket.send(packet)
-        
+
     def set_destination_on_packet_builder(self, address, port):
         self.packet_builder.set_destination_address(address)
-        self.packet_builder.set_destination_port(port)        
-        
+        self.packet_builder.set_destination_port(port)
+
     def bind(self, address, port):
         self.socket.bind(address, port)
         self.packet_builder.set_source_address(address)
         self.packet_builder.set_source_port(port)
-    
+
     def listen(self):
         self.set_state(LISTEN)
-        
+
     def connect_to(self, address, port):
         self.connected_event = threading.Event()
         self.set_destination_on_packet_builder(address, port)
         self.start_threads()
-        
+
         syn_packet = self.build_packet(seq=self.iss, flags=[SYNFlag],
                                        window=self.rcv_wnd)
         self.set_state(SYN_SENT)
         self.send_and_queue(syn_packet)
-        
+
         self.connected_event.wait()
 
     def accept(self):
@@ -191,15 +191,15 @@ class PTCProtocol(object):
         self.connected_event = threading.Event()
         self.start_threads()
         # Esperar hasta que un cliente desee conectarse.
-        self.connected_event.wait()        
-        
+        self.connected_event.wait()
+
     def send(self, data):
         with self.control_block:
             if not self.write_stream_open:
                 raise PTCError('write stream is closed')
             self.control_block.to_out_buffer(data)
             self.packet_sender.notify()
-        
+
     def receive(self, size):
         data = self.control_block.from_in_buffer(size)
         updated_rcv_wnd = self.control_block.get_rcv_wnd()
@@ -247,7 +247,7 @@ class PTCProtocol(object):
                 # Algunos paquetes se reconocieron, por lo que debemos
                 # actualizar el timer de retransmisiones.
                 self.adjust_retransmission_timer()
-                
+
     def adjust_retransmission_timer(self):
         # Comenzar con cero retransmisiones para el próximo paquete.
         self.retransmissions = 0
@@ -284,7 +284,7 @@ class PTCProtocol(object):
                 self.rto_estimator.back_off_rto()
                 packet = self.rqueue.head()
                 self.send_and_queue(packet, is_retransmission=True)
-            
+
             if self.write_stream_open or \
                self.control_block.has_data_to_send():
                 self.attempt_to_send_data()
@@ -309,7 +309,7 @@ class PTCProtocol(object):
             else:
                 packet = self.build_packet(payload=to_send, seq=seq_number)
                 self.send_and_queue(packet)
-                
+
     def attempt_to_send_FIN(self):
         state_allows_closing = self.state in [ESTABLISHED, CLOSE_WAIT]
         if state_allows_closing and self.rqueue.empty():
@@ -320,11 +320,11 @@ class PTCProtocol(object):
             new_state = FIN_WAIT1 if self.state == ESTABLISHED else LAST_ACK
             self.set_state(new_state)
             self.send_and_queue(fin_packet)
-    
+
     def handle_incoming(self, packet):
         self.packet_handler.handle(packet)
         self.packet_sender.notify()
-    
+
     def shutdown(self, how):
         if how == SHUT_RD:
             self.shutdown_read_stream()
@@ -333,14 +333,14 @@ class PTCProtocol(object):
         else:
             self.shutdown_read_stream()
             self.shutdown_write_stream()
-            
+
     def shutdown_read_stream(self):
         self.read_stream_open = False
-    
+
     def shutdown_write_stream(self):
         self.write_stream_open = False
         self.packet_sender.notify()
-        
+
     def close(self, mode=NO_WAIT):
         self.close_mode = mode
         if self.state != CLOSED:
@@ -348,7 +348,7 @@ class PTCProtocol(object):
             self.close_event.wait()
         self.free()
         self.join_threads()
-            
+
     def free(self):
         if self.control_block is not None:
             self.control_block.flush_buffers()

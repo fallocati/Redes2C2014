@@ -18,15 +18,15 @@ except:
     from ptc import Socket, WAIT
 
 CHUNK_SIZE = 500
-SERVER_IP = '0.0.0.0'
+SERVER_IP = '127.0.0.1'
 SERVER_PORT = 6677
 
 while True:
-    with Socket() as server_sock:        
+    with Socket() as server_sock:
         try:
             server_sock.bind((SERVER_IP, SERVER_PORT))
-            server_sock.listen() 
-            print 'listen'               
+            server_sock.listen()
+            print 'listen'
             server_sock.accept(timeout=1000)
             print 'accepted'
             while server_sock.recv(CHUNK_SIZE).find("FINEXPERIMENTO") == -1:
