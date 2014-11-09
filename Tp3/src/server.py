@@ -10,22 +10,38 @@
 ##########################################################
 
 
-from base import FileTransferBase
+try:
+    import sys
+    from ptc import Socket, WAIT
+except:
+    import sys
+    sys.path.append('../../')
+    from ptc import Socket, WAIT
 
+CHUNK_SIZE = 500
+SERVER_IP = '127.0.0.1'
 
-class FileTransferServer(FileTransferBase):
+if(len(sys.argv) == 2):
+    SERVER_PORT = int(sys.argv[1])
+else:
+    SERVER_PORT = 6677
 
-    def __init__(self):
-        FileTransferBase.__init__(self)
-        self.incoming_filename = 'dwight.jpg'
-        self.outgoing_filename = 'thunder.jpg'
+#while True:
+with Socket() as server_sock:
+    try:
+        server_sock.bind((SERVER_IP, SERVER_PORT))
+        server_sock.listen()
+        print 'listen'
+        server_sock.accept(timeout=1000)
+        print 'accepted'
+        while server_sock.recv(CHUNK_SIZE).find("FINEXPERIMENTO") == -1:
+            pass
 
-    def _connect_socket(self, sock):
-        sock.bind((self.server_ip, self.server_port))
-        sock.listen()
-        sock.accept(timeout=10)
-
-
-if __name__ == '__main__':
-    #FileTransferServer().transferReceive()
-    FileTransferServer().receive()
+        print 'recv FINEXPERIMENTO'
+        server_sock.send("FINEXPERIMENTO")
+        print 'sent FINEXPERIMENTO'
+        server_sock.close(WAIT)
+        print 'socket closed'
+    except Exception,e:
+        print str(e)
+        pass
