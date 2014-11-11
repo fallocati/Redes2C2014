@@ -58,7 +58,15 @@ class RTOEstimator(object):
                 return
             if self.ack_covers_tracked_packet(ack_packet.get_ack_number()):
                 sampled_rtt = self.protocol.get_ticks() - self.rtt_start_time
-                print '{};{};{};{};{};{};{}'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3], self.delay, self.dropChance, self.alpha , self.beta, self.rto * 10, sampled_rtt * 10)
+                print '{};{};{};{};{};{};{}'.format(\
+                    datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3],\
+                    self.delay,\
+                    self.dropChance,\
+                    self.alpha,\
+                    self.beta,\
+                    self.rto * 10,\
+                    sampled_rtt * 10\
+                )
                 self.update_rtt_estimation_with(sampled_rtt)
                 self.update_rto()
                 self.untrack()

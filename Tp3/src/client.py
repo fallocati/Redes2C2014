@@ -22,7 +22,7 @@ import time, os
 
 CHUNK_SIZE = 500
 SERVER_IP = '127.0.0.1'
-EXPERIMENT_PACKETS = 1000
+EXPERIMENT_PACKETS = 100
 
 if(len(sys.argv) == 6):
     SERVER_PORT = int(sys.argv[5])
