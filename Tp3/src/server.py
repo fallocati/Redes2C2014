@@ -21,13 +21,21 @@ except:
 CHUNK_SIZE = 500
 SERVER_IP = '127.0.0.1'
 
-if(len(sys.argv) == 2):
-    SERVER_PORT = int(sys.argv[1])
+if(len(sys.argv) == 6):
+    SERVER_PORT = int(sys.argv[5])
 else:
     SERVER_PORT = 6677
 
+alpha = float(sys.argv[1])
+beta = float(sys.argv[2])
+delay = float(sys.argv[3])
+prob = float(sys.argv[4])
+
 #while True:
-with Socket() as server_sock:
+with Socket(alpha,
+            beta,
+            delay,
+            prob) as server_sock:
     try:
         server_sock.bind((SERVER_IP, SERVER_PORT))
         server_sock.listen()

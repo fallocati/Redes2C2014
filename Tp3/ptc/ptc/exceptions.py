@@ -1,0 +1,3 @@
+class PTCError(Exception):
+    
+    pass
