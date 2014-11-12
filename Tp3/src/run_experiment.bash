@@ -1,5 +1,41 @@
 #!/bin/bash
 
+function run_experiment(){
+    if [ $# -ne 5 ]
+    then
+        echo "Faltan los parametros de run_experiment"
+        exit 1
+    else
+        alpha=$1
+        beta=$2
+        delay=$3
+        prob=$4
+        port=$5
+
+        python2.7 ./server.py $alpha $beta 0 0 $port >> server_console.log 2>&1 &
+        python2.7 ./client.py $alpha $beta $delay $prob $port >> client_console.log 2>&1 &
+        sleep 10
+        while [ $(pgrep python2.7 | wc -l) -gt 0 ]; do
+            if [ $(find ./ -mmin -5 -name prob${prob}.0_delay*ms_beta${beta}_alpha${alpha}.csv | wc -l) -eq 0 ]
+            then
+                echo "prob: ${prob} | delay: $delay | beta: ${beta} | alpha: ${alpha}" >> pendientes.lst
+                killall python2.7 2>/dev/null
+            else
+                sleep 10
+            fi
+        done
+        echo "---------------------------------" >> server_console.log
+        echo "---------------------------------" >> client_console.log
+        if [ $((port%6677)) -ne 10 ]
+        then
+            ((++port))
+        else
+            port=6677
+        fi
+        sleep 5
+    fi
+}
+
 control_c(){
     exit 0
 }
@@ -16,28 +52,22 @@ for prob in ${probs[*]}; do
     for delay in ${delays[*]}; do 
         for alpha in ${alphas[*]}; do
             for beta in ${betas[*]}; do
-                python2.7 ./server.py $alpha $beta 0 0 $port >> server_console.log 2>&1 &
-                python2.7 ./client.py $alpha $beta $delay $prob $port >> client_console.log 2>&1 &
-                sleep 10
-                while [ $(pgrep -c python2.7) -gt 0 ]; do
-                    if [ $(find ${PWD}/ -mmin -5 -name prob${prob}.0_delay*ms_beta${beta}_alpha${alpha}.csv | wc -l) -eq 0 ]
-                    then
-                        echo "prob: ${prob} | delay: $delay | beta: ${beta} | alpha: ${alpha}" >> pendientes.lst
-                        killall python2.7 2>/dev/null
-                    else
-                        sleep 10
-                    fi
-                done
-                echo "---------------------------------" >> server_console.log
-                echo "---------------------------------" >> client_console.log
-                if [ $((port%6677)) -ne 10 ]
-                then
-                    ((++port))
-                else
-                    port=6677
-                fi
-                sleep 5
+                run_experiment $alpha $beta $delay $prob $port
             done
         done
     done
+done
+
+while [ -f pendientes.lst ]; do
+    mv pendientes.lst processing.lst
+    cat processing.lst | while read line; do
+        alpha=$(echo $line | awk '{print $11}')
+        beta=$(echo $line | awk '{print $8}')
+        delay=$(echo $line | awk '{print $5}')
+        prob=$(echo $line | awk '{print $2}')
+
+        rm -f prob${prob}.0_delay${delay}*ms_beta${beta}_alpha${alpha}.csv 
+        run_experiment $alpha $beta $delay $prob $port
+    done
+    rm -f processing.lst
 done
