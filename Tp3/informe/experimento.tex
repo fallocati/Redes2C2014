@@ -1,12 +1,63 @@
-\subsection{Descripci\'on}
+\subsection{Descripci\'on}\label{sec:experimento:descripcion}
+\par El experimento propuesto consiste en establecer una conexi\'on entre dos
+procesos (no necesariamente corriendo en el mismo \textit{host}, aunque se
+realiz\'o de dicha manera por motivos que se explican m\'as adelante) utilizando
+el protocolo PTC, para luego comenzar a enviar una cantidad determinada de
+informaci\'on de un proceso al otro mientras se guarda la informaci\'on que
+luego ser\'a analizada. Es decir, no habr\'a transmici\'on en simult\'aneo entre
+los procesos. As\'i pues, denominamos como \emph{servidor} al proceso que recibe
+la informaci\'on y env\'ia los $ack's$, y \emph{cliente} al que env\'ia la
+informaci\'on y recibe los $ack's$\footnote{Por comodidad de notaci\'on, decidimos
+que fuese el servidor el proceso \textit{bindeado}/unido a un socket escuchando
+peticiones de conexi\'on, y que fuese el cliente el encargado de realizar el
+pedido de conexi\'on}.
+
+\subsubsection*{Simulaci\'on de la congesti\'on}
+
+\subsubsection*{Sobre los Datos del Experimento}
+\par Los datos que se guardan durante la experimentaci\'on, para luego ser
+analizados son aquellos cambios que sufre el RTO durante la transferencia del
+experimento. Cada vez que el protocolo decide actualizar el RTO, se guarda
+en un archivo el RTO previo al cambio, y el nuevo RTT que el protocolo considera
+para actualizarlo. Es decir, la informaci\'on guardada termina representando
+el RTT real que el protocolo midi\'o mediante el seguimiento de un paquete en
+particular, y el RTO que se estaba utilizando para estimar dicho RTT. Como
+informaci\'on adicional, tambi\'en se guarda la cantidad de paquetes env\'iados
+por el cliente, cuales de ellos son retransmiciones, y cu\'antos paquetes
+fueron \emph{dropeados}\footnote{Utilizamos aqu\'i la denominaci\'on paquete
+en lugar de ''informaci\'on'' ya que la cantidad de paquetes que se env\'ien
+durante la experimentaci\'on variar\'a seg\'un los valores de $\delta$ y $\phi$,
+pues PTC trat\'a de enviar la mayor cantidad de informaci\'on posible por paquete.}
+debido a los par\'ametros de simulaci\'on de congesti\'on ($\delta$ y $\phi$).
+
+\par La informaci\'on que es transmitida desde el cliente al servidor no es
+de importancia en el experimento propuesto, ya que como se puede observar, los
+datos que ser\'an analizados no tienen relaci\'on alguna con el \emph{payload} de
+los paquetes PTC ni con la totalidad de la informaci\'on. As\'i pues, se decidi\'o
+enviar una cantidad finita de bloques de informaci\'on aleatoria de un tama\~no determinado
+(tanto la cantidad de bloques como el tama\~no de los mismos se encuentran definidos
+en la secci\'on \ref{sec:variables_metricas:variables}). Con esto se obtiene
+un intercambio de informaci\'on suficiente para obtener los datos del RTO y RTT necesarios
+para realizar el an\'alisis posterior.
 
 %-------------------------------------------------------------------------------
 
-\subsection{Entorno de Experimentaci\'on}
+\subsection{Entorno de Experimentaci\'on}\label{sec:experimento:entorno}
+\par El entorno donde se realizar\'on todos los experimentos analizados en este
+trabajo est\'a compuesto de 6 m\'aquinas virtuales corriendo el sistema operativo
+\textit{CentOS 6.5 64-bit}\cite{centos} con 2GB de memoria RAM y 2 n\'ucleos x86\_64
+intel de 2.26 GHz cada una, todas corriendo sobre el mismo host f\'isico
+utilizando la tecnolog\'ia de virtualizaci\'on Xen4\cite{xen}.
+
+\par En cada uno de las VMs\footnote{M\'aquinas virtuales.} se corri\'o 
+el experimento descripto para una combinaci\'on distinta de valores de
+$\delta$ y $\phi$, aunque para cada combinaci\'on se experiment\'o con todas
+las combinaci\'on posibles para los valores de $\alpha$ y $\beta$ definidos 
+en la secci\'on \ref{sec:variables_metricas:variables}.
 
 %-------------------------------------------------------------------------------
 
-\subsection{Dificultades encontradas durante la Experimentaci\'on}
+\subsection{Dificultades encontradas durante la Experimentaci\'on}\label{sec:experimento:dificultades}
 
 %-------------------------------------------------------------------------------
 
