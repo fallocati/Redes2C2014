@@ -58,8 +58,8 @@ set xtics 0.1
 
 #set xtics rotate out
 
-set xtics font ",08"
-set ytics font ",08"
+set xtics font ",12"
+set ytics font ",12"
 
 #set key samplen 10
 
