@@ -1,33 +1,33 @@
-\IEEEPARstart{A}{} la hora de trabajar y analizar el comportamiento del protocolo
-respecto de la congesti\'on, es inmediato dirigirnos hacia el mecanismo (si lo
-hay) implementado por el protocolo con este prop\'osito.
+\IEEEPARstart{A}{} la hora de trabajar y analizar el comportamiento del
+protocolo respecto de la congesti\'on, es inmediato dirigirnos hacia el
+mecanismo (si lo hay) implementado por el protocolo con este prop\'osito.
 
-\par El primer dato importante a mencionar, es que el protocolo PTC s\'olo replica
-la estimaci\'on del RTO del mecanismo de control de congesti\'on de TCP\cite{rfc5681}.
-Este valor se utiliza para determinar cuanto tiempo esperar antes de considerar que un
-paquete se perdi\'o y iniciar el proceso de retransmici\'on (b\'asicamente se
-utiliza para determinar un \textit{timeout}).
+\par El primer dato importante a mencionar, es que el protocolo PTC s\'olo
+replica la estimaci\'on del RTO del mecanismo de control de congesti\'on de
+TCP\cite{rfc5681}.  Este valor se utiliza para determinar cuanto tiempo esperar
+antes de considerar que un paquete se perdi\'o y iniciar el proceso de
+retransmici\'on (b\'asicamente se utiliza para determinar un \textit{timeout}).
 
 \par El par\'ametro por defecto que uno puede pensar para calcular el RTO, y
-que efectivamente se utiliza, es el \textit{RTT}\cite{rfc1323}\cite{karns_algorithm}\cite{rfc6298},
-a partir del cual se calcula el \textit{SRTT} (\textit{Smoothed Round
-Trip Time}\cite{rfc6298}). As\'i pues a la hora de estimar el RTO, se
-utilizan el RTT y el SRTT, en conjunto con 2 constantes denominadas \emph{alpha}
-y \emph{beta}\footnote{De ahora en m\'as $\alpha$ y $\beta$.}\cite{rfc6298}.
+que efectivamente se utiliza, es el
+\textit{RTT}\cite{rfc1323}\cite{karns_algorithm}\cite{rfc6298}, a partir del
+cual se calcula el \textit{SRTT} (\textit{Smoothed Round Trip
+Time}\cite{rfc6298}). As\'i pues a la hora de estimar el RTO, se utilizan el
+RTT y el SRTT, en conjunto con 2 constantes denominadas \emph{alpha} y
+\emph{beta}\footnote{De ahora en m\'as $\alpha$ y $\beta$.}\cite{rfc6298}.
 
 \par Entonces, explicado esto, ya se ve de donde salen\footnote{Y de donde el
 TP sugiere.} las primeras variables que iremos analizando a la hora de ver como
 se comporta el protocolo: $\alpha$ y $\beta$.
 
-\par Nos queda ahora el problema de encontrar un entorno lo suficientemente estable
-que nos permita analizar el comportamiento de manera justa. El problema aqu\'i
-es que debemos comenzar a simular la congesti\'on de la red, con lo cual se
-nos plantea el objetivo de introducir en el protocolo un delay
-$\delta$ y una probabilidad $\phi$ de p\'erdida/$dropeo$ de los paquetes. 
-Se puede pensar que a mayor $\delta$ y $\phi$ se estar\'a replicando un
-escenario con mayor congesti\'on. Obviamente, esto tiene sentido
-en un entorno que mantenga las dem\'as variables de la red lo suficientemente
-estables para que podamos asumir que la simulaci\'on de la congesti\'on es
-correcta.
+\par Nos queda ahora el problema de encontrar un entorno lo suficientemente
+estable que nos permita analizar el comportamiento de manera justa. El problema
+aqu\'i es que debemos comenzar a simular la congesti\'on de la red, con lo cual
+se nos plantea el objetivo de introducir en el protocolo un delay $\delta$ y
+una probabilidad $\phi$ de p\'erdida/$dropeo$ de los paquetes.  Se puede pensar
+que a mayor $\delta$ y $\phi$ se estar\'a replicando un escenario con mayor
+congesti\'on. Obviamente, esto tiene sentido en un entorno que mantenga las
+dem\'as variables de la red lo suficientemente estables para que podamos asumir
+que la simulaci\'on de la congesti\'on es correcta.
 
 %-------------------------------------------------------------------------------

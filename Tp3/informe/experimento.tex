@@ -3,61 +3,249 @@
 procesos (no necesariamente corriendo en el mismo \textit{host}, aunque se
 realiz\'o de dicha manera por motivos que se explican m\'as adelante) utilizando
 el protocolo PTC, para luego comenzar a enviar una cantidad determinada de
-informaci\'on de un proceso al otro mientras se guarda la informaci\'on que
-luego ser\'a analizada. Es decir, no habr\'a transmici\'on en simult\'aneo entre
-los procesos. As\'i pues, denominamos como \emph{servidor} al proceso que recibe
-la informaci\'on y env\'ia los $ack's$, y \emph{cliente} al que env\'ia la
-informaci\'on y recibe los $ack's$\footnote{Por comodidad de notaci\'on, decidimos
-que fuese el servidor el proceso \textit{bindeado}/unido a un socket escuchando
-peticiones de conexi\'on, y que fuese el cliente el encargado de realizar el
-pedido de conexi\'on}.
-
-\subsubsection*{Simulaci\'on de la congesti\'on}
+informaci\'on de un proceso al otro mientras se guardan los datos pertinentes
+que luego ser\'a analizada. Es decir, no habr\'a transmici\'on en simult\'aneo
+entre los procesos. As\'i pues, denominamos como \emph{servidor} al proceso que
+recibe la informaci\'on y env\'ia los $ack's$, y \emph{cliente} al que env\'ia
+la informaci\'on y recibe los $ack's$\footnote{Por comodidad de notaci\'on,
+decidimos que fuese el servidor el proceso \textit{bindeado}/unido a un socket
+escuchando peticiones de conexi\'on, y que fuese el cliente el encargado de
+realizar el pedido de conexi\'on}.
 
 \subsubsection*{Sobre los Datos del Experimento}
 \par Los datos que se guardan durante la experimentaci\'on, para luego ser
 analizados son aquellos cambios que sufre el RTO durante la transferencia del
-experimento. Cada vez que el protocolo decide actualizar el RTO, se guarda
-en un archivo el RTO previo al cambio, y el nuevo RTT que el protocolo considera
-para actualizarlo. Es decir, la informaci\'on guardada termina representando
-el RTT real que el protocolo midi\'o mediante el seguimiento de un paquete en
+experimento. Cada vez que el protocolo decide actualizar el RTO, se guarda en un
+archivo el RTO previo al cambio, y el nuevo RTT que el protocolo considera para
+actualizarlo. Es decir, la informaci\'on guardada termina representando el RTT
+real que el protocolo midi\'o mediante el seguimiento de un paquete en
 particular, y el RTO que se estaba utilizando para estimar dicho RTT. Como
 informaci\'on adicional, tambi\'en se guarda la cantidad de paquetes env\'iados
-por el cliente, cuales de ellos son retransmiciones, y cu\'antos paquetes
-fueron \emph{dropeados}\footnote{Utilizamos aqu\'i la denominaci\'on paquete
-en lugar de ''informaci\'on'' ya que la cantidad de paquetes que se env\'ien
-durante la experimentaci\'on variar\'a seg\'un los valores de $\delta$ y $\phi$,
-pues PTC trat\'a de enviar la mayor cantidad de informaci\'on posible por paquete.}
+por el cliente, cuales de ellos son retransmiciones, y cu\'antos paquetes fueron
+\emph{dropeados}\footnote{Utilizamos aqu\'i la denominaci\'on paquete en lugar
+de ''informaci\'on'' ya que la cantidad de paquetes que se env\'ien durante la
+experimentaci\'on variar\'a seg\'un los valores de $\delta$ y $\phi$, pues PTC
+trat\'a de enviar la mayor cantidad de informaci\'on posible por paquete.}
 debido a los par\'ametros de simulaci\'on de congesti\'on ($\delta$ y $\phi$).
 
-\par La informaci\'on que es transmitida desde el cliente al servidor no es
-de importancia en el experimento propuesto, ya que como se puede observar, los
-datos que ser\'an analizados no tienen relaci\'on alguna con el \emph{payload} de
-los paquetes PTC ni con la totalidad de la informaci\'on. As\'i pues, se decidi\'o
-enviar una cantidad finita de bloques de informaci\'on aleatoria de un tama\~no determinado
-(tanto la cantidad de bloques como el tama\~no de los mismos se encuentran definidos
-en la secci\'on \ref{sec:variables_metricas:variables}). Con esto se obtiene
-un intercambio de informaci\'on suficiente para obtener los datos del RTO y RTT necesarios
-para realizar el an\'alisis posterior.
+\par La informaci\'on que es transmitida desde el cliente al servidor no es de
+importancia en el experimento propuesto, ya que como se puede observar, los
+datos que ser\'an analizados no tienen relaci\'on alguna con el \emph{payload}
+de los paquetes PTC ni con la totalidad de la informaci\'on. As\'i pues, se
+decidi\'o enviar una cantidad finita de bloques de informaci\'on aleatoria de un
+tama\~no determinado (tanto la cantidad de bloques como el tama\~no de los
+mismos se encuentran definidos en la secci\'on
+\ref{sec:variables_metricas:variables}). Con esto se obtiene un intercambio de
+informaci\'on suficiente para obtener los datos del RTO y RTT necesarios para
+realizar el an\'alisis posterior.
+
+\subsubsection*{Simulaci\'on de la congesti\'on/Modificaciones en el Protocolo}
+\par Ya se han mencionado en este trabajo a los par\'ametros que se utilizan
+para simular la congesti\'on de la red: $\delta$ (delay) y $\phi$ (probabilidad
+de p\'erdida de un paquete, o también llamada, \emph{dropchance}).
+
+\par Si bien es cierto que conceptualmente estas caracter\'isticas de la red no
+son inherentes a la congesti\'on que pueda tener una red, consideramos que son
+dos de los factores m\'as importantes que nos se\~nalan que una red comienza a
+estar congestionada. De hecho, TCP considera que hay congesti\'on cuando
+comienza a dejar de recibir los $ack$ de sus paquetes, y el $timeout$ para
+considerar que un $ack$ se ha perdido debido a la congesti\'on se calcula
+din\'amicamente de acuerdo al RTT de la red (en el cual entra el juego el
+delay). Entonces, obsevamos como evento que al haber congesti\'on, los paquetes
+(no s\'olo los $ack's$ comienzan a ''perderse'', o mejor dicho, ser
+\textit{dropeados}) y al mismo tiempo la red suele comenzar a tener un mayor
+delay debido a que los distintos nodos que hay en una ruta entre dos puntos de
+una conexi\'on podr\'ian estar saturados y trabajando m\'as lento, as\'i como
+tambi\'en el acceso al medio podr\'ia ser m\'as lento debido a la gran cantidad
+de paquetes que circulan por la red.
+
+\par A la hora de simular estas caracter\'isticas, hay varios lugares en el
+c\'odigo del protocolo donde se podr\'ia hacer. Una posibilidad ser\'ia hacer
+que los $ack's$ tuvieran una demora $\delta$ para ser env\'iados, y justo antes
+de enviarlos, decidir si se env\'ia o no con probabilidad $\phi$ (todo esto, en
+nuestro experimento ser\'ia algo que realizar\'ia el servidor). Ahora bien, el
+protocolo en muchas ocasiones tambi\'en env\'ia \emph{spurious}\footnote{La
+palabra es un abuso de notaci\'on, ya que estos $ack's$ no son ni aleatorios ni
+no esperados, sino que corresponden a la especificaci\'on del protocolo.} $ack$
+para actualizar el tama\~no de la ventana del receptor, y la pregunta en este
+caso pasar\'ia a ser: ¿debemos aplicar $\delta$ y $\phi$ para estos $ack's$
+tambi\'en? ¿y c\'omo afectan a los datos que se miden durante el experimento?.
+
+\par Originalmente, se trat\'o de trabajar con $\delta$ y $\phi$ de la manera
+expuesta, pero surgieron varias complicaciones a la hora de interpretar el
+\emph{sampled\_rtt}\footnote{Lo que para el protocolo es el RTT real de la red
+para una conexi\'on dada.}, ya que estos paquetes de actualizaci\'on de tama\~no
+de ventana pod\'ian ser utilizados por el protocolo para mandar informaci\'on de
+un paquete que hab\'ia sido dropeado anteriormente. As\'i pues, en lugar de
+tratar de resolver este problema y seguir con este modelo para simular el delay
+y el dropchance, se decidi\'o adoptar otro enfoque.
+
+\par En si mismo, lo que importa es simular la congesti\'on, y esta no pertenece
+a una de las puntas de una conexi\'on (ni siquiera a ambas), sino que es un
+evento que ocurre en la red. As\'i pues, si la misma est\'a simulada del lado
+del servidor o del lado del cliente, dentro del alcance de nuestro experimento,
+es exactamente lo mismo simularla en cualquiera de los dos lados.  La diferencia
+radica en que el servidor tambi\'en tendr\'ia un delay a la hora de enviar
+informaci\'on al cliente pudiendo afectar de alguna manera a nuestras
+mediciones. Pero en el experimento planteado, el cliente no env\'ia
+$ack's$\footnote{Exceptuando los correspondientes a la creaci\'on de la
+conexi\'on} ni el servidor env\'ia paquetes ''regulares'', as\'i pues este
+enfoque nos quita el problema de lidiar con los paquetes de actualizaci\'on de
+ventana de recepci\'on.
+
+\par Finalmente, se tom\'o el archivo \emph{protocol.py}, y se a\~nadi\'o una
+probabilidad de dropeo y el delay en la funci\'on \emph{send\_and\_queue}, pero
+teniendo en cuenta que todos los c\'alculos correspondientes al RTO y RTT fueran
+efectuados previamente, de manera de que tuvieran el impacto que se pretende
+estudiar cuando alg\'un paquete es expuesto a un delay muy grande o es
+descartado/dropeado.
 
 %-------------------------------------------------------------------------------
 
 \subsection{Entorno de Experimentaci\'on}\label{sec:experimento:entorno}
 \par El entorno donde se realizar\'on todos los experimentos analizados en este
-trabajo est\'a compuesto de 6 m\'aquinas virtuales corriendo el sistema operativo
-\textit{CentOS 6.5 64-bit}\cite{centos} con 2GB de memoria RAM y 2 n\'ucleos x86\_64
-intel de 2.26 GHz cada una, todas corriendo sobre el mismo host f\'isico
-utilizando la tecnolog\'ia de virtualizaci\'on Xen4\cite{xen}.
+trabajo est\'a compuesto de 6 m\'aquinas virtuales corriendo el sistema
+operativo \textit{CentOS 6.5 64-bit}\cite{centos} con 2GB de memoria RAM y 2
+n\'ucleos x86\_64 intel de 2.26 GHz cada una, todas corriendo sobre el mismo
+host f\'isico utilizando la tecnolog\'ia de virtualizaci\'on Xen4\cite{xen}.
 
-\par En cada uno de las VMs\footnote{M\'aquinas virtuales.} se corri\'o 
-el experimento descripto para una combinaci\'on distinta de valores de
-$\delta$ y $\phi$, aunque para cada combinaci\'on se experiment\'o con todas
-las combinaci\'on posibles para los valores de $\alpha$ y $\beta$ definidos 
-en la secci\'on \ref{sec:variables_metricas:variables}.
+\par En cada uno de las VMs\footnote{M\'aquinas virtuales.} se corri\'o el
+experimento descripto para una combinaci\'on distinta de valores de $\delta$ y
+$\phi$, aunque para cada combinaci\'on se experiment\'o con todas las
+combinaci\'on posibles para los valores de $\alpha$ y $\beta$ definidos en la
+secci\'on \ref{sec:variables_metricas:variables}.
 
 %-------------------------------------------------------------------------------
 
 \subsection{Dificultades encontradas durante la Experimentaci\'on}\label{sec:experimento:dificultades}
+\par Durante la realizaci\'on de este trabajo, varias complicaciones
+relacionadas con el protocolo fueron surgiendo. Como consecuencia, algunos de
+los resultados obtenidos, o mismo los experimentos realizados, no fueron tan
+satisfactorios como se esperaba en cuanto a su precisi\'on.
 
+\par A continuaci\'on, detallamos los casos m\'as importantes y las decisiones
+que se tomaron en consecuencia:
+
+\begin{enumerate}[label=(\alph*)]
+
+    \item \textbf{Errorno 90:} Inicialmente, al comenzar con la
+        experimentaci\'on, la idea era correr el servidor en un un host, y el
+        cliente en otro (ambos siendo VMs). Pero al comenzar la
+        experimentaci\'on nos encontramos con el error \emph{''[Errno 90]
+        Message too long''}. El mismo se debe a que el protocolo, al armar los
+        paquetes, no toma en cuenta\footnote{O no toma en cuenta \emph{del
+        todo}.} el MTU de la interfaz de red. Este error no ocurre cuando se
+        corre el servidor en la IP 127.0.0.1, ya que esta es una interfaz
+        virtual que no esta asociada a ning\'un dispositivo de red, y
+        aparentemente el sistema operativo no le impone un MTU.
+
+        \par Se observ\'o que este error pod\'ia ser \emph{by-paseado}
+        disminuyendo la constante \emph{MSS} a un valor por debajo del MTU del
+        dispositivo de red a utilizar, pero finalmente fue otro camino el que se
+        tom\'o para superar este inconveniente. Luego de hablar con los docentes
+        mediante la lista de la c\'atedra, se descubri\'o que este error fue
+        resuelto en uno de los branches del proyecto del protocolo
+        PTC\footnote{\url{https://github.com/lukius/ptc/issues/7}}, pero al
+        momento de utilizar dicho c\'odigo, el tiempo para realizar la
+        experimentaci\'on de este trabajo disminu\'ia alarmantemente, por lo
+        cual se decidi\'o realizar toda la experimentaci\'on en forma local (es
+        decir, servidor y cliente corriendo en el mismo host) y as\'i aprovechar
+        mejor las 6 VMs disponibles.
+
+    \bigskip
+    \item \textbf{Discretizaci\'on del Tiempo:} Una de las caracter\'isticas de
+        PTC es que fue inspirado en la implementaci\'on de TCP de BSD\cite{bsd},
+        el cual en lugar de utiliza un timer discreto en lugar del timer de alta
+        precisi\'on que podr\'ia proveer el sistema operativo. En el caso de
+        PTC, este timer tiene una precisi\'on de 10ms, con lo cual, si alg\'un
+        paquete no es procesado por completo instant\'aneamente, el
+        \emph{sampled\_rtt} correspondiente tendr\'a una cota inferior de 10ms.
+        Estos 10ms que se a\~nade en algunos paquetes no es problem\'atico
+        cuando
+        \begin{enumerate*}[label=\itshape\arabic*\upshape)]
+
+            \item ocurre en todos los paquetes, o
+
+            \item cuando los par\'ametros $\delta$ y $\phi$ son bajos, con lo
+                cual se esperar\'ia tener un \emph{sampled\_rtt} muy cercano a
+                $0$, pero donde se obtiene o bien $0$, o $10$.
+
+        \end{enumerate*}
+        \par Para solucionar este ''inconveniente'', se podr\'ia
+        rabajar con el reloj de mayor precisi\'on del sistema operativo,
+        para lo cual hubiera sido necesario modificar el protocolo o implementar
+        alg\'un mecanismo para utilizarlo\footnote{Utilizando los \emph{payloads
+        de los paquetes quiz\'as}.}. Pero se consider\'o que estos cambios no
+        terminari\'an siendo necesarios, ya que en los casos de mayor inter\'es
+        (aquellos donde $\delta$ y $\phi$ tienen mayor relevancia), estos 10ms
+        de m\'as que pueden aparecer en algunos paquetes tendr\'an muy poca
+        influencia en el an\'alisis global.
+
+    \bigskip
+    \item \textbf{Duplicaci\'on de $\delta$:} Uno de los comportamientos que se
+        observaron durante la experimentaci\'on fue que los RTT obtenidos por el
+        protocolo eran, excepto para los primeros y \'ultimos paquetes del
+        experimento, el doble de $\delta$, lo cual no era muy razonable ya que
+        al correr todo el experimento localmente, el delay agregado por la
+        ''red'' es demasiado peque\~no para influir de esta manera\footnote{De
+        hecho, es de 20$\mu s$.}. Analizando el problema con
+        Lucio\footnote{\url{https://github.com/lukius}}, se
+        lleg\'o\footnote{\'El lleg\'o.} a la conclusi\'on que este
+        comportamiento se deb\'ia un \emph{lock} que piden en simult\'aneo
+        varios \emph{threads}. El recurso en cuesti\'on que se corresponde con
+        el lock es el \emph{control block}, que entre otras cosas, es el que
+        administra el acceso a los \emph{buffers} del socket. As\'i pues,
+        tenemos al cliente que se encuentra enviando paquetes y recibiendo
+        $ack's$ en simult\'aneo, y ambos procesos piden el recurso para poder
+        tomar o escribir en los buffers. Entonces, al tener a $\delta$
+        implementado del lado del cliente\footnote{En realidad est\'a
+        implementado en el protocolo, pero a fines pr\'acticos, la funci\'on
+        modificada es s\'olo invocada por el cliente en nuestro experimento.},
+        se tiene el delay al enviar el paquete, y se le suma el delay del
+        paquete que se este enviando (el que tenga el recurso) al momento de
+        recibir el $ack$, ya que se debe esperar a que dicho paquete se env\'ie
+        antes de poder obtener el \emph{control block}.
+
+        \par Sobre este caso, esta disertaci\'on se di\'o demasiado cerca de la
+        fecha de
+        entrega\footnote{\url{http://www.memecreator.org/static/images/memes/2739987.jpg}},
+        con lo cual se decidi\'o documentar dicho comportamiento pero procesar
+        los datos tal como se obtuvieron de la experimentaci\'on. Esto lleva a
+        que, en lo que sigue de este trabajo, cuando hablemos de un delay
+        $\delta$, en la realidad este represent\'o un delay de $2\delta$.
+
+    \bigskip 
+    \item \textbf{Pseudo-deadlocks:} El problema m\'as grande que se enfrent\'o
+        a la hora de realizar la experimentaci\'on fueron ciertos
+        \emph{deadlocks} o \emph{cuelgues}. M\'as que cuelgue, ser\'ia m\'as
+        preciso decir que el protocolo pasa por ciertas etapas de
+        lentitud\footnote{Observamos casos de hasta 15 horas.} sin responder
+        para algunas ejecuciones, independientemente de los valores de los
+        par\'ametros $\alpha$, $\beta$, $\delta$, $\phi$ y el puerto. De hecho,
+        se observ\'o como dos experimentos (con exactamente los mismos
+        par\'ametros excepto por el puerto) ejecutados en el mismo entorno y de
+        forma contigua, pueden resultar en una ejecuci\'on entrando en
+        \emph{pseudo-deadlocks} y la otra finalizando correctamente en menos de
+        30 segundos. Estos casos al ser independiente de los par\'ametros,
+        fueron el principal impedimento para lograr una experimentaci\'on m\'as
+        rica, ya que si bien son independientes, se le suma que con un
+        dropchance muy alto es d\'ificil distinguir cuando el experimento
+        entr\'o en este estado de $deadlock$ o si sigue trabajando normalmente.
+
+        \par Se presume que si se dejase correr a los procesos el tiempo
+        suficiente, terminar\'ian, pero esto hace que el tiempo del experimento
+        sea anormalmente grande, afectando la m\'etrica del $throughput$ (que se
+        introduce en la secci\'on \ref{sec:variables_metricas:metricas}).
+
+        \par As\'i pues, se tomaron dos decisiones para poder realizar la
+        experimentaci\'on. En primer lugar se decidi\'o no trabajar con
+        dropchance mayor a 10\%, ya que a partir de dicho valor cada
+        experimentaci\'on demanda un tiempo irrazonablemente largo\footnote{Y ya
+        est\'abamos al horno con el deadline\ldots}. Y en segundo lugar, la
+        experimentaci\'on se realiz\'o mediante un proceso que verifica que el
+        RTO sea actualizado al menos cada 5 minutos. Pasados 5 min sin actualizar
+        el RTO, se considera que el experimento entr\'o en
+        \emph{pseudo-deadlock} y se cancela para luego realizarla desde cero.
+
+\end{enumerate}
 %-------------------------------------------------------------------------------
-
