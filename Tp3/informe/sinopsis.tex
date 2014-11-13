@@ -8,13 +8,15 @@ de control de congesti\'on\cite{rfc5681} que hoy d\'ia controla, o trata de regu
 aproximadamente un 90\% de la congesti\'on de internet\footnote{Dato provisto
 en la clase te\'orica.}.
 
-\par Este mecanismo fue replicado por la c\'atedra mediante un nuevo protocolo
-(\textit{PTC\cite{ptc}}) implementado en \textit{python}\cite{python}, con el
-objetivo didactico de poder trabajar con las variables que afectan a este
-mecanismo.
+\par Este mecanismo a\'un ha sido replicado parcialmente por la c\'atedra sobre
+un nuevo protocolo (\textit{PTC\cite{ptc}}) implementado en \textit{python}\cite{python},
+con el objetivo didactico de poder trabajar abstray\'endose de complicaciones que
+surgen al trabajar en bajo nivel. La parte del mecanismo de control de congesti\'on
+que se ha replicado y sobre el cual se trabajar\'a es el c\'omputo del
+\textit{Retransmission Timer: RTO}\cite{rfc6298}.
 
-\par El trabajo aqu\'i presentado muestra un an\'alisis realizado sobre el
-mecanismo de control de congesti\'on con el objetivo de poder observar y
-encontrar como var\'ia la congesti\'on de una red que utiliza el protocolo
-PTC seg\'un var\'ia el entorno y la variables del control de congesti\'on
-replicado.
+\par El trabajo aqu\'i presentado muestra un an\'alisis con el objetivo de
+poder observar y encontrar como se comporta el c\'omputo del RTO en el protocolo
+PTC seg\'un var\'ia el entorno, en el cu\'al se trabajar\'an con 2 variables
+para simular la congesti\'on de la red: el delay y la probabilidad de
+\textit{drop} de paquetes.
