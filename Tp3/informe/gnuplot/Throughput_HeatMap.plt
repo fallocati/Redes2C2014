@@ -14,7 +14,7 @@
 #------------------------------
 #set terminal png size 800,600 #(.png)
 #set output output."_bars_percentile90.png"
-#set terminal png #(.png)
+set terminal png #(.png)
 #set output "prueba.png"
 
 #set terminal pdf #(.pdf)
@@ -23,7 +23,7 @@
 #set terminal epslatex color #(.tex)
 #set output "prueba.tex"
 
-set terminal postscript enhanced colour #(.eps)
+#set terminal postscript enhanced colour #(.eps)
 #set output ".eps"
 
 #set terminal latex #(.tex)
@@ -89,7 +89,7 @@ delays = "0 5 10 25 50 100 250 500"
 
 do for [prob in probs]{
     do for [delay in delays]{
-        set output "prob".prob."_delay".delay."_throughput_heatmap.eps"
+        set output "prob".prob."_delay".delay."_throughput_heatmap.png"
         #unset logscale y
         #stats "prob".prob."_delay".delay."_final.csv" using 4
 

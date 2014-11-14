@@ -256,11 +256,10 @@ estipuladas.}).
     \foreach \delay in {0, 5, 10, 25, 50, 100, 250, 500}{
         \begin{figure}
             \centering
-            \includegraphics[angle=-90,
-                            width=0.5\textwidth,
-                            trim = 2.5cm 4.5cm 1.5cm 3cm,
+            \includegraphics[width=0.5\textwidth,
+                            trim = 2.5cm 1cm 1.5cm 1.5cm,
                             clip
-                            ]{img/throughput/prob\prob_delay\delay_throughput_heatmap.eps}
+                            ]{img/throughput/prob\prob_delay\delay_throughput_heatmap.png}
             \caption{Delay \delay ms - Probabilidad \prob\%}
             \label{fig:throughput:prob\prob_delay\delay}
         \end{figure}
