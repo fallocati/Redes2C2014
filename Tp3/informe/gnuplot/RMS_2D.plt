@@ -1,5 +1,7 @@
 #Output format and titles
-set grid
+set grid xtics ytics mytics
+#set grid
+
 #set key font ",9"
 #set key bottom right
 set key below
@@ -29,12 +31,14 @@ set terminal postscript enhanced colour #(.eps)
 #set title "Probabilidad por IP\n(Ordenadas de mayor a menor segun probabilidad)"
 #set title "RMS para Probabilidad de Dropeo 0 y Delay 0"
 set xlabel "Alpha"
-set ylabel "RMS"
+set ylabel "RMS (Escala Logaritmica)"
 #set y2label "Probabilidad acumulada"
 
 #------------------------------
 
 #Scale and tics
+set offset graph 0.1, graph 0.1, graph 0.1, graph 0.1
+
 #set yrange [*:200]
 #set y2range [0:1]
 set xrange [0:1]
@@ -51,10 +55,13 @@ set xtics 0.1
 #set x2tics 0.05
 
 #set ytics nomirror
-#set ytics 1
+#set ytics 10
+#set ytics mirror
+#set mytics 5 
 
 #set y2tics nomirror
 #set y2tics 0.1
+#set my2tics 5
 
 #set xtics rotate out
 
@@ -97,8 +104,30 @@ delays = "0 5 10 25 50 100 250 500"
 do for [prob in probs]{
     do for [delay in delays]{
         set output "prob".prob."_delay".delay."_rmsd.eps"
+        unset logscale y
         stats "prob".prob."_delay".delay."_final.csv" using 3
-        plot [-0.05:1.05][STATS_min-0.5:STATS_up_quartile] for [i=0:10] "prob".prob."_delay".delay."_final.csv" every 11::i using 1:3 with points pointsize 2 title "Beta ".beta(i+1)
+
+        #Ticks
+        set ytics ()
+        set logscale y 10
+        #set y2tics ()
+        #set logscale y2 10
+
+        numtics = 10
+        #numtics2 = 1
+        increment = ((STATS_up_quartile-STATS_min)/numtics)
+        do for [t=0:numtics]{
+            tic = STATS_min+increment*t
+            set ytics add (tic)
+            
+            #increment2 = increment/numtics2
+            #do for [t2=1:numtics2]{
+            #    set ytics add (tic+increment2*t2)
+            #}
+        }
+
+        #Plot
+        plot [0:1][STATS_min:STATS_up_quartile] for [i=0:10] "prob".prob."_delay".delay."_final.csv" every 11::i using 1:3 with points pointsize 2 title "Beta ".beta(i+1)
         #plot for [i=0:10] "prob".prob."_delay".delay."_final.csv" every 11::i using 1:3 with linespoints lw 2 title "Beta ".beta(i+1)
     }
 }
