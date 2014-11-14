@@ -250,6 +250,20 @@ estipuladas.}).
 
 \subsection{Throughput}\label{sec:resultados:throughput}
 
+\foreach \prob in {0, 1, 5, 10}{
+    \foreach \delay in {0, 5, 10, 25, 50, 100, 250, 500}{
+        \begin{figure}
+            \centering
+            \includegraphics[angle=-90,
+                            width=0.5\textwidth,
+                            trim = 2.5cm 4.5cm 1.5cm 3cm,
+                            clip
+                            ]{img/throughput/prob\prob_delay\delay_throughput_heatmap.eps}
+            \caption{Delay \delay ms - Probabilidad \prob\%}
+            \label{fig:throughput:prob\prob_delay\delay}
+        \end{figure}
+    }
+}
 %-------------------------------------------------------------------------------
 
 \subsection{Compromiso RMSD-Throughput}\label{sec:resultados:rms_vs_throughput}
