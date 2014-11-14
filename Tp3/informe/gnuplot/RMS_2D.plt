@@ -98,7 +98,7 @@ do for [prob in probs]{
     do for [delay in delays]{
         set output "prob".prob."_delay".delay."_rmsd.eps"
         stats "prob".prob."_delay".delay."_final.csv" using 3
-        plot [0:1][STATS_min:STATS_up_quartile] for [i=0:10] "prob".prob."_delay".delay."_final.csv" every 11::i using 1:3 with linespoints lw 2 title "Beta ".beta(i+1)
+        plot [-0.05:1.05][STATS_min-0.5:STATS_up_quartile] for [i=0:10] "prob".prob."_delay".delay."_final.csv" every 11::i using 1:3 with points pointsize 2 title "Beta ".beta(i+1)
         #plot for [i=0:10] "prob".prob."_delay".delay."_final.csv" every 11::i using 1:3 with linespoints lw 2 title "Beta ".beta(i+1)
     }
 }
