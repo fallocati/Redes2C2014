@@ -1,17 +1,251 @@
 \subsection{RMSD}\label{sec:resultados:rmsd}
+\par A continuaci\'on se presentan los resultados obtenidos para la m\'etrica
+RMSD. En particular, nos focalizamos en los valores m\'as bajos de la m\'etrica,
+ya que como se ha comentado, la misma es una medida de la distancia entre el RTO
+y el RTT. Mientras menor sea la distancia, mejor es la estimaci\'on. Vale la
+aclaraci\'on, ya que hay varios resultados que quedan fuera de los gr\'aficos
+pues su valor es muy alto respecto de la media para cada conjunto de
+par\'ametros, e incluirlos en los graficos hace que la escala no permita
+observar las diferencias entre la gran mayor\'ia de los otros RMSD. As\'i pues,
+se decidi\'o graficar \'unicamente los RMSD entre el m\'inimo y el $3^{er}$
+cuartil de cada experimentaci\'on\footnote{Es decir, quitamos aquellos datos
+que, seg\'un la informaci\'on que pretendemos estudiar, representan
+\emph{outliers}.}.
 
-\newpage
-\foreach \prob in {0, 1, 5, 10}{
-    \foreach \delay in {0,5,10,25,50,100,250,500}{
-        \begin{figure}
+\par A la hora de analizar estos resultados, debido a la gran cantidad de
+informaci\'on, se estipula un orden para analizarla. Iremos agrupando los
+experimentos seg\'un el delay inyectado en la red y observando los
+comportamientos para diferentes dropchance, para finalmente llegar a un
+an\'alisis m\'as global que incluya todos los resultados.
+
+%-------------------------------------------------------------------------------
+\subsubsection{Delay 0ms}
+%\foreach \delay in {0,5,10,25,50,100,250,500}{
+\foreach \delay in {0}{
+    \foreach \prob in {0, 1, 5, 10}{
+        \begin{figure*}
             \centering
-            \includegraphics[angle=-90,width=0.5\textwidth]{img/rmsd/prob\prob_delay\delay_rmsd.eps}
-            \caption{Probabilidad \prob\% - Delay \delay ms}
+            \includegraphics[angle=-90,width=0.85\textwidth]{img/rmsd/prob\prob_delay\delay_rmsd.eps}
+            \caption{Delay \delay ms - Dropchance \prob\%}
             \label{fig:prob\prob_delay\delay}
-        \end{figure}
+        \end{figure*}
     }
 }
 
+\par Lo primero que se debe observar de estos gr\'aficos es la escala de la
+m\'etrica. Si bien el el rango de los RMSD m\'as bajos est\'an entre 113 y 150
+(dependiendo del dropchance), se ve como el rango superior comienza a
+incrementarse a medida que el dropchance lo hace (de 118 con $\phi = 0$, hasta
+8902 cuando $\phi = 10$. Esto nos muestra que hay una mayor dispersi\'on de
+datos en la medida de que la red pierda m\'as paquetes. Justamenente, se puede
+observar que casi cualquier combinaci\'on de valores para un dropchance de 0\%
+nos dan un RMSD similar, con lo cual podemos decir que en ese caso particular,
+los par\'ametros no parecen influir mucho en la estimaci\'on\footnote{Tampoco es
+que haya mucho que estimar, en el caso donde no hay delay y no hay p\'erdida de
+paquetes.}. Similarmente, se puede decir lo mismo para el caso 1\%, aunque ya
+hay que observar con un poquit m\'as de atenci\'on ya que hay algunos valores
+que son observablemente peores que otros, aunque no mucho. Mientras que en 5\% y
+10\% esto ya no aplica.
+
+\par Si analizamos la informaci\'on presentada por separado, es decir sin
+considerar los escenarios con dropchance distinto, deber\'iamos decir que el
+$\alpha$ y $\beta$ \'optimos en cuanto a la estimaci\'on del RTT son distintos
+para cada caso. Pero si buscamos par\'ametros que tengan flexibilidad y estimen
+bien en la medida que el dropchance sea din\'amico, debemos tratar de observar
+aquellos valores que dan una buena estimaci\'on en cada caso.
+
+\par As\'i pues, considerando la dispersi\'on, claramente mientras el dropchance
+sea bajo, m\'as cantidad de valores cumplen las expectativas, mientras que esto
+no ocurre cuando el dropchance aumenta. Por ejemplo, si se observan los valores
+$\alpha = 1$ y $\beta = 0.4$, se ver\'a que los mismos consiguen una de las
+mejores estimaci\'ones para caso de dropchance 0\%, lo mismo para 1\% aunque
+ahora con mayor densidad de buenos valores para estimar (es decir, hay m\'as
+''mejores''), bastante mala para 5\% y similarmente mala para 10\%.
+
+\par En cambio, si tomamos $\alpha = 0.2$ y $\beta = 0.1$, vemos que nos da una
+estimaci\'on bastante buena para todos los casos\footnote{En la fig
+\ref{fig:prob5_delay0} hay que observar con anteci\'on ya que se solapa el caso
+en el gr\'afico con los casos para $\beta$ igual a 8 y 5.}. As\'i como este hay
+varios casos de par\'ametros, aunque la elecci\'on de alguno de estos
+depender\'a de los valores que observemos en los dem\'as casos, para distintos
+delays.
+
+\FloatBarrier
+%-------------------------------------------------------------------------------
+
+\subsubsection{Delay 5ms}
+\foreach \delay in {5}{
+    \foreach \prob in {0, 1, 5, 10}{
+        \begin{figure*}
+            \centering
+            \includegraphics[angle=-90,width=0.85\textwidth]{img/rmsd/prob\prob_delay\delay_rmsd.eps}
+            \caption{Delay \delay ms - Probabilidad \prob\%}
+            \label{fig:prob\prob_delay\delay}
+        \end{figure*}
+    }
+}
+
+\par Continuando en el caso donde ya tenemos un pequen\~no delay, se observa el
+mismo comportamiento que en el caso anterior respecto de la dispersi\'on de la
+calidad de las estimaciones seg\'un el dropchance.
+
+\par Observando ya los valores, podemos observar que para las combinaciones de
+$\alpha$ con 0.1, 0.2 y 0.3; y $\beta$ con 0.2, 0.3 y 0.4, se obtienen
+estimaciones balanceadas para todos los casos de $\phi$. Como coincidencia,
+podemos observar que algunas de estas combinaciones podr\'ian considerarse como
+buenas estimaciones en el caso de $\delta = 0ms$ analizado anterioremente.
+Volveremos sobre esto m\'as adelante al realizar un an\'alisis global.
+
+\par Como dato adicional, se puede ver que el caso $\alpha = 0.7$, $\beta = 0.3$
+tambien nos da un buen RMSD para estos casos, pero a diferencia de los casos
+anteriores, donde algunos son par\'ametros buenos en el caso de $\delta = 0ms$,
+este claramente no es un buen estimador de dichos casos. As\'i pues, se comienza
+a visulmbrar el compromiso de estimar bien seg\'un el comportamiento de la red.
+%-------------------------------------------------------------------------------
+
+\subsubsection{Delay 10ms}
+\foreach \delay in {10}{
+    \foreach \prob in {0, 1, 5, 10}{
+        \begin{figure*}
+            \centering
+            \includegraphics[angle=-90,width=0.85\textwidth]{img/rmsd/prob\prob_delay\delay_rmsd.eps}
+            \caption{Delay \delay ms - Probabilidad \prob\%}
+            \label{fig:prob\prob_delay\delay}
+        \end{figure*}
+    }
+}
+
+\par En este nuevo set de experimentaci\'on, lo primero que se puede mencionar
+es que la dispersi\'on/rango de valores de RMS es muy similar al caso de $\delta
+= 5ms$. No as\'i, sin embargo, las combinaciones de par\'ametros del algoritmo
+de Karn que son eficientes. Por ejemplo, podemos observar que para las distintas
+combinaciones de $\alpha$ con un $\beta = 0.1$, se obtienen las mejores
+estimaciones para $\phi$ igual a 5 y 10\%, valores que son aceptables en 0 y 1\%
+debido al rango poco disperso de los RMSD de estos dos \'ultimos escenarios.
+
+\par A\'un as\'i, los casos mencionados para el escenario anterior (aquellos que
+eran aceptables tanto para $\delta$ igual a 0ms como 5ms), son tambi\'en
+aceptables en estos casos.
+
+%-------------------------------------------------------------------------------
+
+\subsubsection{Delay 25ms}
+\foreach \delay in {25}{
+    \foreach \prob in {0, 1, 5, 10}{
+        \begin{figure*}
+            \centering
+            \includegraphics[angle=-90,width=0.85\textwidth]{img/rmsd/prob\prob_delay\delay_rmsd.eps}
+            \caption{Delay \delay ms - Probabilidad \prob\%}
+            \label{fig:prob\prob_delay\delay}
+        \end{figure*}
+    }
+}
+
+\par Observando nuevamente los rangos de los RMSD visualizados, lo primero que
+salta a la vista es que la dispersi\'on a aumentado (mayor variabilidad entre la
+calidad de las estimaciones dependiendo de la elecci\'on de los par\'ametros).
+Esto se debe a que surgieron combinaciones de $\alpha$ y $\beta$ que nos
+dan estimadores notoriamente mejores y peores. Claramente, como se vi\'on en
+las transiciones entre escenarios ya expuestas, parecer\'ia ser que la
+injerencia de las constantes del algoritmo de Karn tienen m\'as injerencia en la
+medida en la que el delay crece, haciendo m\'as visible el hecho de que algunas
+combinaciones se comportan mejor o pero que otras.
+
+\par De hecho, aparecen ciertas combinaciones que hasta el momento no hab\'ian
+aparecido en los casos anteriores como buenos estimadores.
+
+\par Como se viene resaltando hasta ahora, pareciera ser aqu\'i tambi\'en que
+entre los valores de 0.1, 0.2 y 0.3 de $\alpha$ combinado con 0.2, 0.3 y 0.4 de
+$\beta$ se encuentra la combinaci\'on de compromiso para todos los casos
+analizados hasta el momento.
+
+\par A\'un as\'i, si tuviesemos que elegir una combinaci\'on para estimar este
+caso \'unicamente, podemos ver que el $\alpha = 0.5$ en conjunto con $\beta =
+0.1$ nos da un RTO bastante aceptable (entre los valores para los cuales se
+realiz\'o el experimento) para todos los casos de $\phi$.
+%-------------------------------------------------------------------------------
+
+\subsubsection{An\'alisis Restantes}
+\par Los an\'alisis y comportamientos expuestos siguen claramente una l\'inea
+que se repite a medida que el delay va aumentando: mayor dispersi\'on de RMSD,
+mayor dispersi\'on a\'un en los casos con $\phi$ m\'as alto, y aparici\'on de
+RMSDs m\'as cercanos al 0 para $\delta's$ m\'as grandes, existencia de
+$\alpha's$ y $\beta's$ buenos para estimar cada escenario sin coincidir con el
+los otros. Todos estos comportamientos pueden verse reflejados en los gr\'aficos
+que corresponden a los resultados obtenidos en el resto de los experimentos. Los
+mismos, se detallan a continuaci\'on, pero se cree innecesario el an\'alisis
+textual de los mismos, ya que simplemente se estar\'ia repitiendo lo ya dicho.
+
+\foreach \delay in {50, 100, 250, 500}{
+    \foreach \prob in {0, 1, 5, 10}{
+        \begin{figure*}
+            \centering
+            \includegraphics[angle=-90,width=0.85\textwidth]{img/rmsd/prob\prob_delay\delay_rmsd.eps}
+            \caption{Delay \delay ms - Probabilidad \prob\%}
+            \label{fig:prob\prob_delay\delay}
+        \end{figure*}
+    }
+}
+
+%-------------------------------------------------------------------------------
+\subsubsection{\'Analisis Global}
+\par Uno de los comportamientos m\'as interesantes que se observa es que
+pareciese ser que el algoritmo comienza a ser interesante para el an\'alisis de
+las ''constantes'' $\alpha$ y $\beta$ en la medida de que se empiezan a tener
+valores de $\delta$ y $\phi$ significativos. Cuando esto ocurre, se observa como
+distintas combinaciones de $\alpha$ y $\beta$ nos dan resultados claramente
+distintos, cosas que no ocurre tanto cuando $\phi$ y $\delta$ oscilan por
+valores bajos.
+
+\par A\'un as\'i, queda claro por los valores absolutos de cada experimento, que
+la estimaci\'on comienza a perder precisi\'on (RMSD m\'as grandes) en la medida
+en que, justamente, $\delta$ y $\phi$ se incrementan. Hasta ahora, siempre
+hablamos de ''buenos'' o ''mejores'' par\'ametros en referencia a los RMSDs
+m\'as peque\~nos obtenidos durante la experimentaci\'on. Pero, a la hora de
+comprar distintos escenarios entre si, queda claro que a valores de delay y
+dropchance m\'as bajos se obtienen mejores RMSDs, es decir, la estimaci\'on es
+m\'as precisa.
+
+\par Queda entonces claro que si uno sabe de antemano ante que tipo de red se va
+a enfrentar (d\'onde se sepa el rango de variaci\'on de $\delta$ y $\phi$), la
+elecci\'on de $\alpha$ y $\beta$ puede ser mucho m\'as precisa, y as\'i
+obtenerse rendimientos superiores del protocolo para cuando este implemente un
+control de congesti\'on basado en el RTO.
+
+\par Ahora bien, esto \'ultimo tiene una gran desventaja: no es escalable.
+Cualquier cambio que sufra la red respecto del delay o el dropchance (ya sea
+porque cambi\'an cuestiones f\'isicas de la red, como los medios de capa 1, o
+porque se agreguen nuevos nodos y al aumentar esta cantidad la congesti\'on de
+la red empiece a variar din\'amicamente fuera de los rangos iniciales) har\'a
+que el protocolo pierda gran parte de su rendimiento.
+
+\par Entonces nos encontramos nuevamente en la situaci\'on de decidir que
+par\'ametros del algoritmo de c\'alculo del RTO nos permiten tener un balance
+bueno sin importar las condiciones de la red. Desde ya, con la muestra
+obtenida mediante la experimentaci\'on realizada durante el curso de este
+trabajo, no se puede asegurar con firmeza el valor de estos par\'ametros. Pero
+de la observaci\'on de los gr\'aficos, se puede intuir que estos valores
+oscilar\'an entre 0.1 y 0.3 para $\alpha$; y 0.2 a 0.4 para $\beta$. Ser\'ia
+interesante repetir la experimentaci\'on, pero achicar el rango de estos dos
+par\'ametros para as\'i observar con mayor precisi\'on como se comporta el RMSD
+para valores de $\alpha$ entre 0 y 0.4, y valores de 0.1 a 0.5 para $\beta$.
+
+\par Fuera del alcance de este an\'alisis se encuentra el hecho de lo ''bueno''
+del c\'alculo del RTO. Claramente se pudo analizar cuales par\'ametros de
+$\alpha$ y $\beta$ nos daban los mejores resultados para distintos escenarios de
+congesti\'on/red, y observar por donde se encontrar\'ian los valores que nos den
+un estimador de compromiso para todos los escenarios. Pero no se analiz\'o lo
+preciso de la estimaci\'on (es decir, si la estimaci\'on es lo suficientemente
+cercana al valor de la realidad). Para poder realizar esto ser\'ia necesario
+establecer una ponderaci\'on que nos diga cuando una estimaci\'on es aceptable y
+cuando no. Esto ser\'ia posible de hacer en el caso en que poder medir el
+impacto del RTO, lo que requiere estudiar el comportamiento de control de
+congesti\'on que lo utilice (que al no estar implementado, qued\'a fuera de este
+trabajo\footnote{Y de haberlo estado, no se hubiera podido hacer en las fechas
+estipuladas.}).
+
+\FloatBarrier
+%-------------------------------------------------------------------------------
 %-------------------------------------------------------------------------------
 
 \subsection{Throughput}\label{sec:resultados:throughput}
