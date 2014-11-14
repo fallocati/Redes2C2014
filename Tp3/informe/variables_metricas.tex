@@ -2,7 +2,7 @@
 \par Hasta ahora se han mencionado muchos par\'ametros para los cuales no se han
 definido sus valores con los cuales luego se experimentar\'a. A continuaci\'on,
 se trata de hacer res\'umen de todos estos par\'ametros y variables con sus
-respectivos valores con los cuales se realiz\'o toda la experimentaci\'on:
+respectivos valores con los que se realiz\'o toda la experimentaci\'on:
 
 \begin{description}
 
@@ -73,9 +73,11 @@ ello, se utilizaron las siguientes m\'etricas:
         otra de valores ''ideales'' o reales. As\'i llegamos al
         \emph{RMSD}\footnote{Y Rodrigo no tuvo nada que ver con
         esto.}\cite{rmsd}, que justamente es una de las m\'etricas conocidas
-        para este tipo de ensayos. Mientras m\'as cercano a cero sea esta
-        m\'etrica, mejor es la estimaci\'on, ya que esta es un valor
-        estandarizado del desv\'io entre la estimaci\'on y el valor real.
+        para este tipo de ensayos, resumidamente podemos decir que la misma se 
+        encarga de relacionar un valor te\'orico estimado y el valor que luego
+        obtuvimos emp\'iricamente al hacer la medici\'on. Mientras m\'as cercano
+        a cero sea esta m\'etrica, mejor es la estimaci\'on, ya que esta es un
+        valor estandarizado del desv\'io entre el RTO y el RTT.
 
     \bigskip
     \item[\textbf{Throughput:}] El \emph{throughput}\cite{throughput} es
@@ -88,7 +90,7 @@ ello, se utilizaron las siguientes m\'etricas:
         que quiere transmitir la aplicaci\'on que utilice el protocolo, se
         transmitir\'an en todo el experimento. As\'i pues, sabiendo cuanto
         tiempo llev\'o completar el experimento para un conjunto de
-        par\'ametros, se puede saber cual fue el througput obtenido, el cual
+        par\'ametros, se puede saber cual fue el throughput obtenido, el cual
         refleja la percepci\'on real de la aplicaci\'on sobre cuan bueno es el
         protocolo.
 
@@ -102,7 +104,7 @@ ello, se utilizaron las siguientes m\'etricas:
         estos dos.
 
         \par Siendo el RMSD un valor que es mejor en la medida que m\'as cerca
-        del cero este, y el throughput una medida que mientras m\'as grande sea
+        del cero est\'e, y el throughput una medida que mientras m\'as grande sea
         nos comunica un mejor rendimiento, es claro que observar la m\'etrica
         $Throughput / RMSD$ nos dar\'a un resultado del compromiso entre estos
         dos objetivos deseados. Mientras m\'as alto sea esta m\'etrica, mejor
