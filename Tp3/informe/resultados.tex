@@ -33,17 +33,17 @@ an\'alisis m\'as global que incluya todos los resultados.
 }
 
 \par Lo primero que se debe observar de estos gr\'aficos es la escala de la
-m\'etrica. Si bien el el rango de los RMSD m\'as bajos est\'an entre 113 y 150
+m\'etrica. Si bien el rango de los RMSD m\'as bajos de cada muestra es 113 y 150
 (dependiendo del dropchance), se ve como el rango superior comienza a
 incrementarse a medida que el dropchance lo hace (de 118 con $\phi = 0$, hasta
 8902 cuando $\phi = 10$. Esto nos muestra que hay una mayor dispersi\'on de
-datos en la medida de que la red pierda m\'as paquetes. Justamenente, se puede
+datos a medida que la red pierde m\'as paquetes. Justamenente, se puede
 observar que casi cualquier combinaci\'on de valores para un dropchance de 0\%
 nos dan un RMSD similar, con lo cual podemos decir que en ese caso particular,
 los par\'ametros no parecen influir mucho en la estimaci\'on\footnote{Tampoco es
 que haya mucho que estimar, en el caso donde no hay delay y no hay p\'erdida de
 paquetes.}. Similarmente, se puede decir lo mismo para el caso 1\%, aunque ya
-hay que observar con un poquit m\'as de atenci\'on ya que hay algunos valores
+hay que observar con un poquito m\'as de atenci\'on ya que hay algunos valores
 que son observablemente peores que otros, aunque no mucho. Mientras que en 5\% y
 10\% esto ya no aplica.
 
@@ -89,9 +89,12 @@ delays.
 mismo comportamiento que en el caso anterior respecto de la dispersi\'on de la
 calidad de las estimaciones seg\'un el dropchance.
 
-\par Observando ya los valores, podemos observar que para las combinaciones de
+\par Observando ya los valores, podemos ver que para las combinaciones de
 $\alpha$ con 0.1, 0.2 y 0.3; y $\beta$ con 0.2, 0.3 y 0.4, se obtienen
-estimaciones balanceadas para todos los casos de $\phi$. Como coincidencia,
+estimaciones balanceadas para todos los casos de $\phi$. A medida que tenemos mayor 
+$\phi$, el rango de RMS para estos valores avanza de esta forma:
+de [110,116] a [110,150] a [145,259] a [140,600], que contemplando el resto 
+de los casos es mucho m\'as balanceado de lo que se observo en ellos .Como coincidencia,
 podemos observar que algunas de estas combinaciones podr\'ian considerarse como
 buenas estimaciones en el caso de $\delta = 0ms$ analizado anterioremente.
 Volveremos sobre esto m\'as adelante al realizar un an\'alisis global.
@@ -146,10 +149,9 @@ salta a la vista es que la dispersi\'on a aumentado (mayor variabilidad entre la
 calidad de las estimaciones dependiendo de la elecci\'on de los par\'ametros).
 Esto se debe a que surgieron combinaciones de $\alpha$ y $\beta$ que nos
 dan estimadores notoriamente mejores y peores. Claramente, como se vi\'on en
-las transiciones entre escenarios ya expuestas, parecer\'ia ser que la
-injerencia de las constantes del algoritmo de Karn tienen m\'as injerencia en la
-medida en la que el delay crece, haciendo m\'as visible el hecho de que algunas
-combinaciones se comportan mejor o pero que otras.
+las transiciones entre escenarios ya expuestas, parecer\'ia ser que las constantes
+del algoritmo de Karn tienen m\'as injerencia en la medida en la que el delay crece,
+haciendo m\'as visible el hecho de que algunas combinaciones se comportan mejor o pero que otras.
 
 \par De hecho, aparecen ciertas combinaciones que hasta el momento no hab\'ian
 aparecido en los casos anteriores como buenos estimadores.
