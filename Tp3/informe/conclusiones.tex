@@ -1,1 +1,37 @@
-\IEEEPARstart{LL}{e}gados al final del trabajo expuesto, 
+\IEEEPARstart{LL}egados al final del trabajo expuesto, podemos decir que determinar valores 
+de $\alpha$ y $\beta$ que acerquen la estimac\'ion del RTO al RTT ''real'' no es tarea sencilla.
+
+En base a los resultados obtenidos mediante la primera m\'etrica que usamos, el RMSD, tener 
+tantos valores variables en consideraci\'on nos genera un campo demasiado amplio de resultados.
+A pesar de eso pudimos ver la relaci\'on directa que tienen los cambios introducidos al
+protocolo (el delay y la probabilidad de dropeo) en la estimaci\'on del RTO como bien describimos
+en la secci\'on de resultados.
+
+Algo similar sucedi\'o al considerar la segunda m\'etrica de la experimentac\'on, el throughput,
+a grandes rasgos no se consegu\'ia ver una relaci\'on clara entre la informaci\'on transmitida sin
+errores y los valores de $\alpha$ y $\beta$ como s\'i suced\'ia con $\phi$ y $\delta$, los resultados 
+obtenidos reflejaban como era de esperarse que a mayor delay menor era la eficiencia de la comunicac\'ion 
+y que a mayor probabilidad de p\'erdida de paquete lo mismo suced\'ia.
+
+
+Pero no fue hasta analizar enfonc\'andose en un entorno m\'as peque\~no de valores, esto es,
+al fijar ciertos par\'ametros y concentrarnos en como repercut\'ian $\alpha$ y $\beta$, que pudimos 
+determinar valores que consideramos eficientes de ellos dependiendo el caso.
+
+A partir de las modificaciones hechas al protocolo, el estudio de distintas m\'etricas y formas de
+presentar y analizar los resultados, se reduci\'o el tiempo que pudimos dedicarle a la experimentaci\'on
+propiamente dicha, y quedaron pendientes posibles trabajos a realizar, uno de ellos es estudiar el
+compromiso entre el RMSD y el throughput [AMPLIAR CON LO QUE ESTA EN PAG6.]
+
+Otro punto que vale la pena destacar es que los resultados obtenidos dependen completamente de la 
+implementaci\'on del protocolo, que consideramos no finalizada, ya que hubiese sido interesante
+continuar modificando el c\'odigo a partir de los errores que llegamos a reportar en la secci\'on 
+\ref{sec:experimento:dificultades}, pero no resolver completamente, lo cual nos hubiese permitido 
+a su vez estudiar distintos entornos de experimentaci\'on y hacer un an\'alisis m\'as profundo de 
+multiples casos posibles. Al continuar con esto, los resultados pueden llegar a variar y ser
+menos vol\'atiles o irregulares que los que presentamos.
+
+Como palabras finales sobre el trabajo hecho, consideramos que el estudio de la congesti\'on de TCP
+es m\'as que interesante y el trabajo presentado nos permite ver en pr\'actica la importancia de varios 
+conceptos de la capa de transporte y el control de congestion estudiados a lo largo de la cursada
+de la materia.
