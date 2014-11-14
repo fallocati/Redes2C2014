@@ -1,15 +1,114 @@
 \subsection{Valores de las variables utilizadas para la Experimentaci\'on}\label{sec:variables_metricas:variables}
+\par Hasta ahora se han mencionado muchos par\'ametros para los cuales no se han
+definido sus valores con los cuales luego se experimentar\'a. A continuaci\'on,
+se trata de hacer res\'umen de todos estos par\'ametros y variables con sus
+respectivos valores con los cuales se realiz\'o toda la experimentaci\'on:
+
+\begin{description}
+
+    \bigskip
+    \item[$\alpha$/$\beta$:] Son los valores que utiliza el protocolo para
+        calcular el RTO. Se experiment\'o, para ambos par\'ametros, con los
+        valores 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 y 1.
+
+    \bigskip
+    \item[DropChance ($\phi$):] Como ya se explic\'o, nos vimos limitados a la
+        hora de variar este par\'ametro debido al tiempo requerido por cada
+        experimento con un dropchance por encima del 10\%. As\'i pues, se
+        logr\'o experimentar con 0\%, 1\%, 5\% y 10\%.
+
+    \bigskip
+    \item[Delay ($\delta$):] El delay inyectado a cada experimento trat\'o no
+        solo de simular el delay que puede producirse mediante la congesti\'on,
+        sino tambi\'en aquellas redes de mayor extensi\'on o que debidos a sus
+        medios de propagaci\'on se ven afectados de manera de tener un mayor
+        delay. Se ensay\'o con los valores: 0ms, 5ms, 10ms, 25ms, 50ms, 100ms,
+        250ms y 500ms.
+
+    \bigskip
+    \item[Tama\~no los mensajes:] El experimento se basa en trasferir
+        informaci\'on del cliente al servidor. Si bien la informaci\'on en si
+        que se transmite no es de importancia, para generala se realizan
+        mensajes con un tama\~no de 500bytes de informaci\'on aleatoria, los
+        cuales luego son procesados por el protocolo que puede agrupar a varios
+        (o partes) de estos en los paquetes PTC.
+
+    \bigskip
+    \item[Cantidad de mensajes:] As\'i como el dropchance afecta negativamente a
+        la duraci\'on de cada experimento, es claro que la cantidad de
+        informaci\'on que se pretende env\'iar tambi\'en lo har\'a. As\'i pues,
+        para tener una muestra significativa, por cada experimento (es decir,
+        para las dem\'as variables ya fijadas) se transmitieron 100
+        mensajes\footnote{Originalmente eran 1000, pero esto hizo imposible la
+        experimentaci\'on de probabilidades con un delay superior a 10ms, o con
+        un dropchance mayor a 5\%.}.
+
+\end{description}
 
 %-------------------------------------------------------------------------------
 
 \subsection{M\'etricas Utilizadas}\label{sec:variables_metricas:metricas}
+\par Una vez terminada la experimentaci\'on (o previamente en realidad, para
+determinar que informaci\'on es necesaria reunir), queda pendiente decidir como
+procesar la misma para poder visualizarla y analizarla de alguna manera. Para
+ello, se utilizaron las siguientes m\'etricas: 
+
 \begin{description}
-    \item[\textbf{Root Mean Square Deviation:}] MSE, RMS y RMSD
+    \bigskip
+    \item[\textbf{Root Mean Square Deviation:}] El foco del enunciado est\'a
+        puesto en las variables que se utilizan para calcular el RTO (es decir,
+        la estimaci\'on del RTT del protocolo). As\'i pues, concentrados en cuan
+        ''bien'' estima el protocolo el RTT, nos es interesante encontrar alguna
+        manera de poder comparar cada estimaci\'on con el que luego fue el RTT
+        real correspondiente. Ahora bien, esto se podr\'ia realizar para cada
+        estimaci\'on realizada por el protocolo (que si bien no son para todos
+        los paquetes que env\'ia, son muchos), hay que encontrar una forma de
+        unificar estos valores para decidir, en alg\'un tipo de promedio, cuan
+        bueno es el protocolo con ciertos par\'ametros estimando el RTT.
 
-    \item[\textbf{Throughput:}] Throughput
+        \par Teniendo tanto los valores de RTO estimados durante la
+        experimentaci\'on, como as\'i tambi\'en el RTT que se correspondi\'o con
+        cada RTO (es decir, el valor que se estaba estimando), buscamos alguna
+        m\'etrica de distancia promedio entre una serie de valores estimados y
+        otra de valores ''ideales'' o reales. As\'i llegamos al
+        \emph{RMSD}\footnote{Y Rodrigo no tuvo nada que ver con
+        esto.}\cite{rmsd}, que justamente es una de las m\'etricas conocidas
+        para este tipo de ensayos. Mientras m\'as cercano a cero sea esta
+        m\'etrica, mejor es la estimaci\'on, ya que esta es un valor
+        estandarizado del desv\'io entre la estimaci\'on y el valor real.
 
-    \item[\textbf{Compromiso RMSD-Throughput:}] Throughput/RMSD
+    \bigskip
+    \item[\textbf{Throughput:}] El \emph{throughput}\cite{hroughput} es
+        b\'asicamente una m\'etrica de rendimiento, que normalmente en el \'area
+        de las redes y comunicaciones, refiere a la cantidad de informaci\'on
+        efectiva transmitida sin errores por unidad de tiempo.
+        En nuestro caso, conociendo la cantidad de mensajes que se
+        transmitir\'an, y el tama\~no de los mismos, ya sabemos de antemano
+        cuanta informaci\'on efectiva (medida en bytes), es decir informaci\'on
+        que quiere transmitir la aplicaci\'on que utilice el protocolo, se
+        transmitir\'an en todo el experimento. As\'i pues, sabiendo cuanto
+        tiempo llev\'o completar el experimento para un conjunto de
+        par\'ametros, se puede saber cual fue el througput obtenido, el cual
+        refleja la percepci\'on real de la aplicaci\'on sobre cuan bueno es el
+        protocolo.
+
+    \bigskip
+    \item[\textbf{Compromiso RMSD-Throughput:}] Por \'ultimo, se desea observar
+        la relaci\'on de compromiso entre la estimaci\'on del RTO y el
+        throughput, para cada conjunto dado. Podr\'ia darse el caso que quiz\'as
+        una combinaci\'on particular de $\alpha$ y $\beta$ para alg\'un tipo de
+        red (con mucho delay y dropchance, por ejemplo) no obtuviera el mejor
+        throughput ni el mejor RMSD, pero si obtuviese el mejor balance entre
+        estos dos.
+
+        \par Siendo el RMSD un valor que es mejor en la medida que m\'as cerca
+        del cero este, y el throughput una medida que mientras m\'as grande sea
+        nos comunica un mejor rendimiento, es claro que observar la m\'etrica
+        $Throughput / RMSD$ nos dar\'a un resultado del compromiso entre estos
+        dos objetivos deseados. Mientras m\'as alto sea esta m\'etrica, mejor
+        ser\'a la combinaci\'on de par\'ametros deseados a la hora de buscar
+        maximizar ambas caracter\'isticas de forma balanceada.
 
 \end{description}
 
-t-------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
