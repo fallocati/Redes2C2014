@@ -391,6 +391,24 @@ rangos ideales de $\alpha$ y $\beta$ por la presencia de m\'ultiples
 }
 
 %3d--------------------------------------
+
+\subsubsection{Planos con el delay fijo}
+
+Otra forma de ver los datos es a partir de gr\'aficos 3D, donde tomamos como variables 
+$\alpha$, $\beta$ y el throughput, lo cual forma el plano y podemos hacer la comparaci\'on 
+en el mismo gr\'afico de los distintos valores de $\phi$.
+Considerando la vista isom\'etrica del gr\'afico podemos ver la diferencia de valores de throughput 
+que se alcanzan en cada plano.Mientras que las otras dos vistas permiten observar el valor m\'inimo y
+m\'aximo de cada parametro.
+Como conclusiones generales podemos decir que dado un valor de delay el throughput del plano no var\'ia
+demasiado salvo algunos \emph{outliers}, es decir, son planos bastante constantes respecto a Z.
+
+Tambi\'en es claro que cuanto mayor es la probabilidad menor son los valores del throughput en cada plano,
+esto se repite en todos los casos donde se ve como se solapan los planos de $\phi$ = 0 con el de 
+$\phi$ = 1, y luego se encuentras los otros dos por debajo. Adem\'as comparando los valores nominales en 
+cada gr\'afico se ve que a mayor delay menor es el throughput.
+
+
 \foreach \delay in {0, 5, 10, 25, 50, 100, 250, 500}{
 
     \begin{figure}
