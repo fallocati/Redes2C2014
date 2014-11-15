@@ -38,7 +38,7 @@
 #set logscale z
 
 #Terminal info
-set terminal png #(.png)
+set terminal png size 800,600#(.png)
 
 
 #Graphs
@@ -62,6 +62,9 @@ do for [delay in delays]{
     #        max=STATS_max
     #    }
     #}
+
+    #Global
+    set zlabel "Throughput [bps]" rotate by 90 offset -1
 
     #XYZ
     set output "delay".delay."_throughput_3d_xyz.png"

@@ -392,12 +392,11 @@ rangos ideales de $\alpha$ y $\beta$ por la presencia de m\'ultiples
 
 %3d--------------------------------------
 \foreach \delay in {0, 5, 10, 25, 50, 100, 250, 500}{
-    \clearpage
 
     \begin{figure}
         \centering
         \includegraphics[width=0.5\textwidth,
-                        trim = 2cm 1.5cm 2cm 1.2cm,
+                        trim = 0.2cm 1.5cm 3cm 1.2cm,
                         clip
                         ]{img/throughput/delay\delay_throughput_3d_xyz.png}
         \caption{Delay \delay ms - Vista Isom\'etrica}
@@ -407,7 +406,7 @@ rangos ideales de $\alpha$ y $\beta$ por la presencia de m\'ultiples
     \begin{figure}
         \centering
         \includegraphics[width=0.5\textwidth,
-                        trim = 1.5cm 2cm 4cm 1cm,
+                        trim = 1.5cm 2cm 5cm 1cm,
                         clip
                         ]{img/throughput/delay\delay_throughput_3d_xz.png}
         \caption{Delay \delay ms - Plano $\alpha$}
@@ -417,12 +416,14 @@ rangos ideales de $\alpha$ y $\beta$ por la presencia de m\'ultiples
     \begin{figure}
         \centering
         \includegraphics[width=0.5\textwidth,
-                        trim = 1.5cm 2cm 4cm 1cm,
+                        trim = 1.5cm 2cm 5cm 1cm,
                         clip
                         ]{img/throughput/delay\delay_throughput_3d_yz.png}
         \caption{Delay \delay ms - Plano $\beta$}
         \label{fig:throughput:delay\delay_beta}
     \end{figure}
+
+    \clearpage
 }
 
 \FloatBarrier
