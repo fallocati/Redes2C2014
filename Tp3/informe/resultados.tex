@@ -252,8 +252,41 @@ estipuladas.}).
 
 \subsection{Throughput}\label{sec:resultados:throughput}
 
-\foreach \prob in {0, 1, 5, 10}{
-    \foreach \delay in {0, 5, 10, 25, 50, 100, 250, 500}{
+\par En cuanto a los resultados del throughput buscaremos aquellos par\'ametros
+para los que obtenemos valores m\'as altos, como indicamos en la secci\'on
+\ref{sec:variables_metricas:metricas} nos va a indicar la performance
+de la transmisi\'on.
+
+Por simplicidad haremos el an\'alisis de los resultados en el mismo orden en 
+que lo hicimos para la m\'etrica anterior, agrupandolos a partir del delay,
+avanzando incrementalmente, en cada uno de ellos veremos para cada dropchance, 
+que relaci\'on hay con los valores de $\alpha$ y $\beta$.
+
+En principio presentamos los resultados en \emph{heatmaps} con los valores de
+alpha y beta como ambos ejes respectivamente, a medida que el throughput (medido en
+bits por segundo) aumenta, el color del \'area correspondiente a esa zona ser\'a
+m\'as clara, los posibles valores abarcan la escala de grises.  
+
+\subsubsection{Delay 0ms}
+
+La primera conclusi\'on que se puede obtener es que el rango de valores de color
+decrementa a medida que tenemos mayor delay, obteniendo el mejor throughput en $\phi$ = 0
+alcanzando los 750000 bps y el peor con $\phi$ = 10, con valores cercanos a los 620 bps.  
+
+Para este caso en particular podemos observar que los valores m\'inimos y m\'aximos se encuentran
+siempre ''cerca'' de los extremos del \emph{heatmap}.
+
+Ambos mapas de $\phi$ = 0 y $\phi$ = 1, presentan las mismas caracter\'sticas, en cuanto a sus valores
+con una m\'inima diferencia en donde se puede notar que el de mayor probabilidad ''suaviza'' un poco
+los puntos m\'as alejados a la media, por ejemplo aquellos que se ven por $\alpha$ = 0.1, $\beta$ = 0.9,
+y algunos valores en $\alpha$ entre 0.9 y 1.
+
+Al ver los otros 2 valores de $\phi$  la escala ya es distinta y los valores no son tan cercanos como si
+lo eran en el caso anterior, lo que si se puede ver es que se mantiene la tendencia de ir normalizando 
+los valores a medida que se aumenta $\phi$ desde el centro del mapa hacia los extremos.
+
+\foreach \delay in {0}{
+    \foreach \prob in {0, 1, 5, 10}{
         \begin{figure}
             \centering
             \includegraphics[width=0.5\textwidth,
@@ -265,6 +298,50 @@ estipuladas.}).
         \end{figure}
     }
 }
+
+\subsubsection{Delay 5ms}
+
+En este caso ya contamos con algo de delay en las transmisiones, los resultados en ellos son bastante 
+distintos a los obtenidos en el caso anterior, por ejemplo, parece haber bastante diferencia entre las 
+figuras de $\phi = 0 $ y $\phi = 1$ la media de color, es mucho mejor en el segundo, siendo mucho m\'as 
+cercano al valor de mayor throughput, mientras que en el primero el mapa es en promedio m\'as oscuro con
+algunos casos distinguidos en $\alpha$ = 0.2 cerca de los extremos (0 y 1).
+
+En general se mantiene el resultado que habiamos visto en las muestras sin delay donde a mayor $\phi$, 
+se encuentran menos ''manchas'' en la distribuci\'on de color, esto es, mayor dispersi\'on en las 
+variables a menor probabildad, mientras que a medida que se incrementa el color se concentra mas 
+normalizado sin tanta dispersi\'on, tambi\'en con m\'aximos y m\'inimos en los extremos de
+$\alpha$ y $\beta$ combinaciones de 0 y 1.
+
+\foreach \delay in {5}{
+    \foreach \prob in {0, 1, 5, 10}{
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.5\textwidth,
+                            trim = 2.5cm 1cm 1.5cm 1.5cm,
+                            clip
+                            ]{img/throughput/prob\prob_delay\delay_throughput_heatmap.png}
+            \caption{Delay \delay ms - Probabilidad \prob\%}
+            \label{fig:throughput:prob\prob_delay\delay}
+        \end{figure}
+    }
+}
+
+
+
+% \foreach \prob in {0, 1, 5, 10}{
+%     \foreach \delay in {0, 5, 10, 25, 50, 100, 250, 500}{
+%         \begin{figure}
+%             \centering
+%             \includegraphics[width=0.5\textwidth,
+%                             trim = 2.5cm 1cm 1.5cm 1.5cm,
+%                             clip
+%                             ]{img/throughput/prob\prob_delay\delay_throughput_heatmap.png}
+%             \caption{Delay \delay ms - Probabilidad \prob\%}
+%             \label{fig:throughput:prob\prob_delay\delay}
+%         \end{figure}
+%     }
+% }
 %-------------------------------------------------------------------------------
 
 \subsection{Compromiso RMSD-Throughput}\label{sec:resultados:rms_vs_throughput}
