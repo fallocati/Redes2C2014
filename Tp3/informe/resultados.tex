@@ -333,8 +333,114 @@ extremos de $\alpha$ y $\beta$ combinaciones de 0 y 1.
     }
 }
 
+\subsubsection{Delay 10ms}
+
+Avanzando con el an\'alisis, a $\delta$ = 10 podemos ver que las conclusiones que obtuvimos para
+los valores de delay anteriores no se corresponen en este caso, justamente sucede lo inverso, ya que 
+con $\phi$ = 0, el mapa se ve bastante parejo con throughput cercano a los 1800 bps. Mientras que a 
+medida que hay m\'as probabilidad de dropeo se obtiene m\'as dispersi\'on, sin poder determinar un
+rango de valores que represente a toda zona de los mapas, ya que no son tan regulares como s\'i es el 
+primero.
+
+El aumento de la dispersi\'on tambien puede verse al observar la barra del rango de valores de cada mapa.
+La primera se encuentra entre 110000 y 210000, lo que dice que cada par de combinaci\'ones esta a lo sumo 
+a una diferencia de 100000 bps, mientras que a con mayor probabilidad esta diferencia primero disminuye
+a 70000 bps aumenta a los 150000 bps y finalmente a 300000  bps.
 
 
+\foreach \delay in {10}{
+    \foreach \prob in {0, 1, 5, 10}{
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.5\textwidth,
+                            trim = 2.5cm 1cm 1.5cm 1.5cm,
+                            clip
+                            ]{img/throughput/prob\prob_delay\delay_throughput_heatmap.png}
+            \caption{Delay \delay ms - Probabilidad \prob\%}
+            \label{fig:throughput:prob\prob_delay\delay}
+        \end{figure}
+    }
+}
+
+\subsubsection{Resto de los valores}
+
+Para el resto de los valores de delay estudiados, los distintos \emph{heatmap} muestran una tendencia 
+similar a la explicada en el caso anterior, en todos ellos el throughput medio difiere en valores chicos 
+para las probabildades 0 y 1, y en los otros 2 casos disminuye de forma lineal, tambi\'en sucede que los 
+valores de throughput se hacen m\'as dispersos a medida que la probabilidad aumenta, esto hace que sea
+m\'as dificil elegir rangos ideales de $\alpha$ y $\beta$ por la presencia de m\'ultiples ''manchas'' que
+hace disperso  el resultado en todo el mapa.
+
+\foreach \delay in {25}{
+    \foreach \prob in {0, 1, 5, 10}{
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.5\textwidth,
+                            trim = 2.5cm 1cm 1.5cm 1.5cm,
+                            clip
+                            ]{img/throughput/prob\prob_delay\delay_throughput_heatmap.png}
+            \caption{Delay \delay ms - Probabilidad \prob\%}
+            \label{fig:throughput:prob\prob_delay\delay}
+        \end{figure}
+    }
+}
+
+
+\foreach \delay in {50}{
+    \foreach \prob in {0, 1, 5, 10}{
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.5\textwidth,
+                            trim = 2.5cm 1cm 1.5cm 1.5cm,
+                            clip
+                            ]{img/throughput/prob\prob_delay\delay_throughput_heatmap.png}
+            \caption{Delay \delay ms - Probabilidad \prob\%}
+            \label{fig:throughput:prob\prob_delay\delay}
+        \end{figure}
+    }
+}
+
+\foreach \delay in {100}{
+    \foreach \prob in {0, 1, 5, 10}{
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.5\textwidth,
+                            trim = 2.5cm 1cm 1.5cm 1.5cm,
+                            clip
+                            ]{img/throughput/prob\prob_delay\delay_throughput_heatmap.png}
+            \caption{Delay \delay ms - Probabilidad \prob\%}
+            \label{fig:throughput:prob\prob_delay\delay}
+        \end{figure}
+    }
+}
+
+\foreach \delay in {250}{
+    \foreach \prob in {0, 1, 5, 10}{
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.5\textwidth,
+                            trim = 2.5cm 1cm 1.5cm 1.5cm,
+                            clip
+                            ]{img/throughput/prob\prob_delay\delay_throughput_heatmap.png}
+            \caption{Delay \delay ms - Probabilidad \prob\%}
+            \label{fig:throughput:prob\prob_delay\delay}
+        \end{figure}
+    }
+}
+
+\foreach \delay in {500}{
+    \foreach \prob in {0, 1, 5, 10}{
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.5\textwidth,
+                            trim = 2.5cm 1cm 1.5cm 1.5cm,
+                            clip
+                            ]{img/throughput/prob\prob_delay\delay_throughput_heatmap.png}
+            \caption{Delay \delay ms - Probabilidad \prob\%}
+            \label{fig:throughput:prob\prob_delay\delay}
+        \end{figure}
+    }
+}
 % \foreach \prob in {0, 1, 5, 10}{
 %     \foreach \delay in {0, 5, 10, 25, 50, 100, 250, 500}{
 %         \begin{figure}
