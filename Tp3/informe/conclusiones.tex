@@ -1,38 +1,46 @@
-\IEEEPARstart{LL}egados al final del trabajo expuesto, podemos decir que determinar valores 
-de $\alpha$ y $\beta$ que acerquen la estimac\'ion del RTO al RTT ''real'' no es tarea sencilla.
+\IEEEPARstart{LL}egados al final del trabajo expuesto, podemos decir que
+determinar valores de $\alpha$ y $\beta$ que acerquen la estimac\'ion del RTO al
+RTT ''real'' no es tarea sencilla.
 
-\par En base a los resultados obtenidos mediante la primera m\'etrica que usamos, el RMSD, tener 
-tantos valores variables en consideraci\'on nos genera un campo demasiado amplio de resultados.
-A pesar de eso pudimos ver la relaci\'on directa que tienen los cambios introducidos al
-protocolo (el delay y la probabilidad de dropeo) en la estimaci\'on del RTO como bien describimos
-en la secci\'on de resultados.
+\par En base a los resultados obtenidos mediante la primera m\'etrica que
+usamos, el RMSD, tener tantos valores variables en consideraci\'on nos genera un
+campo demasiado amplio de resultados.  A pesar de eso pudimos ver la relaci\'on
+directa que tienen los cambios introducidos al protocolo (el delay y la
+probabilidad de dropeo) en la estimaci\'on del RTO como bien describimos en la
+secci\'on de resultados.
 
-\par Algo similar sucedi\'o al considerar la segunda m\'etrica de la experimentac\'on, el throughput.
-A grandes rasgos no se consegu\'ia ver una relaci\'on clara entre la informaci\'on transmitida sin
-errores y los valores de $\alpha$ y $\beta$ como s\'i suced\'ia con $\phi$ y $\delta$, los resultados 
-obtenidos reflejaban como era de esperarse que a mayor delay menor era la eficiencia de la comunicac\'ion 
-y que a mayor probabilidad de p\'erdida de paquete lo mismo suced\'ia.
+\par Algo similar sucedi\'o al considerar la segunda m\'etrica de la
+experimentac\'on, el throughput.  A grandes rasgos no se consegu\'ia ver una
+relaci\'on clara entre la informaci\'on transmitida sin errores y los valores de
+$\alpha$ y $\beta$ como s\'i suced\'ia con $\phi$ y $\delta$, los resultados
+obtenidos reflejaban como era de esperarse que a mayor delay menor era la
+eficiencia de la comunicac\'ion y que a mayor probabilidad de p\'erdida de
+paquete lo mismo suced\'ia.
 
 
-\par Pero no fue hasta analizar enfonc\'andose en un entorno m\'as peque\~no de valores, esto es,
-al fijar ciertos par\'ametros y concentrarnos en como repercut\'ian $\alpha$ y $\beta$, que pudimos 
-determinar valores que consideramos eficientes de ellos dependiendo el caso.
+\par Pero no fue hasta analizar enfonc\'andose en un entorno m\'as peque\~no de
+valores, esto es, al fijar ciertos par\'ametros y concentrarnos en como
+repercut\'ian $\alpha$ y $\beta$, que pudimos determinar valores que
+consideramos eficientes de ellos dependiendo el caso.
 
-\par A partir de las modificaciones hechas al protocolo, el estudio de distintas m\'etricas y formas de
-presentar y analizar los resultados, se reduci\'o el tiempo que pudimos dedicarle a la experimentaci\'on
-propiamente dicha, y quedaron pendientes posibles trabajos a realizar, uno de ellos es estudiar el
+\par A partir de las modificaciones hechas al protocolo, el estudio de distintas
+m\'etricas y formas de presentar y analizar los resultados, se reduci\'o el
+tiempo que pudimos dedicarle a la experimentaci\'on propiamente dicha, y
+quedaron pendientes posibles trabajos a realizar, uno de ellos es estudiar el
 compromiso entre el RMSD y el throughput, que hubiera determinado una relaci\'on
 de compromiso entre estas dos m\'etricas, indic\'andonos posiblemente los
 mejores par\'ametros de $\alpha$ y $\beta$ para obtenere un balance entre una
 buena estimaci\'on del RTT y un buen throughput.
 
-\par Otro punto que vale la pena destacar es que los resultados obtenidos dependen completamente de la 
-implementaci\'on del protocolo, que consideramos no finalizada, ya que hubiese sido interesante
-continuar modificando el c\'odigo a partir de los errores que se documentarion en la secci\'on 
-\ref{sec:experimento:dificultades}, lo cual nos hubiese permitido 
-a su vez estudiar distintos entornos de experimentaci\'on y hacer un an\'alisis m\'as profundo de 
-multiples casos posibles. De conseguir esto, los resultados podr\'ian llegar a variar y ser
-menos vol\'atiles o irregulares que los presentados.
+\par Otro punto que vale la pena destacar es que los resultados obtenidos
+dependen completamente de la implementaci\'on del protocolo, que consideramos no
+finalizada, ya que hubiese sido interesante continuar modificando el c\'odigo a
+partir de los errores que se documentarion en la secci\'on
+\ref{sec:experimento:dificultades}, lo cual nos hubiese permitido a su vez
+estudiar distintos entornos de experimentaci\'on y hacer un an\'alisis m\'as
+profundo de multiples casos posibles. De conseguir esto, los resultados
+podr\'ian llegar a variar y ser menos vol\'atiles o irregulares que los
+presentados.
 
 \par A su vez, durante los experimentos realizados durante este trabajo, se
 trabaj\'o con la idea de un delay est\'atico, es decir, el mismo no cambiaba a
