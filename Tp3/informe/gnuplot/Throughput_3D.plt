@@ -1,21 +1,14 @@
-#Terminal info
-#set terminal png #(.png)
-#set output 'Throughput_3D.png'
-
 #Graph parameters
-set size square
-set view map
-set dgrid3
-set palette grey
-set pm3d interpolate 0,0
-#set hidden3d
+#set size square
+#set view map
+#set palette grey
+#set pm3d interpolate 0,0
 #set samples 20, 20
-#set isosamples 50
+#set isosamples 30
 #set contour
 #set cntrparam levels auto 5
 #set style data lines
 #set grid layerdefault   linetype -1 linecolor rgb "gray"  linewidth 0.200,  linetype -1 linecolor rgb "gray"  linewidth 0.200
-set grid
 #set grid front mxtics mytics lw 1.5 lt -1 lc rgb 'white'
 #set ztics 0.02
 
@@ -31,9 +24,9 @@ set grid
 #set xtics 2 offset 0,-1
 #set ytics 2 offset 0,-1
 #set key inside left top enhanced box linetype -1 linewidth 1.000
-#set key outside
 #set key at screen 0.75,0.375
 #set key below
+#unset key
 
 #Rangos
 #set xrange [0:1]
@@ -42,53 +35,67 @@ set grid
 #set autoscale x
 #set autoscale y
 #set autoscale z
+#set logscale z
 
-#Source datafile
-set datafile separator ";"
+#Terminal info
+set terminal png #(.png)
 
-#Multiplot
-#set multiplot layout 2,2
 
-#XYZ
-#set xlabel "Alpha" offset 0,-2
-#set ylabel "Beta" offset 0,-2
-#set xtics 0.1 offset -1,-1
-#set ytics 0.1 offset -1,-1
-#set view 60,30,1,1
-set xlabel "Alpha"
-set ylabel "Beta"
-set cblabel "Throughput [bps]"
-set xtics 0.1
-set ytics 0.1
-#set nocbtics
-splot "prob0_delay0_final.csv" using 1:2:4 with pm3d notitle,\
-#    "prob0_delay50_final.csv" using 1:2:4 with lines title "50ms",\
-#    "prob0_delay100_final.csv" using 1:2:4 with lines title "100ms",\
-#    "prob0_delay250_final.csv" using 1:2:4 with lines title "250ms",\
-#    "prob0_delay500_final.csv" using 1:2:4 with lines title "500ms"
+#Graphs
+delays = "0 5 10 25 50 100 250 500"
+probs = "0 1 5 10"
 
-#YZ o Beta x RMS
-#set ylabel "Beta" offset 0,-2
-#set ytics 0.1 offset 0,-1
-#unset xlabel
-#unset xtics
-#set view 90,90,1,1
-#splot "prob0_delay0_final.csv" using 1:2:4 with lines title "0ms",\
-#    "prob0_delay50_final.csv" using 1:2:4 with lines title "50ms",\
-#    "prob0_delay100_final.csv" using 1:2:4 with lines title "100ms",\
-#    "prob0_delay250_final.csv" using 1:2:4 with lines title "250ms",\
-#    "prob0_delay500_final.csv" using 1:2:4 with lines title "500ms"
+do for [delay in delays]{
+    reset
+    set dgrid3
+    set grid xtics ytics ztics mztics
+    set key outside
 
-#XZ o Alpha x RMS
-#set xlabel "Alpha" offset 0,-2
-#set xtics 0.1 offset 0,-1
-#unset ylabel
-#unset ytics
-#set view 90,0,1,1
-#splot "prob0_delay0_final.csv" using 1:2:4 with lines title "0ms",\
-#    "prob0_delay50_final.csv" using 1:2:4 with lines title "50ms",\
-#    "prob0_delay100_final.csv" using 1:2:4 with lines title "100ms",\
-#    "prob0_delay250_final.csv" using 1:2:4 with lines title "250ms",\
-#    "prob0_delay500_final.csv" using 1:2:4 with lines title "500ms"
+    #Source datafile
+    set datafile separator ";"
 
-#unset multiplot
+    #Stats Get max
+    #max=0
+    #do for [prob in probs]{
+    #    stats "prob0_delay".delay."_final.csv" using 4
+    #    if(max < STATS_max) {
+    #        max=STATS_max
+    #    }
+    #}
+
+    #XYZ
+    set output "delay".delay."_throughput_3d_xyz.png"
+    set xlabel "Alpha"
+    set ylabel "Beta"
+    set ticslevel 0.0
+    set xtics 0.1 offset -0.2,-0.2
+    set ytics 0.1 offset -0.5,-0.5
+    set view 60,30,1,1
+    set hidden3d
+
+    splot for [prob in probs] "prob".prob."_delay".delay."_final.csv" using 1:2:4 with lines title prob."%"
+
+    #YZ
+    set output "delay".delay."_throughput_3d_yz.png"
+    set ylabel "Beta" offset 0,-2
+    set ytics 0.1 offset 0,-1
+    unset xlabel
+    unset xtics
+    unset hidden3d
+    set for [y = 0:10:1] arrow from 0,y/10.0,GPVAL_Z_MIN to 0,y/10.0,GPVAL_Z_MAX nohead lt 0
+    set view 90,90,1,1
+
+    splot for [prob in probs] "prob".prob."_delay".delay."_final.csv" using 1:2:4 with lines title prob."%"
+
+    #XZ
+    set output "delay".delay."_throughput_3d_xz.png"
+    set xlabel "Alpha" offset 0,-2
+    set xtics 0.1 offset 0,-1
+    unset ylabel
+    unset ytics
+    unset hidden3d
+    set for [x = 0:10:1] arrow from x/10.0,0,GPVAL_Z_MIN to x/10.0,0,GPVAL_Z_MAX nohead lt 0
+    set view 90,0,1,1
+
+    splot for [prob in probs] "prob".prob."_delay".delay."_final.csv" using 1:2:4 with lines title prob."%"
+}
